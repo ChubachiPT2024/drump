@@ -28,5 +28,5 @@
     },
     "types": ["vitest/globals"],
   },
-  "include": ["src", "vitest.setup.ts"]
+  "include": ["src"]
 }
