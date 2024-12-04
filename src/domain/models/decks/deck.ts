@@ -1,6 +1,6 @@
-import { Card } from "./card";
-import { Rank } from "./rank";
-import { Suit } from "./suit";
+import { Card } from "../cards/card";
+import { Rank } from "../ranks/rank";
+import { Suit } from "../suits/suit";
 
 /**
  * デッキ

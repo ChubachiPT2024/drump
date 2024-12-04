@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
-import { Rank } from './rank'
+import { Rank } from '../ranks/rank'
 import { Card } from './card'
-import { Suit } from './suit'
+import { Suit } from '../suits/suit'
 
 describe('get soft point', () => {
   test.each([

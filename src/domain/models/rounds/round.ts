@@ -1,4 +1,4 @@
-import { Hand } from "./hand";
+import { Hand } from "../hands/hand";
 
 /**
  * ラウンド

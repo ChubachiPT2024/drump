@@ -1,5 +1,5 @@
-import { Rank } from "./rank";
-import { Suit } from "./suit";
+import { Rank } from "../ranks/rank";
+import { Suit } from "../suits/suit";
 
 /**
  * カード

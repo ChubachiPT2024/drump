@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest'
-import { Hand } from '../hand/hand'
-import { Card } from '../card/card'
-import { Rank } from '../rank/rank'
-import { Suit } from '../suit/suit'
+import { Hand } from './hand'
+import { Card } from '../cards/card'
+import { Rank } from '../ranks/rank'
+import { Suit } from '../suits/suit'
 
 describe('get soft total', () => {
   test('The soft total of an empty hand is 0.', () => {
