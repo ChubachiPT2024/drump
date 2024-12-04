@@ -1,5 +1,4 @@
 import { Hand } from "./hand";
-import { Shoe } from "./shoe";
 
 /**
  * ラウンド
@@ -15,32 +14,16 @@ export class Round {
    */
   private playerHand: Hand = new Hand([])
 
-  // TODO Match の実装時、Shoe は Round ではなく Match に持たせる
   /**
    * コンストラクタ
    * 
    * @param id ID
-   * @param shoe シュー
+   * @param shoeId シュー ID
    */
   public constructor(
     public readonly id: number,
-    private shoe: Shoe
+    private readonly shoeId: number
   ) {
-  }
-
-  /**
-   * 最初のハンドを配る
-   */
-  public dealInitialHands(): void {
-    for (let i = 0; i < 2; i++) {
-      this.dealerHand = this.dealerHand.add(this.shoe.peek())
-      this.shoe = this.shoe.draw()
-    }
-
-    for (let i = 0; i < 2; i++) {
-      this.playerHand = this.playerHand.add(this.shoe.peek())
-      this.shoe = this.shoe.draw()
-    }
   }
 
   /**

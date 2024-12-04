@@ -7,10 +7,12 @@ import { Suit } from './suit'
 describe('peek', () => {
   test("It returns a same card every time.", () => {
     // Arrange
-    const shoe = new Shoe([
-      new Card(Rank.Ace, Suit.Diamond),
-      new Card(Rank.Two, Suit.Club)
-    ])
+    const shoe = new Shoe(
+      1,
+      [
+        new Card(Rank.Ace, Suit.Diamond),
+        new Card(Rank.Two, Suit.Club)
+      ])
 
     // Act
     const first = shoe.peek()
@@ -22,17 +24,20 @@ describe('peek', () => {
 })
 
 describe('draw', () => {
-  test("It creates a new shoe without the first card.", () => {
+  test("It changes the next card.", () => {
     // Arrange
-    const firstShoe = new Shoe([
-      new Card(Rank.Ace, Suit.Diamond),
-      new Card(Rank.Two, Suit.Club)
-    ])
+    const shoe = new Shoe(
+      1,
+      [
+        new Card(Rank.Ace, Suit.Diamond),
+        new Card(Rank.Two, Suit.Club)
+      ])
+    const firstPeek = shoe.peek()
 
     // Act
-    const secondShoe = firstShoe.draw()
+    shoe.draw()
 
     // Assert
-    expect(firstShoe.peek().equals(secondShoe.peek())).toBe(false)
+    expect(firstPeek.equals(shoe.peek())).toBe(false)
   })
 })

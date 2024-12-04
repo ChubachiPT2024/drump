@@ -7,9 +7,12 @@ export class Shoe {
   /**
    * コンストラクタ
    * 
+   * @param id ID
    * @param cards カード
    */
-  public constructor(private readonly cards: Card[]) {
+  public constructor(
+    public readonly id: number,
+    private cards: Card[]) {
   }
 
   /**
@@ -25,11 +28,9 @@ export class Shoe {
   }
 
   /**
-   * カードをドローした新しいシューを返す
-   * 
-   * @returns カードをドローした新しいシュー
+   * カードをドローする
    */
-  public draw(): Shoe {
-    return new Shoe([...this.cards.slice(1)])
+  public draw(): void {
+    this.cards = [...this.cards.slice(1)];
   }
 }
