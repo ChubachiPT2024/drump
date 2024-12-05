@@ -1,4 +1,5 @@
 import { Hand } from "../hands/hand";
+import { RoundId } from "./roundId";
 
 /**
  * ラウンド
@@ -21,7 +22,7 @@ export class Round {
    * @param shoeId シュー ID
    */
   public constructor(
-    public readonly id: number,
+    public readonly id: RoundId,
     private readonly shoeId: number,
   ) {}
 
