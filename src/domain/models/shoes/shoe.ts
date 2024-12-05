@@ -1,4 +1,5 @@
 import { Card } from "../cards/card";
+import { ShoeId } from "./shoeId";
 
 /**
  * シュー
@@ -11,7 +12,7 @@ export class Shoe {
    * @param cards カード
    */
   public constructor(
-    public readonly id: number,
+    public readonly id: ShoeId,
     private cards: Card[],
   ) {}
 

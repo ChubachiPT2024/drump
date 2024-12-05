@@ -4,11 +4,14 @@ import { Shoe } from "@/domain/models/shoes/shoe";
 import { Card } from "@/domain/models/cards/card";
 import { Rank } from "@/domain/models/ranks/rank";
 import { Suit } from "@/domain/models/suits/suit";
+import { ShoeId } from "@/domain/models/shoes/shoeId";
 
 describe("save", () => {
   test("Can save a shoe.", async () => {
     const repository = new InMemoryShoeRepository();
-    const expected = new Shoe(1, [new Card(Rank.Ace, Suit.Spade)]);
+    const expected = new Shoe(new ShoeId("id"), [
+      new Card(Rank.Ace, Suit.Spade),
+    ]);
 
     await repository.saveAsync(expected);
 

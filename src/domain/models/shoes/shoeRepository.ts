@@ -1,4 +1,5 @@
 import { Shoe } from "./shoe";
+import { ShoeId } from "./shoeId";
 
 /**
  * シューリポジトリ
@@ -17,5 +18,5 @@ export interface ShoeRepository {
    * @param id ID
    * @returns シュー
    */
-  findAsync(id: number): Promise<Shoe>;
+  findAsync(id: ShoeId): Promise<Shoe>;
 }

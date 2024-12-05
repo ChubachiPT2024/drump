@@ -3,11 +3,12 @@ import { Shoe } from "./shoe";
 import { Card } from "../cards/card";
 import { Rank } from "../ranks/rank";
 import { Suit } from "../suits/suit";
+import { ShoeId } from "./shoeId";
 
 describe("peek", () => {
   test("It returns a same card every time.", () => {
     // Arrange
-    const shoe = new Shoe(1, [
+    const shoe = new Shoe(new ShoeId("id"), [
       new Card(Rank.Ace, Suit.Diamond),
       new Card(Rank.Two, Suit.Club),
     ]);
@@ -24,7 +25,7 @@ describe("peek", () => {
 describe("draw", () => {
   test("It changes the next card.", () => {
     // Arrange
-    const shoe = new Shoe(1, [
+    const shoe = new Shoe(new ShoeId("id"), [
       new Card(Rank.Ace, Suit.Diamond),
       new Card(Rank.Two, Suit.Club),
     ]);
