@@ -7,28 +7,27 @@ export class Round {
   /**
    * ディーラーのハンド
    */
-  private dealerHand: Hand = new Hand([])
+  private dealerHand: Hand = new Hand([]);
 
   /**
    * プレイヤーのハンド
    */
-  private playerHand: Hand = new Hand([])
+  private playerHand: Hand = new Hand([]);
 
   /**
    * コンストラクタ
-   * 
+   *
    * @param id ID
    * @param shoeId シュー ID
    */
   public constructor(
     public readonly id: number,
-    private readonly shoeId: number
-  ) {
-  }
+    private readonly shoeId: number,
+  ) {}
 
   /**
    * ディーラーのハンドを取得する
-   * 
+   *
    * @returns ディーラーのハンド
    */
   public getDealerHand(): Hand {
@@ -37,7 +36,7 @@ export class Round {
 
   /**
    * プレイヤーのハンドを取得する
-   * 
+   *
    * @returns プレイヤーのハンド
    */
   public getPlayerHand(): Hand {
