@@ -15,7 +15,16 @@ export class Match {
    */
   public constructor(
     public readonly id: MatchId,
-    private readonly shoeId: ShoeId,
+    public readonly shoeId: ShoeId,
     private roundIds: RoundId[],
   ) {}
+
+  /**
+   * ラウンドを追加する
+   * 
+   * @param roundId 
+   */
+  public addRound(roundId: RoundId): void {
+    this.roundIds = [...this.roundIds, roundId];
+  }
 }

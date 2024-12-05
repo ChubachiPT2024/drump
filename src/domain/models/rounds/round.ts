@@ -24,7 +24,7 @@ export class Round {
    */
   public constructor(
     public readonly id: RoundId,
-    private readonly shoeId: ShoeId,
+    public readonly shoeId: ShoeId,
   ) {}
 
   /**
