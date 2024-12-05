@@ -21,8 +21,8 @@ export class Match {
 
   /**
    * ラウンドを追加する
-   * 
-   * @param roundId 
+   *
+   * @param roundId
    */
   public addRound(roundId: RoundId): void {
     this.roundIds = [...this.roundIds, roundId];
