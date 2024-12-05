@@ -4,6 +4,11 @@ import { describe, expect, test } from "vitest";
 import { MatchApplicationService } from "./matchApplicationService";
 import { MatchCreateCommand } from "./matchCreateCommand";
 import { MatchId } from "@/domain/models/matches/matchId";
+import { Match } from "@/domain/models/matches/match";
+import { ShoeId } from "@/domain/models/shoes/shoeId";
+import { MatchAddRoundCommand } from "./matchAddRoundCommand";
+import { Round } from "@/domain/models/rounds/round";
+import { RoundId } from "@/domain/models/rounds/roundId";
 
 describe("create", () => {
   test("Can create a match", async () => {
@@ -15,5 +20,27 @@ describe("create", () => {
 
     const match = await matchRepository.findAsync(new MatchId(result.id));
     expect(match).toBeDefined();
+  });
+});
+
+describe("add round", () => {
+  test("Can add a round", async () => {
+    // Arrange
+    const matchFactory = new InMemoryMatchFactory();
+    const matchRepository = new InMemoryMatchRepository();
+    const match = new Match(new MatchId("matchId"), new ShoeId("shoeId"), []);
+    await matchRepository.saveAsync(match);
+    const service = new MatchApplicationService(matchFactory, matchRepository);
+    const round = new Round(new RoundId("roundId"), match.shoeId);
+
+    // Act
+    await service.addRoundAsync(
+      new MatchAddRoundCommand(match.id.value, round.id.value),
+    );
+
+    // Assert
+    const modifiedMatch = await matchRepository.findAsync(match.id);
+    expect(modifiedMatch.getRoundIds().length).toBe(1);
+    expect(modifiedMatch.getRoundIds()[0].value).toBe(round.id.value);
   });
 });

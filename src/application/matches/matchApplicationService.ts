@@ -3,6 +3,9 @@ import { MatchRepository } from "@/domain/models/matches/matchRepository";
 import { MatchCreateCommand } from "./matchCreateCommand";
 import { ShoeId } from "@/domain/models/shoes/shoeId";
 import { MatchCreateResult } from "./matchCreateResult";
+import { MatchAddRoundCommand } from "./matchAddRoundCommand";
+import { MatchId } from "@/domain/models/matches/matchId";
+import { RoundId } from "@/domain/models/rounds/roundId";
 
 /**
  * 試合アプリケーションサービス
@@ -33,5 +36,15 @@ export class MatchApplicationService {
     await this.matchRepository.saveAsync(match);
 
     return new MatchCreateResult(match.id.value);
+  }
+
+  /**
+   * 試合にラウンドを追加する
+   *
+   * @param command 試合へのラウンド追加コマンド
+   */
+  public async addRoundAsync(command: MatchAddRoundCommand): Promise<void> {
+    const match = await this.matchRepository.findAsync(new MatchId(command.id));
+    match.addRound(new RoundId(command.roundId));
   }
 }
