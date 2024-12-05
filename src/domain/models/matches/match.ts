@@ -27,4 +27,13 @@ export class Match {
   public addRound(roundId: RoundId): void {
     this.roundIds = [...this.roundIds, roundId];
   }
+
+  /**
+   * ラウンド ID リストを取得する
+   *
+   * @returns ラウンド ID リスト
+   */
+  public getRoundIds(): RoundId[] {
+    return [...this.roundIds];
+  }
 }
