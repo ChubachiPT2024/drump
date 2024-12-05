@@ -12,7 +12,7 @@ describe("create", () => {
 
     const result = await service.createAsync();
 
-    const shoe = await shoeRepository.findAsync(new ShoeId(result.shoeId));
+    const shoe = await shoeRepository.findAsync(new ShoeId(result.id));
     expect(shoe).toBeDefined();
   });
 });

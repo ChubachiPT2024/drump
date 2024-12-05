@@ -5,7 +5,7 @@ export class ShoeCreateResult {
   /**
    * コンストラクタ
    *
-   * @param shoeId シュー ID
+   * @param id ID
    */
-  public constructor(public readonly shoeId: string) {}
+  public constructor(public readonly id: string) {}
 }
