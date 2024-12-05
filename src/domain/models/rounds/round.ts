@@ -1,4 +1,5 @@
 import { Hand } from "../hands/hand";
+import { ShoeId } from "../shoes/shoeId";
 import { RoundId } from "./roundId";
 
 /**
@@ -23,7 +24,7 @@ export class Round {
    */
   public constructor(
     public readonly id: RoundId,
-    private readonly shoeId: number,
+    private readonly shoeId: ShoeId,
   ) {}
 
   /**
