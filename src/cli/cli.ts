@@ -3,6 +3,7 @@ import { MatchApplicationService } from "@/application/matches/matchApplicationS
 import { MatchCreateCommand } from "@/application/matches/matchCreateCommand";
 import { RoundApplicationService } from "@/application/rounds/roundApplicationService";
 import { RoundCreateCommand } from "@/application/rounds/roundCreateCommand";
+import { RoundGetPlayerHandCommand } from "@/application/rounds/roundGetPlayerHandCommand";
 import { RoundStartCommand } from "@/application/rounds/roundStartCommand";
 import { ShoeApplicationService } from "@/application/shoes/shoeApplicationService";
 import { MatchId } from "@/domain/models/matches/matchId";
@@ -59,6 +60,12 @@ await matchApplicationService.addRoundAsync(
 await roundApplicationService.startAsync(
   new RoundStartCommand(roundCreateResult.id),
 );
+
+// プレイヤーのハンド表示
+const playerHand = await roundApplicationService.getPlayerHandAsync(
+  new RoundGetPlayerHandCommand(roundCreateResult.id),
+);
+console.log(playerHand);
 
 console.log(await shoeRepository.findAsync(new ShoeId(shoeCreateResult.id)));
 console.log(await matchRepository.findAsync(new MatchId(matchCreateResult.id)));
