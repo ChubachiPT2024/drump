@@ -2,18 +2,35 @@ import { InMemoryRoundFactory } from "@/infrastructure/inMemory/rounds/inMemoryR
 import { InMemoryRoundRepository } from "@/infrastructure/inMemory/rounds/inMemoryRoundRepository";
 import { describe, expect, test } from "vitest";
 import { RoundApplicationService } from "./roundApplicationService";
-import { RoundCreateCommand } from "./roundCreateCommand";
-import { RoundId } from "@/domain/models/rounds/roundId";
+import { InMemoryShoeRepository } from "@/infrastructure/inMemory/shoes/inMemoryShoeRepository";
+import { InMemoryShoeFactory } from "@/infrastructure/inMemory/shoes/inMemoryShoeFactory";
+import { Deck } from "@/domain/models/decks/deck";
+import { RoundStartCommand } from "./roundStartCommand";
 
-describe("create", () => {
-  test("Can create a round", async () => {
+describe("start", () => {
+  test("The dealer and player gets a hand with two cards.", async () => {
+    // Arrange
+    const shoeRepository = new InMemoryShoeRepository();
+    const shoe = new InMemoryShoeFactory().create(Deck.create().getCards());
+    await shoeRepository.saveAsync(shoe);
+
     const roundFactory = new InMemoryRoundFactory();
     const roundRepository = new InMemoryRoundRepository();
-    const service = new RoundApplicationService(roundFactory, roundRepository);
+    const round = roundFactory.create(shoe.id);
+    await roundRepository.saveAsync(round);
 
-    const result = await service.createAsync(new RoundCreateCommand("shoeId"));
+    const service = new RoundApplicationService(
+      roundFactory,
+      roundRepository,
+      shoeRepository,
+    );
 
-    const round = await roundRepository.findAsync(new RoundId(result.id));
-    expect(round).toBeDefined();
+    // Act
+    await service.startAsync(new RoundStartCommand(round.id.value));
+
+    // Assert
+    const startedRound = await roundRepository.findAsync(round.id);
+    expect(startedRound.getDealerHand().count()).toBe(2);
+    expect(startedRound.getPlayerHand().count()).toBe(2);
   });
 });
