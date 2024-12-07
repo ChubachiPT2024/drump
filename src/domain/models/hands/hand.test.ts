@@ -361,3 +361,68 @@ describe("can hit", () => {
     expect(hand.canHit()).toBe(false);
   });
 });
+
+describe("is resolved", () => {
+  test("The hand is resolved if the soft total is 21.", () => {
+    // Arrange
+    const hand = new Hand(
+      [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Jack, Suit.Spade)],
+      false,
+    );
+
+    // Act, Assert
+    expect(hand.isResolved()).toBe(true);
+  });
+
+  test("The hand is resolved if the hard total is 21.", () => {
+    // Arrange
+    const hand = new Hand(
+      [
+        new Card(Rank.Two, Suit.Spade),
+        new Card(Rank.Nine, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
+      false,
+    );
+
+    // Act, Assert
+    expect(hand.isResolved()).toBe(true);
+  });
+
+  test("The hand is resolved if the hand is stand.", () => {
+    // Arrange
+    const hand = new Hand(
+      [new Card(Rank.Two, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+      true,
+    );
+
+    // Act, Assert
+    expect(hand.isResolved()).toBe(true);
+  });
+
+  test("The hand is resolved if the hand is bust.", () => {
+    // Arrange
+    const hand = new Hand(
+      [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
+      false,
+    );
+
+    // Act, Assert
+    expect(hand.isResolved()).toBe(true);
+  });
+
+  test("The hand is not resolved if the hard total is less than 21 and the hand is not stand.", () => {
+    // Arrange
+    const hand = new Hand(
+      [new Card(Rank.Ten, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
+      false,
+    );
+
+    // Act, Assert
+    expect(hand.isResolved()).toBe(false);
+  });
+});

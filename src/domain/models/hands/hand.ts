@@ -97,4 +97,18 @@ export class Hand {
   public stand(): Hand {
     return new Hand([...this.cards], true);
   }
+
+  /**
+   * ハンドが決まったかどうかを取得する
+   *
+   * @returns ハンドが決まったかどうか
+   */
+  public isResolved(): boolean {
+    return (
+      this.calculateSoftTotal() === 21 ||
+      this.calculateHardTotal() === 21 ||
+      this.isStand ||
+      this.isBust()
+    );
+  }
 }
