@@ -77,11 +77,11 @@ export class Hand {
   }
 
   /**
-   * カードを追加できるかどうか判定する
+   * ヒットできるかどうか判定する
    *
-   * @returns カードを追加できるかどうか
+   * @returns ヒットできるかどうか
    */
-  public canAddCard(): boolean {
+  public canHit(): boolean {
     return this.calculateSoftTotal() !== 21 && this.calculateHardTotal() < 21;
   }
 

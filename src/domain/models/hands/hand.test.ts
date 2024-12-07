@@ -286,8 +286,8 @@ describe("is bust", () => {
   });
 });
 
-describe("can add card", () => {
-  test("Can add card if the soft total is less than 21.", () => {
+describe("can hit", () => {
+  test("Can hit if the soft total is less than 21.", () => {
     // Arrange
     const hand = new Hand(
       [new Card(Rank.Jack, Suit.Spade), new Card(Rank.Jack, Suit.Spade)],
@@ -295,10 +295,10 @@ describe("can add card", () => {
     );
 
     // Act, Assert
-    expect(hand.canAddCard()).toBe(true);
+    expect(hand.canHit()).toBe(true);
   });
 
-  test("Can add card if the soft total is greater than 21 but the hard total is less than 21.", () => {
+  test("Can hit if the soft total is greater than 21 but the hard total is less than 21.", () => {
     // Arrange
     const hand = new Hand(
       [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ace, Suit.Spade)],
@@ -306,10 +306,10 @@ describe("can add card", () => {
     );
 
     // Act, Assert
-    expect(hand.canAddCard()).toBe(true);
+    expect(hand.canHit()).toBe(true);
   });
 
-  test("Cannot add card if the hand is black jack.", () => {
+  test("Cannot hit if the hand is black jack.", () => {
     // Arrange
     const hand = new Hand(
       [new Card(Rank.Jack, Suit.Spade), new Card(Rank.Ace, Suit.Spade)],
@@ -317,10 +317,10 @@ describe("can add card", () => {
     );
 
     // Act, Assert
-    expect(hand.canAddCard()).toBe(false);
+    expect(hand.canHit()).toBe(false);
   });
 
-  test("Cannot add card if the hand is not black jack but the soft total is 21.", () => {
+  test("Cannot hit if the hand is not black jack but the soft total is 21.", () => {
     // Arrange
     const hand = new Hand(
       [
@@ -332,10 +332,10 @@ describe("can add card", () => {
     );
 
     // Act, Assert
-    expect(hand.canAddCard()).toBe(false);
+    expect(hand.canHit()).toBe(false);
   });
 
-  test("Cannot add card if the hard total is greater than equal 21.", () => {
+  test("Cannot hit if the hard total is greater than equal 21.", () => {
     // Arrange
     const hand = new Hand(
       [
@@ -347,6 +347,6 @@ describe("can add card", () => {
     );
 
     // Act, Assert
-    expect(hand.canAddCard()).toBe(false);
+    expect(hand.canHit()).toBe(false);
   });
 });
