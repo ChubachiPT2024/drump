@@ -6,6 +6,9 @@ import { ShoeId } from "@/domain/models/shoes/shoeId";
 import { RoundStartCommand } from "./roundStartCommand";
 import { RoundId } from "@/domain/models/rounds/roundId";
 import { ShoeRepository } from "@/domain/models/shoes/shoeRepository";
+import { RoundGetPlayerHandCommand } from "./roundGetPlayerHandCommand";
+import { RoundGetPlayerHandResult } from "./roundGetPlayerHandResult";
+import { RoundGetPlayerHandResultCard } from "./roundGetPlayerHandResultCard";
 
 /**
  * ラウンドアプリケーションサービス
@@ -64,5 +67,24 @@ export class RoundApplicationService {
     // TODO トランザクション処理
     await this.roundRepository.saveAsync(round);
     await this.shoeRepository.saveAsync(shoe);
+  }
+
+  /**
+   * プレイヤーのハンドを取得する
+   *
+   * @param command プレイヤーのハンド取得コマンド
+   * @returns プレイヤーのハンド取得結果
+   */
+  public async getPlayerHandAsync(
+    command: RoundGetPlayerHandCommand,
+  ): Promise<RoundGetPlayerHandResult> {
+    const round = await this.roundRepository.findAsync(new RoundId(command.id));
+
+    return new RoundGetPlayerHandResult(
+      round
+        .getPlayerHand()
+        .getCards()
+        .map((card) => new RoundGetPlayerHandResultCard(card)),
+    );
   }
 }

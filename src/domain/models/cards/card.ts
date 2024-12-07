@@ -50,8 +50,8 @@ export class Card {
    * @param suit スート
    */
   public constructor(
-    private readonly rank: Rank,
-    private readonly suit: Suit,
+    public readonly rank: Rank,
+    public readonly suit: Suit,
   ) {}
 
   /**

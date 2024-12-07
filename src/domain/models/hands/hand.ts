@@ -107,4 +107,13 @@ export class Hand {
       this.isBust()
     );
   }
+
+  /**
+   * カードを取得する
+   *
+   * @returns カード
+   */
+  public getCards(): Card[] {
+    return [...this.cards];
+  }
 }

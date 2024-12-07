@@ -8,24 +8,18 @@ import { RoundId } from "./roundId";
  */
 export class Round {
   /**
-   * ディーラーのハンド
-   */
-  private dealerHand: Hand = new Hand([], false);
-
-  /**
-   * プレイヤーのハンド
-   */
-  private playerHand: Hand = new Hand([], false);
-
-  /**
    * コンストラクタ
    *
    * @param id ID
    * @param shoeId シュー ID
+   * @param dealerHand ディーラーのハンド
+   * @param playerHand プレイヤーのハンド
    */
   public constructor(
     public readonly id: RoundId,
     public readonly shoeId: ShoeId,
+    private dealerHand: Hand,
+    private playerHand: Hand,
   ) {}
 
   /**

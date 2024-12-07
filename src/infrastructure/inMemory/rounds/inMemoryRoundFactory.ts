@@ -1,3 +1,4 @@
+import { Hand } from "@/domain/models/hands/hand";
 import { Round } from "@/domain/models/rounds/round";
 import { RoundFactory } from "@/domain/models/rounds/roundFactory";
 import { RoundId } from "@/domain/models/rounds/roundId";
@@ -14,6 +15,11 @@ export class InMemoryRoundFactory implements RoundFactory {
    * @returns ラウンド
    */
   public create(shoeId: ShoeId): Round {
-    return new Round(new RoundId(crypto.randomUUID()), shoeId);
+    return new Round(
+      new RoundId(crypto.randomUUID()),
+      shoeId,
+      new Hand([], false),
+      new Hand([], false),
+    );
   }
 }
