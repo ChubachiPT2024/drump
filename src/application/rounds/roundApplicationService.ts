@@ -49,6 +49,8 @@ export class RoundApplicationService {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
     const shoe = await this.shoeRepository.findAsync(round.shoeId);
 
+    // TODO ラウンドがまだ開始していないことの検証
+
     for (let i = 0; i < 2; i++) {
       round.dealCardToDealer(shoe.peek());
       shoe.draw();
