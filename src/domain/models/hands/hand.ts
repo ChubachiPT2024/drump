@@ -82,11 +82,7 @@ export class Hand {
    * @returns ヒットできるかどうか
    */
   public canHit(): boolean {
-    return (
-      !this.isStand &&
-      this.calculateSoftTotal() !== 21 &&
-      this.calculateHardTotal() < 21
-    );
+    return !this.isResolved();
   }
 
   /**
