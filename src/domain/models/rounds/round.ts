@@ -10,12 +10,12 @@ export class Round {
   /**
    * ディーラーのハンド
    */
-  private dealerHand: Hand = new Hand([]);
+  private dealerHand: Hand = new Hand([], false);
 
   /**
    * プレイヤーのハンド
    */
-  private playerHand: Hand = new Hand([]);
+  private playerHand: Hand = new Hand([], false);
 
   /**
    * コンストラクタ

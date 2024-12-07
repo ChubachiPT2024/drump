@@ -8,8 +8,12 @@ export class Hand {
    * コンストラクタ
    *
    * @param cards カード
+   * @param isStand スタンドしているかどうか
    */
-  public constructor(private readonly cards: Card[]) {}
+  public constructor(
+    private readonly cards: Card[],
+    private readonly isStand: boolean,
+  ) {}
 
   /**
    * カードを追加する
@@ -18,7 +22,7 @@ export class Hand {
    * @returns カードを追加した新しいハンド
    */
   public add(card: Card): Hand {
-    return new Hand([...this.cards, card]);
+    return new Hand([...this.cards, card], this.isStand);
   }
 
   /**
@@ -79,5 +83,14 @@ export class Hand {
    */
   public canAddCard(): boolean {
     return this.calculateSoftTotal() !== 21 && this.calculateHardTotal() < 21;
+  }
+
+  /**
+   * スタンドする
+   *
+   * @returns スタンドした新しいハンド
+   */
+  public stand(): Hand {
+    return new Hand([...this.cards], true);
   }
 }
