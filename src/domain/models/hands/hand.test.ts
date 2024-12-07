@@ -349,4 +349,15 @@ describe("can hit", () => {
     // Act, Assert
     expect(hand.canHit()).toBe(false);
   });
+
+  test("Cannot hit if the soft total is less than 21 but the hand is stand.", () => {
+    // Arrange
+    const hand = new Hand(
+      [new Card(Rank.Jack, Suit.Spade), new Card(Rank.Jack, Suit.Spade)],
+      true,
+    );
+
+    // Act, Assert
+    expect(hand.canHit()).toBe(false);
+  });
 });
