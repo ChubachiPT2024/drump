@@ -1,3 +1,4 @@
+import { Card } from "../cards/card";
 import { Hand } from "../hands/hand";
 import { ShoeId } from "../shoes/shoeId";
 import { RoundId } from "./roundId";
@@ -26,6 +27,24 @@ export class Round {
     public readonly id: RoundId,
     public readonly shoeId: ShoeId,
   ) {}
+
+  /**
+   * ディーラーにカードを配る
+   *
+   * @param card カード
+   */
+  public dealCardToDealer(card: Card): void {
+    this.dealerHand = this.dealerHand.add(card);
+  }
+
+  /**
+   * プレイヤーにカードを配る
+   *
+   * @param card カード
+   */
+  public dealCardToPlayer(card: Card): void {
+    this.playerHand = this.playerHand.add(card);
+  }
 
   /**
    * ディーラーのハンドを取得する
