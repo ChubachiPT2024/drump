@@ -9,6 +9,8 @@ import { ShoeRepository } from "@/domain/models/shoes/shoeRepository";
 import { RoundGetPlayerHandCommand } from "./roundGetPlayerHandCommand";
 import { RoundGetPlayerHandResult } from "./roundGetPlayerHandResult";
 import { RoundGetPlayerHandResultCard } from "./roundGetPlayerHandResultCard";
+import { RoundGetHandSignalOptionsCommand } from "./roundGetHandSignalOptionsCommand";
+import { RoundGetHandSignalOptionsResult } from "./roundGetHandSignalOptionsResult";
 
 /**
  * ラウンドアプリケーションサービス
@@ -85,6 +87,22 @@ export class RoundApplicationService {
         .getPlayerHand()
         .getCards()
         .map((card) => new RoundGetPlayerHandResultCard(card)),
+    );
+  }
+
+  /**
+   * プレイヤーのハンドシグナルの選択肢を取得する
+   *
+   * @param command プレイヤーのハンドシグナルの選択肢取得コマンド
+   * @returns プレイヤーのハンドシグナルの選択肢取得結果
+   */
+  public async getHandSignalOptionsAsync(
+    command: RoundGetHandSignalOptionsCommand,
+  ): Promise<RoundGetHandSignalOptionsResult> {
+    const round = await this.roundRepository.findAsync(new RoundId(command.id));
+
+    return new RoundGetHandSignalOptionsResult(
+      round.getPlayerHandSignalOptions(),
     );
   }
 }
