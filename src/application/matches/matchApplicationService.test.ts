@@ -2,11 +2,11 @@ import { InMemoryMatchFactory } from "@/infrastructure/inMemory/matches/inMemory
 import { InMemoryMatchRepository } from "@/infrastructure/inMemory/matches/inMemoryMatchRepository";
 import { describe, expect, test } from "vitest";
 import { MatchApplicationService } from "./matchApplicationService";
-import { MatchCreateCommand } from "./matchCreateCommand";
+import { MatchCreateCommand } from "./Create/matchCreateCommand";
 import { MatchId } from "@/domain/models/matches/matchId";
 import { Match } from "@/domain/models/matches/match";
 import { ShoeId } from "@/domain/models/shoes/shoeId";
-import { MatchAddRoundCommand } from "./matchAddRoundCommand";
+import { MatchAddRoundCommand } from "./AddRound/matchAddRoundCommand";
 import { Round } from "@/domain/models/rounds/round";
 import { RoundId } from "@/domain/models/rounds/roundId";
 

@@ -1,4 +1,4 @@
-import { RoundGetPlayerHandResultCard } from "./roundGetPlayerHandResultCard";
+import { RoundGetPlayerHandResultCard } from "../roundGetPlayerHandResultCard";
 
 /**
  * プレイヤーのハンド取得結果のハンド

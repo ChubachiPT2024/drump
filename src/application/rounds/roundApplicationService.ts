@@ -1,19 +1,19 @@
 import { RoundFactory } from "@/domain/models/rounds/roundFactory";
 import { RoundRepository } from "@/domain/models/rounds/roundRepository";
-import { RoundCreateCommand } from "./roundCreateCommand";
-import { RoundCreateResult } from "./roundCreateResult";
+import { RoundCreateCommand } from "./Create/roundCreateCommand";
+import { RoundCreateResult } from "./Create/roundCreateResult";
 import { ShoeId } from "@/domain/models/shoes/shoeId";
-import { RoundStartCommand } from "./roundStartCommand";
+import { RoundStartCommand } from "./Start/roundStartCommand";
 import { RoundId } from "@/domain/models/rounds/roundId";
 import { ShoeRepository } from "@/domain/models/shoes/shoeRepository";
-import { RoundGetPlayerHandCommand } from "./roundGetPlayerHandCommand";
-import { RoundGetPlayerHandResult } from "./roundGetPlayerHandResult";
-import { RoundGetPlayerHandResultCard } from "./roundGetPlayerHandResultCard";
-import { RoundGetHandSignalOptionsCommand } from "./roundGetHandSignalOptionsCommand";
-import { RoundGetHandSignalOptionsResult } from "./roundGetHandSignalOptionsResult";
-import { RoundGetPlayerHandResultHand } from "./roundGetPlayerHandResultHand";
-import { RoundHitCommand } from "./roundHitCommand";
-import { RoundCannotHitError } from "./roundCannotHitError";
+import { RoundGetPlayerHandCommand } from "./GetPlayerHand/roundGetPlayerHandCommand";
+import { RoundGetPlayerHandResult } from "./GetPlayerHand/roundGetPlayerHandResult";
+import { RoundGetPlayerHandResultCard } from "./GetPlayerHand/roundGetPlayerHandResultCard";
+import { RoundGetHandSignalOptionsCommand } from "./GetHandSignalOptions/roundGetHandSignalOptionsCommand";
+import { RoundGetHandSignalOptionsResult } from "./GetHandSignalOptions/roundGetHandSignalOptionsResult";
+import { RoundGetPlayerHandResultHand } from "./GetPlayerHand/roundGetPlayerHandResultHand";
+import { RoundHitCommand } from "./Hit/roundHitCommand";
+import { RoundCannotHitError } from "./Hit/roundCannotHitError";
 
 /**
  * ラウンドアプリケーションサービス

@@ -1,7 +1,7 @@
 import { ShoeRepository } from "@/domain/models/shoes/shoeRepository";
-import { ShoeCreateResult } from "./shoeCreateResult";
 import { ShoeFactory } from "@/domain/models/shoes/shoeFactory";
 import { Deck } from "@/domain/models/decks/deck";
+import { ShoeCreateResult } from "./Create/shoeCreateResult";
 
 /**
  * シューアプリケーションサービス

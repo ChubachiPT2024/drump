@@ -5,9 +5,9 @@ import { RoundApplicationService } from "./roundApplicationService";
 import { InMemoryShoeRepository } from "@/infrastructure/inMemory/shoes/inMemoryShoeRepository";
 import { InMemoryShoeFactory } from "@/infrastructure/inMemory/shoes/inMemoryShoeFactory";
 import { Deck } from "@/domain/models/decks/deck";
-import { RoundStartCommand } from "./roundStartCommand";
-import { RoundGetPlayerHandCommand } from "./roundGetPlayerHandCommand";
-import { RoundHitCommand } from "./roundHitCommand";
+import { RoundStartCommand } from "./Start/roundStartCommand";
+import { RoundGetPlayerHandCommand } from "./GetPlayerHand/roundGetPlayerHandCommand";
+import { RoundHitCommand } from "./Hit/roundHitCommand";
 
 describe("start", () => {
   test("The dealer and player gets a hand with two cards.", async () => {

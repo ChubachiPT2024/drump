@@ -1,9 +1,9 @@
 import { MatchFactory } from "@/domain/models/matches/matchFactory";
 import { MatchRepository } from "@/domain/models/matches/matchRepository";
-import { MatchCreateCommand } from "./matchCreateCommand";
+import { MatchCreateCommand } from "./Create/matchCreateCommand";
 import { ShoeId } from "@/domain/models/shoes/shoeId";
-import { MatchCreateResult } from "./matchCreateResult";
-import { MatchAddRoundCommand } from "./matchAddRoundCommand";
+import { MatchCreateResult } from "./Create/matchCreateResult";
+import { MatchAddRoundCommand } from "./AddRound/matchAddRoundCommand";
 import { MatchId } from "@/domain/models/matches/matchId";
 import { RoundId } from "@/domain/models/rounds/roundId";
 
