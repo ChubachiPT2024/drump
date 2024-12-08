@@ -20,6 +20,8 @@ import { RoundGetUpCardResult } from "./GetUpCard/roundGetUpCardResult";
 import { RoundGetDealersHandCommand } from "./GetDealersHand/roundGetDealersHandCommand";
 import { RoundGetDealersHandResult } from "./GetDealersHand/roundGetDealersHandResult";
 import { RoundGetDealersHandResultCard } from "./GetDealersHand/roundGetDealersHandResultCard";
+import { RoundGetResultCommand } from "./GetResult/roundGetResultCommand";
+import { RoundGetResultResult } from "./GetResult/roundGetResultResult";
 
 /**
  * ラウンドアプリケーションサービス
@@ -206,5 +208,19 @@ export class RoundApplicationService {
       dealersHand.calculateTotal(),
       dealersHand.isResolved(),
     );
+  }
+
+  /**
+   * ラウンドの結果を取得する
+   *
+   * @param command ラウンドの結果取得コマンド
+   * @returns ラウンドの結果取得結果
+   */
+  public async getResultAsync(
+    command: RoundGetResultCommand,
+  ): Promise<RoundGetResultResult> {
+    const round = await this.roundRepository.findAsync(new RoundId(command.id));
+
+    return new RoundGetResultResult(round.calculateResult());
   }
 }
