@@ -8,6 +8,7 @@ import { Deck } from "@/domain/models/decks/deck";
 import { RoundStartCommand } from "./Start/roundStartCommand";
 import { RoundGetPlayerHandCommand } from "./GetPlayerHand/roundGetPlayerHandCommand";
 import { RoundHitCommand } from "./Hit/roundHitCommand";
+import { RoundStandCommand } from "./Stand/roundStandCommand";
 
 describe("start", () => {
   test("The dealer and player gets a hand with two cards.", async () => {
@@ -108,5 +109,35 @@ describe("hit", () => {
       .getPlayerHand()
       .count();
     expect(afterCount).toBe(beforeCount + 1);
+  });
+});
+
+describe("stand", () => {
+  test("The player hand becomes resolved.", async () => {
+    // Arrange
+    const shoeRepository = new InMemoryShoeRepository();
+    const shoe = new InMemoryShoeFactory().create(Deck.create().getCards());
+    await shoeRepository.saveAsync(shoe);
+
+    const roundFactory = new InMemoryRoundFactory();
+    const roundRepository = new InMemoryRoundRepository();
+    const round = roundFactory.create(shoe.id);
+    await roundRepository.saveAsync(round);
+
+    const service = new RoundApplicationService(
+      roundFactory,
+      roundRepository,
+      shoeRepository,
+    );
+
+    await service.startAsync(new RoundStartCommand(round.id.value));
+
+    // Act
+    await service.standAsync(new RoundStandCommand(round.id.value));
+
+    // Assert
+    expect(
+      (await roundRepository.findAsync(round.id)).getPlayerHand().isResolved(),
+    ).toBe(true);
   });
 });

@@ -14,6 +14,7 @@ import { RoundGetHandSignalOptionsResult } from "./GetHandSignalOptions/roundGet
 import { RoundGetPlayerHandResultHand } from "./GetPlayerHand/roundGetPlayerHandResultHand";
 import { RoundHitCommand } from "./Hit/roundHitCommand";
 import { RoundCannotHitError } from "./Hit/roundCannotHitError";
+import { RoundStandCommand } from "./Stand/roundStandCommand";
 
 /**
  * ラウンドアプリケーションサービス
@@ -135,5 +136,18 @@ export class RoundApplicationService {
     // TODO トランザクション処理
     await this.roundRepository.saveAsync(round);
     await this.shoeRepository.saveAsync(shoe);
+  }
+
+  /**
+   * スタンドする
+   *
+   * @param command スタンドコマンド
+   */
+  public async standAsync(command: RoundStandCommand): Promise<void> {
+    const round = await this.roundRepository.findAsync(new RoundId(command.id));
+
+    round.standPlayerHand();
+
+    await this.roundRepository.saveAsync(round);
   }
 }
