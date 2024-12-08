@@ -78,4 +78,14 @@ export class Round {
   public standPlayerHand(): void {
     this.playerHand = this.playerHand.stand();
   }
+
+  /**
+   * アップカードを取得する
+   *
+   * @returns アップカード
+   */
+  public getUpCard(): Card {
+    // ディーラーのハンド専用のクラスを作るべきか？
+    return this.dealerHand.getCards()[0];
+  }
 }

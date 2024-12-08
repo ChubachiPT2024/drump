@@ -87,3 +87,20 @@ describe("get player hand signal options", () => {
     expect(options).toHaveLength(0);
   });
 });
+
+describe("get up card", () => {
+  test("The up card is the first card of the dealer hand.", () => {
+    const round = new Round(
+      new RoundId("roundId"),
+      new ShoeId("shoeId"),
+      new Hand([], false),
+      new Hand([], false),
+    );
+    round.dealCardToDealer(new Card(Rank.Ace, Suit.Spade));
+
+    const upCard = round.getUpCard();
+
+    expect(upCard.rank).toBe(Rank.Ace);
+    expect(upCard.suit).toBe(Suit.Spade);
+  });
+});
