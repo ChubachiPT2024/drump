@@ -9,6 +9,7 @@ import { RoundStartCommand } from "./Start/roundStartCommand";
 import { RoundGetPlayerHandCommand } from "./GetPlayerHand/roundGetPlayerHandCommand";
 import { RoundHitCommand } from "./Hit/roundHitCommand";
 import { RoundStandCommand } from "./Stand/roundStandCommand";
+import { RoundGetUpCardCommand } from "./GetUpCard/roundGetUpCardCommand";
 
 describe("start", () => {
   test("The dealer and player gets a hand with two cards.", async () => {
@@ -139,5 +140,36 @@ describe("stand", () => {
     expect(
       (await roundRepository.findAsync(round.id)).getPlayerHand().isResolved(),
     ).toBe(true);
+  });
+});
+
+describe("get up card", () => {
+  test("Can get the up card.", async () => {
+    // Arrange
+    const shoeRepository = new InMemoryShoeRepository();
+    const shoe = new InMemoryShoeFactory().create(Deck.create().getCards());
+    await shoeRepository.saveAsync(shoe);
+
+    const roundFactory = new InMemoryRoundFactory();
+    const roundRepository = new InMemoryRoundRepository();
+    const round = roundFactory.create(shoe.id);
+    await roundRepository.saveAsync(round);
+
+    const service = new RoundApplicationService(
+      roundFactory,
+      roundRepository,
+      shoeRepository,
+    );
+
+    await service.startAsync(new RoundStartCommand(round.id.value));
+
+    // Act
+    const result = await service.getUpCardAsync(
+      new RoundGetUpCardCommand(round.id.value),
+    );
+
+    // Assert
+    expect(result.rank).toBe(round.getUpCard().rank);
+    expect(result.suit).toBe(round.getUpCard().suit);
   });
 });

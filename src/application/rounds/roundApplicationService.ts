@@ -15,6 +15,9 @@ import { RoundGetPlayerHandResultHand } from "./GetPlayerHand/roundGetPlayerHand
 import { RoundHitCommand } from "./Hit/roundHitCommand";
 import { RoundCannotHitError } from "./Hit/roundCannotHitError";
 import { RoundStandCommand } from "./Stand/roundStandCommand";
+import { RoundCompleteCommand } from "./Complete/roundCompleteCommand";
+import { RoundGetUpCardCommand } from "./GetUpCard/roundGetUpCardCommand";
+import { RoundGetUpCardResult } from "./GetUpCard/roundGetUpCardResult";
 
 /**
  * ラウンドアプリケーションサービス
@@ -149,5 +152,19 @@ export class RoundApplicationService {
     round.standPlayerHand();
 
     await this.roundRepository.saveAsync(round);
+  }
+
+  /**
+   * アップカードを取得する
+   *
+   * @param command アップカード取得コマンド
+   * @returns アップカード取得結果
+   */
+  public async getUpCardAsync(
+    command: RoundGetUpCardCommand,
+  ): Promise<RoundGetUpCardResult> {
+    const round = await this.roundRepository.findAsync(new RoundId(command.id));
+
+    return new RoundGetUpCardResult(round.getUpCard());
   }
 }
