@@ -1,6 +1,7 @@
 import { Card } from "../cards/card";
 import { Hand } from "../hands/hand";
 import { HandSignal } from "../handSignals/handSignal";
+import { RoundResult } from "../roundResults/roundResult";
 import { ShoeId } from "../shoes/shoeId";
 import { RoundId } from "./roundId";
 
@@ -98,15 +99,53 @@ export class Round {
 
   /**
    * ディーラーがヒットしなければならないかどうかを取得する
-   * 
+   *
    * @returns ディーラーがヒットしなければならないかどうか
    */
   public shouldDealerHit(): boolean {
     // ディーラーのハンド専用のクラスを作るべきか？
-    if (this.dealerHand.calculateSoftTotal() < 21) {
-      return this.dealerHand.calculateSoftTotal() < 17;
+    return this.dealerHand.calculateTotal() < 17;
+  }
+
+  /**
+   * ラウンドの結果を計算する
+   * 
+   * @returns ラウンドの結果
+   */
+  public calculateResult(): RoundResult {
+    // プレイヤーがバスト
+    if (this.getPlayerHand().isBust()) {
+      return RoundResult.Loss;
     }
-    
-    return this.dealerHand.calculateHardTotal() < 17;
+
+    // プレイヤーがブラックジャック
+    if (this.getPlayerHand().isBlackJack()) {
+      if (this.getDealerHand().isBlackJack()) {
+        return RoundResult.Push;
+      }
+      else {
+        return RoundResult.Win;
+      }
+    }
+
+    // プレイヤーがブラックジャック以外の 21 以下
+    if (this.getDealerHand().isBust()) {
+      return RoundResult.Win;
+    }
+    if (this.getDealerHand().isBlackJack()) {
+      return RoundResult.Loss;
+    }
+
+    const playerTotal = this.getPlayerHand().calculateTotal();
+    const dealerTotal = this.getDealerHand().calculateTotal();
+    if (playerTotal > dealerTotal) {
+      return RoundResult.Win;
+    }
+    else if(playerTotal === dealerTotal) {
+      return RoundResult.Push;
+    }
+    else {
+      return RoundResult.Loss;
+    }
   }
 }
