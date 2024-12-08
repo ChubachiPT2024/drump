@@ -69,14 +69,14 @@ describe("get player hand", () => {
     // Assert
     const startedRound = await roundRepository.findAsync(round.id);
     const playerHand = startedRound.getPlayerHand();
-    expect(result.hand.cards.length).toBe(playerHand.count());
-    for (let i = 0; i < result.hand.cards.length; i++) {
-      expect(result.hand.cards[i].rank).toBe(playerHand.getCards()[i].rank);
-      expect(result.hand.cards[i].suit).toBe(playerHand.getCards()[i].suit);
+    expect(result.cards.length).toBe(playerHand.count());
+    for (let i = 0; i < result.cards.length; i++) {
+      expect(result.cards[i].rank).toBe(playerHand.getCards()[i].rank);
+      expect(result.cards[i].suit).toBe(playerHand.getCards()[i].suit);
     }
-    expect(result.hand.softTotal).toBe(playerHand.calculateSoftTotal());
-    expect(result.hand.hardTotal).toBe(playerHand.calculateHardTotal());
-    expect(result.hand.isResolved).toBe(playerHand.isResolved());
+    expect(result.softTotal).toBe(playerHand.calculateSoftTotal());
+    expect(result.hardTotal).toBe(playerHand.calculateHardTotal());
+    expect(result.isResolved).toBe(playerHand.isResolved());
   });
 });
 

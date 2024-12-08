@@ -11,7 +11,6 @@ import { RoundGetPlayersHandResult } from "./GetPlayersHand/roundGetPlayersHandR
 import { RoundGetPlayersHandResultCard } from "./GetPlayersHand/roundGetPlayersHandResultCard";
 import { RoundGetHandSignalOptionsCommand } from "./GetHandSignalOptions/roundGetHandSignalOptionsCommand";
 import { RoundGetHandSignalOptionsResult } from "./GetHandSignalOptions/roundGetHandSignalOptionsResult";
-import { RoundGetPlayersHandResultHand } from "./GetPlayersHand/roundGetPlayersHandResultHand";
 import { RoundHitCommand } from "./Hit/roundHitCommand";
 import { RoundCannotHitError } from "./Hit/roundCannotHitError";
 import { RoundStandCommand } from "./Stand/roundStandCommand";
@@ -95,14 +94,12 @@ export class RoundApplicationService {
     const playerHand = round.getPlayerHand();
 
     return new RoundGetPlayersHandResult(
-      new RoundGetPlayersHandResultHand(
-        playerHand
-          .getCards()
-          .map((card) => new RoundGetPlayersHandResultCard(card)),
-        playerHand.calculateSoftTotal(),
-        playerHand.calculateHardTotal(),
-        playerHand.isResolved(),
-      ),
+      playerHand
+        .getCards()
+        .map((card) => new RoundGetPlayersHandResultCard(card)),
+      playerHand.calculateSoftTotal(),
+      playerHand.calculateHardTotal(),
+      playerHand.isResolved(),
     );
   }
 
