@@ -12,6 +12,8 @@ import { RoundGetPlayerHandResultCard } from "./roundGetPlayerHandResultCard";
 import { RoundGetHandSignalOptionsCommand } from "./roundGetHandSignalOptionsCommand";
 import { RoundGetHandSignalOptionsResult } from "./roundGetHandSignalOptionsResult";
 import { RoundGetPlayerHandResultHand } from "./roundGetPlayerHandResultHand";
+import { RoundHitCommand } from "./roundHitCommand";
+import { RoundCannotHitError } from "./roundCannotHitError";
 
 /**
  * ラウンドアプリケーションサービス
@@ -111,5 +113,27 @@ export class RoundApplicationService {
     return new RoundGetHandSignalOptionsResult(
       round.getPlayerHandSignalOptions(),
     );
+  }
+
+  /**
+   * ヒットする
+   *
+   * @param command ヒットコマンド
+   */
+  public async hitAsync(command: RoundHitCommand): Promise<void> {
+    const round = await this.roundRepository.findAsync(new RoundId(command.id));
+    const shoe = await this.shoeRepository.findAsync(round.shoeId);
+
+    const playerHand = round.getPlayerHand();
+    if (!playerHand.canHit()) {
+      throw new RoundCannotHitError();
+    }
+
+    round.dealCardToPlayer(shoe.peek());
+    shoe.draw();
+
+    // TODO トランザクション処理
+    await this.roundRepository.saveAsync(round);
+    await this.shoeRepository.saveAsync(shoe);
   }
 }

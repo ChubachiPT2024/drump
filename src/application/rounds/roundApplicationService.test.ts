@@ -7,6 +7,7 @@ import { InMemoryShoeFactory } from "@/infrastructure/inMemory/shoes/inMemorySho
 import { Deck } from "@/domain/models/decks/deck";
 import { RoundStartCommand } from "./roundStartCommand";
 import { RoundGetPlayerHandCommand } from "./roundGetPlayerHandCommand";
+import { RoundHitCommand } from "./roundHitCommand";
 
 describe("start", () => {
   test("The dealer and player gets a hand with two cards.", async () => {
@@ -72,5 +73,40 @@ describe("get player hand", () => {
     expect(result.hand.softTotal).toBe(playerHand.calculateSoftTotal());
     expect(result.hand.hardTotal).toBe(playerHand.calculateHardTotal());
     expect(result.hand.isResolved).toBe(playerHand.isResolved());
+  });
+});
+
+describe("hit", () => {
+  test("The player gets a new card.", async () => {
+    // Arrange
+    const shoeRepository = new InMemoryShoeRepository();
+    const shoe = new InMemoryShoeFactory().create(Deck.create().getCards());
+    await shoeRepository.saveAsync(shoe);
+
+    const roundFactory = new InMemoryRoundFactory();
+    const roundRepository = new InMemoryRoundRepository();
+    const round = roundFactory.create(shoe.id);
+    await roundRepository.saveAsync(round);
+
+    const service = new RoundApplicationService(
+      roundFactory,
+      roundRepository,
+      shoeRepository,
+    );
+
+    await service.startAsync(new RoundStartCommand(round.id.value));
+
+    const beforeCount = (await roundRepository.findAsync(round.id))
+      .getPlayerHand()
+      .count();
+
+    // Act
+    await service.hitAsync(new RoundHitCommand(round.id.value));
+
+    // Assert
+    const afterCount = (await roundRepository.findAsync(round.id))
+      .getPlayerHand()
+      .count();
+    expect(afterCount).toBe(beforeCount + 1);
   });
 });
