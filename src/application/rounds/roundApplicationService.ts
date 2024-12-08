@@ -97,8 +97,7 @@ export class RoundApplicationService {
       playerHand
         .getCards()
         .map((card) => new RoundGetPlayersHandResultCard(card)),
-      playerHand.calculateSoftTotal(),
-      playerHand.calculateHardTotal(),
+      playerHand.calculateTotal(),
       playerHand.isResolved(),
     );
   }
@@ -204,8 +203,7 @@ export class RoundApplicationService {
       dealersHand
         .getCards()
         .map((card) => new RoundGetDealersHandResultCard(card)),
-      dealersHand.calculateSoftTotal(),
-      dealersHand.calculateHardTotal(),
+      dealersHand.calculateTotal(),
       dealersHand.isResolved(),
     );
   }

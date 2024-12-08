@@ -8,14 +8,12 @@ export class RoundGetDealersHandResult {
    * コンストラクタ
    *
    * @param cards カード
-   * @param softTotal ソフトトータル
-   * @param hardTotal ハードトータル
+   * @param total トータル
    * @param isResolved ハンドが決まっているかどうか
    */
   public constructor(
     public readonly cards: RoundGetDealersHandResultCard[],
-    public readonly softTotal: number,
-    public readonly hardTotal: number,
+    public readonly total: number,
     public readonly isResolved: boolean,
   ) {}
 }

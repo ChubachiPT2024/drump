@@ -4,16 +4,16 @@ import { Card } from "../cards/card";
 import { Rank } from "../ranks/rank";
 import { Suit } from "../suits/suit";
 
-describe("get soft total", () => {
-  test("The soft total of an empty hand is 0.", () => {
+describe("get total", () => {
+  test("The total of an empty hand is 0.", () => {
     // Arrange
     const hand = new Hand([], false);
 
     // Act
-    const softTotal = hand.calculateSoftTotal();
+    const total = hand.calculateTotal();
 
     // Assert
-    expect(softTotal).toBe(0);
+    expect(total).toBe(0);
   });
 
   test.each([
@@ -36,29 +36,18 @@ describe("get soft total", () => {
   ] as {
     cards: Card[];
     expected: number;
-  }[])(
-    "The soft total of a hand without any ace cards.",
-    ({ cards, expected }) => {
-      // Arrange
-      const hand = new Hand(cards, false);
+  }[])("The total of a hand without any ace cards.", ({ cards, expected }) => {
+    // Arrange
+    const hand = new Hand(cards, false);
 
-      // Act
-      const softTotal = hand.calculateSoftTotal();
+    // Act
+    const total = hand.calculateTotal();
 
-      // Assert
-      expect(softTotal).toBe(expected);
-    },
-  );
+    // Assert
+    expect(total).toBe(expected);
+  });
 
   test.each([
-    {
-      cards: [new Card(Rank.Ace, Suit.Spade)],
-      expected: 11,
-    },
-    {
-      cards: [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ace, Suit.Spade)],
-      expected: 22,
-    },
     {
       cards: [
         new Card(Rank.Ace, Suit.Spade),
@@ -67,103 +56,35 @@ describe("get soft total", () => {
       ],
       expected: 16,
     },
-  ] as {
-    cards: Card[];
-    expected: number;
-  }[])(
-    "The soft total of a hand with some ace cards.",
-    ({ cards, expected }) => {
-      // Arrange
-      const hand = new Hand(cards, false);
-
-      // Act
-      const softTotal = hand.calculateSoftTotal();
-
-      // Assert
-      expect(softTotal).toBe(expected);
-    },
-  );
-});
-
-describe("get hard total", () => {
-  test("The hard total of an empty hand is 0.", () => {
-    // Arrange
-    const hand = new Hand([], false);
-
-    // Act
-    const hardTotal = hand.calculateHardTotal();
-
-    // Assert
-    expect(hardTotal).toBe(0);
-  });
-
-  test.each([
-    {
-      cards: [new Card(Rank.Two, Suit.Spade)],
-      expected: 2,
-    },
-    {
-      cards: [new Card(Rank.Two, Suit.Spade), new Card(Rank.Three, Suit.Spade)],
-      expected: 5,
-    },
-    {
-      cards: [
-        new Card(Rank.Two, Suit.Spade),
-        new Card(Rank.Three, Suit.Spade),
-        new Card(Rank.Jack, Suit.Spade),
-      ],
-      expected: 15,
-    },
-  ] as {
-    cards: Card[];
-    expected: number;
-  }[])(
-    "The hard total of a hand without any ace cards.",
-    ({ cards, expected }) => {
-      // Arrange
-      const hand = new Hand(cards, false);
-
-      // Act
-      const hardTotal = hand.calculateHardTotal();
-
-      // Assert
-      expect(hardTotal).toBe(expected);
-    },
-  );
-
-  test.each([
     {
       cards: [new Card(Rank.Ace, Suit.Spade)],
-      expected: 1,
+      expected: 11,
     },
     {
       cards: [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ace, Suit.Spade)],
-      expected: 2,
+      expected: 12,
     },
     {
       cards: [
         new Card(Rank.Ace, Suit.Spade),
-        new Card(Rank.Two, Suit.Spade),
-        new Card(Rank.Three, Suit.Spade),
+        new Card(Rank.Ace, Suit.Spade),
+        new Card(Rank.Ace, Suit.Spade),
       ],
-      expected: 6,
+      expected: 13,
     },
   ] as {
     cards: Card[];
     expected: number;
-  }[])(
-    "The hard total of a hand with some ace cards.",
-    ({ cards, expected }) => {
-      // Arrange
-      const hand = new Hand(cards, false);
+  }[])("The total of a hand with some ace cards.", ({ cards, expected }) => {
+    // Arrange
+    const hand = new Hand(cards, false);
 
-      // Act
-      const hardTotal = hand.calculateHardTotal();
+    // Act
+    const total = hand.calculateTotal();
 
-      // Assert
-      expect(hardTotal).toBe(expected);
-    },
-  );
+    // Assert
+    expect(total).toBe(expected);
+  });
 });
 
 describe("count", () => {

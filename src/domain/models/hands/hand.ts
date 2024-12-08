@@ -1,4 +1,5 @@
 import { Card } from "../cards/card";
+import { Rank } from "../ranks/rank";
 
 /**
  * ハンド
@@ -30,21 +31,29 @@ export class Hand {
    *
    * @returns ソフトトータル
    */
-  public calculateSoftTotal(): number {
+  private calculateSoftTotal(): number {
     return this.cards
       .map((card) => card.getSoftPoint())
       .reduce((sum, point) => (sum += point), 0);
   }
 
   /**
-   * ハードトータルを計算する
-   *
-   * @returns ハードトータル
+   * トータルを計算する
+   * 
+   * @returns トータル
    */
-  public calculateHardTotal(): number {
-    return this.cards
-      .map((card) => card.getHardPoint())
-      .reduce((sum, point) => (sum += point), 0);
+  public calculateTotal(): number {
+    let total = this.calculateSoftTotal();
+    let numSoftAce = this.cards.filter((card) => card.rank === Rank.Ace).length;
+
+    // トータルが 21 を超えている場合、エースを 1 枚ずつ 11 点から 1 点に変える
+    // 数式的には一発で計算できそうだが、演算誤差の問題があるので、とりあえず愚直に計算
+    while (total > 21 && numSoftAce > 0) {
+      total -= 10;
+      numSoftAce--;
+    }
+
+    return total;
   }
 
   /**
@@ -62,8 +71,7 @@ export class Hand {
    * @returns ブラックジャックかどうか
    */
   public isBlackJack(): boolean {
-    // 枚数が 2 枚の場合、ハードトータルが 21 以上になることはあり得ない
-    return this.count() === 2 && this.calculateSoftTotal() === 21;
+    return this.count() === 2 && this.calculateTotal() === 21;
   }
 
   /**
@@ -72,8 +80,7 @@ export class Hand {
    * @returns バストかどうか
    */
   public isBust(): boolean {
-    // ハードトータルの方がソフトトータルよりも常に小さい
-    return this.calculateHardTotal() > 21;
+    return this.calculateTotal() > 21;
   }
 
   /**
@@ -100,12 +107,7 @@ export class Hand {
    * @returns ハンドが決まったかどうか
    */
   public isResolved(): boolean {
-    return (
-      this.calculateSoftTotal() === 21 ||
-      this.calculateHardTotal() === 21 ||
-      this.isStand ||
-      this.isBust()
-    );
+    return this.calculateTotal() === 21 || this.isStand || this.isBust();
   }
 
   /**

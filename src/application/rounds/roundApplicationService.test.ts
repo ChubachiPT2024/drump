@@ -74,8 +74,7 @@ describe("get player hand", () => {
       expect(result.cards[i].rank).toBe(playerHand.getCards()[i].rank);
       expect(result.cards[i].suit).toBe(playerHand.getCards()[i].suit);
     }
-    expect(result.softTotal).toBe(playerHand.calculateSoftTotal());
-    expect(result.hardTotal).toBe(playerHand.calculateHardTotal());
+    expect(result.total).toBe(playerHand.calculateTotal());
     expect(result.isResolved).toBe(playerHand.isResolved());
   });
 });
@@ -240,8 +239,7 @@ describe("get dealear's hand", () => {
       expect(result.cards[i].rank).toBe(dealersHand.getCards()[i].rank);
       expect(result.cards[i].suit).toBe(dealersHand.getCards()[i].suit);
     }
-    expect(result.softTotal).toBe(dealersHand.calculateSoftTotal());
-    expect(result.hardTotal).toBe(dealersHand.calculateHardTotal());
+    expect(result.total).toBe(dealersHand.calculateTotal());
     expect(result.isResolved).toBe(dealersHand.isResolved());
   });
 });
