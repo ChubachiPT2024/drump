@@ -23,6 +23,7 @@ import { RoundGetDealersHandCommand } from "@/application/rounds/GetDealersHand/
 import { RoundGetResultCommand } from "@/application/rounds/GetResult/roundGetResultCommand";
 import { exit } from "node:process";
 import { Suit } from "@/domain/models/suits/suit";
+import { CardsService } from "@/domain/services/cardsService";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
@@ -39,9 +40,11 @@ const rl = createInterface({
 
 const shoeFactory = new InMemoryShoeFactory();
 const shoeRepository = new InMemoryShoeRepository();
+const cardsService = new CardsService();
 const shoeApplicationService = new ShoeApplicationService(
   shoeFactory,
   shoeRepository,
+  cardsService,
 );
 
 const matchFactory = new InMemoryMatchFactory();

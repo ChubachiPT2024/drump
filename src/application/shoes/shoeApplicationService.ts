@@ -2,6 +2,7 @@ import { ShoeRepository } from "@/domain/models/shoes/shoeRepository";
 import { ShoeFactory } from "@/domain/models/shoes/shoeFactory";
 import { Deck } from "@/domain/models/decks/deck";
 import { ShoeCreateResult } from "./Create/shoeCreateResult";
+import { CardsService } from "@/domain/services/cardsService";
 
 /**
  * シューアプリケーションサービス
@@ -12,10 +13,12 @@ export class ShoeApplicationService {
    *
    * @param shoeFactory シューファクトリ
    * @param shoeRepository シューリポジトリ
+   * @param cardsService カードサービス
    */
   public constructor(
     private readonly shoeFactory: ShoeFactory,
     private readonly shoeRepository: ShoeRepository,
+    private readonly cardsService: CardsService,
   ) {}
 
   /**
@@ -30,7 +33,7 @@ export class ShoeApplicationService {
       cards.push(...Deck.create().getCards());
     }
 
-    // TODO カードのシャッフル
+    this.cardsService.suffle(cards);
 
     const shoe = this.shoeFactory.create(cards);
 

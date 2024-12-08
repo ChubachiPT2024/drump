@@ -39,7 +39,7 @@ export class Hand {
 
   /**
    * トータルを計算する
-   * 
+   *
    * @returns トータル
    */
   public calculateTotal(): number {

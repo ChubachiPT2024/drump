@@ -109,7 +109,7 @@ export class Round {
 
   /**
    * ラウンドの結果を計算する
-   * 
+   *
    * @returns ラウンドの結果
    */
   public calculateResult(): RoundResult {
@@ -122,8 +122,7 @@ export class Round {
     if (this.getPlayerHand().isBlackJack()) {
       if (this.getDealerHand().isBlackJack()) {
         return RoundResult.Push;
-      }
-      else {
+      } else {
         return RoundResult.Win;
       }
     }
@@ -140,11 +139,9 @@ export class Round {
     const dealerTotal = this.getDealerHand().calculateTotal();
     if (playerTotal > dealerTotal) {
       return RoundResult.Win;
-    }
-    else if(playerTotal === dealerTotal) {
+    } else if (playerTotal === dealerTotal) {
       return RoundResult.Push;
-    }
-    else {
+    } else {
       return RoundResult.Loss;
     }
   }
