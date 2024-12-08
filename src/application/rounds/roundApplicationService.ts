@@ -167,4 +167,23 @@ export class RoundApplicationService {
 
     return new RoundGetUpCardResult(round.getUpCard());
   }
+
+  /**
+   * ラウンドを完了する
+   *
+   * @param command ラウンド完了コマンド
+   */
+  public async completeAsync(command: RoundCompleteCommand): Promise<void> {
+    const round = await this.roundRepository.findAsync(new RoundId(command.id));
+    const shoe = await this.shoeRepository.findAsync(round.shoeId);
+
+    while (round.shouldDealerHit()) {
+      round.dealCardToDealer(shoe.peek());
+      shoe.draw();
+    }
+
+    if (!round.getDealerHand().isResolved()) {
+      round.standDealearsHand();
+    }
+  }
 }
