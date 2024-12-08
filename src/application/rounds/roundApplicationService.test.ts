@@ -6,7 +6,7 @@ import { InMemoryShoeRepository } from "@/infrastructure/inMemory/shoes/inMemory
 import { InMemoryShoeFactory } from "@/infrastructure/inMemory/shoes/inMemoryShoeFactory";
 import { Deck } from "@/domain/models/decks/deck";
 import { RoundStartCommand } from "./Start/roundStartCommand";
-import { RoundGetPlayerHandCommand } from "./GetPlayerHand/roundGetPlayerHandCommand";
+import { RoundGetPlayersHandCommand } from "./GetPlayersHand/roundGetPlayersHandCommand";
 import { RoundHitCommand } from "./Hit/roundHitCommand";
 import { RoundStandCommand } from "./Stand/roundStandCommand";
 import { RoundGetUpCardCommand } from "./GetUpCard/roundGetUpCardCommand";
@@ -62,8 +62,8 @@ describe("get player hand", () => {
     await service.startAsync(new RoundStartCommand(round.id.value));
 
     // Act
-    const result = await service.getPlayerHandAsync(
-      new RoundGetPlayerHandCommand(round.id.value),
+    const result = await service.getPlayersHandAsync(
+      new RoundGetPlayersHandCommand(round.id.value),
     );
 
     // Assert

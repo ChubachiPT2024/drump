@@ -6,12 +6,12 @@ import { ShoeId } from "@/domain/models/shoes/shoeId";
 import { RoundStartCommand } from "./Start/roundStartCommand";
 import { RoundId } from "@/domain/models/rounds/roundId";
 import { ShoeRepository } from "@/domain/models/shoes/shoeRepository";
-import { RoundGetPlayerHandCommand } from "./GetPlayerHand/roundGetPlayerHandCommand";
-import { RoundGetPlayerHandResult } from "./GetPlayerHand/roundGetPlayerHandResult";
-import { RoundGetPlayerHandResultCard } from "./GetPlayerHand/roundGetPlayerHandResultCard";
+import { RoundGetPlayersHandCommand } from "./GetPlayersHand/roundGetPlayersHandCommand";
+import { RoundGetPlayersHandResult } from "./GetPlayersHand/roundGetPlayersHandResult";
+import { RoundGetPlayersHandResultCard } from "./GetPlayersHand/roundGetPlayersHandResultCard";
 import { RoundGetHandSignalOptionsCommand } from "./GetHandSignalOptions/roundGetHandSignalOptionsCommand";
 import { RoundGetHandSignalOptionsResult } from "./GetHandSignalOptions/roundGetHandSignalOptionsResult";
-import { RoundGetPlayerHandResultHand } from "./GetPlayerHand/roundGetPlayerHandResultHand";
+import { RoundGetPlayersHandResultHand } from "./GetPlayersHand/roundGetPlayersHandResultHand";
 import { RoundHitCommand } from "./Hit/roundHitCommand";
 import { RoundCannotHitError } from "./Hit/roundCannotHitError";
 import { RoundStandCommand } from "./Stand/roundStandCommand";
@@ -87,18 +87,18 @@ export class RoundApplicationService {
    * @param command プレイヤーのハンド取得コマンド
    * @returns プレイヤーのハンド取得結果
    */
-  public async getPlayerHandAsync(
-    command: RoundGetPlayerHandCommand,
-  ): Promise<RoundGetPlayerHandResult> {
+  public async getPlayersHandAsync(
+    command: RoundGetPlayersHandCommand,
+  ): Promise<RoundGetPlayersHandResult> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
 
     const playerHand = round.getPlayerHand();
 
-    return new RoundGetPlayerHandResult(
-      new RoundGetPlayerHandResultHand(
+    return new RoundGetPlayersHandResult(
+      new RoundGetPlayersHandResultHand(
         playerHand
           .getCards()
-          .map((card) => new RoundGetPlayerHandResultCard(card)),
+          .map((card) => new RoundGetPlayersHandResultCard(card)),
         playerHand.calculateSoftTotal(),
         playerHand.calculateHardTotal(),
         playerHand.isResolved(),
