@@ -100,18 +100,18 @@ console.log();
 
 while (true) {
   // プレイヤーのハンド表示
-  const playerHand = await roundApplicationService.getPlayersHandAsync(
+  const playersHand = await roundApplicationService.getPlayersHandAsync(
     new RoundGetPlayersHandCommand(roundId),
   );
 
   console.log("[Player's hand]");
   console.log(
-    `Cards: ${playerHand.cards.map((card) => `${suitStrings.get(card.suit)}${card.rank}`).join(" ")}`,
+    `Cards: ${playersHand.cards.map((card) => `${suitStrings.get(card.suit)}${card.rank}`).join(" ")}`,
   );
-  console.log(`Total: ${playerHand.total}`);
+  console.log(`Total: ${playersHand.total}`);
   console.log();
 
-  if (playerHand.isResolved) {
+  if (playersHand.isResolved) {
     break;
   }
 

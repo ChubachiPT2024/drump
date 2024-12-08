@@ -14,14 +14,14 @@ export class Round {
    *
    * @param id ID
    * @param shoeId シュー ID
-   * @param dealerHand ディーラーのハンド
-   * @param playerHand プレイヤーのハンド
+   * @param dealersHand ディーラーのハンド
+   * @param playersHand プレイヤーのハンド
    */
   public constructor(
     public readonly id: RoundId,
     public readonly shoeId: ShoeId,
-    private dealerHand: Hand,
-    private playerHand: Hand,
+    private dealersHand: Hand,
+    private playersHand: Hand,
   ) {}
 
   /**
@@ -30,7 +30,7 @@ export class Round {
    * @param card カード
    */
   public dealCardToDealer(card: Card): void {
-    this.dealerHand = this.dealerHand.add(card);
+    this.dealersHand = this.dealersHand.add(card);
   }
 
   /**
@@ -39,7 +39,7 @@ export class Round {
    * @param card カード
    */
   public dealCardToPlayer(card: Card): void {
-    this.playerHand = this.playerHand.add(card);
+    this.playersHand = this.playersHand.add(card);
   }
 
   /**
@@ -47,8 +47,8 @@ export class Round {
    *
    * @returns ディーラーのハンド
    */
-  public getDealerHand(): Hand {
-    return this.dealerHand;
+  public getDealersHand(): Hand {
+    return this.dealersHand;
   }
 
   /**
@@ -56,8 +56,8 @@ export class Round {
    *
    * @returns プレイヤーのハンド
    */
-  public getPlayerHand(): Hand {
-    return this.playerHand;
+  public getPlayersHand(): Hand {
+    return this.playersHand;
   }
 
   /**
@@ -65,8 +65,8 @@ export class Round {
    *
    * @returns プレイヤーのハンドシグナルの選択肢
    */
-  public getPlayerHandSignalOptions(): HandSignal[] {
-    if (this.playerHand.isResolved()) {
+  public getPlayersHandSignalOptions(): HandSignal[] {
+    if (this.playersHand.isResolved()) {
       return [];
     }
 
@@ -76,15 +76,15 @@ export class Round {
   /**
    * プレイヤーのハンドをスタンドする
    */
-  public standPlayerHand(): void {
-    this.playerHand = this.playerHand.stand();
+  public standPlayersHand(): void {
+    this.playersHand = this.playersHand.stand();
   }
 
   /**
    * ディーラーのハンドをスタンドする
    */
   public standDealearsHand(): void {
-    this.dealerHand = this.dealerHand.stand();
+    this.dealersHand = this.dealersHand.stand();
   }
 
   /**
@@ -94,7 +94,7 @@ export class Round {
    */
   public getUpCard(): Card {
     // ディーラーのハンド専用のクラスを作るべきか？
-    return this.dealerHand.getCards()[0];
+    return this.dealersHand.getCards()[0];
   }
 
   /**
@@ -104,7 +104,7 @@ export class Round {
    */
   public shouldDealerHit(): boolean {
     // ディーラーのハンド専用のクラスを作るべきか？
-    return this.dealerHand.calculateTotal() < 17;
+    return this.dealersHand.calculateTotal() < 17;
   }
 
   /**
@@ -114,13 +114,13 @@ export class Round {
    */
   public calculateResult(): RoundResult {
     // プレイヤーがバスト
-    if (this.getPlayerHand().isBust()) {
+    if (this.getPlayersHand().isBust()) {
       return RoundResult.Loss;
     }
 
     // プレイヤーがブラックジャック
-    if (this.getPlayerHand().isBlackJack()) {
-      if (this.getDealerHand().isBlackJack()) {
+    if (this.getPlayersHand().isBlackJack()) {
+      if (this.getDealersHand().isBlackJack()) {
         return RoundResult.Push;
       } else {
         return RoundResult.Win;
@@ -128,15 +128,15 @@ export class Round {
     }
 
     // プレイヤーがブラックジャック以外の 21 以下
-    if (this.getDealerHand().isBust()) {
+    if (this.getDealersHand().isBust()) {
       return RoundResult.Win;
     }
-    if (this.getDealerHand().isBlackJack()) {
+    if (this.getDealersHand().isBlackJack()) {
       return RoundResult.Loss;
     }
 
-    const playerTotal = this.getPlayerHand().calculateTotal();
-    const dealerTotal = this.getDealerHand().calculateTotal();
+    const playerTotal = this.getPlayersHand().calculateTotal();
+    const dealerTotal = this.getDealersHand().calculateTotal();
     if (playerTotal > dealerTotal) {
       return RoundResult.Win;
     } else if (playerTotal === dealerTotal) {

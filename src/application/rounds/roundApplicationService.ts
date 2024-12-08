@@ -93,14 +93,14 @@ export class RoundApplicationService {
   ): Promise<RoundGetPlayersHandResult> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
 
-    const playerHand = round.getPlayerHand();
+    const playersHand = round.getPlayersHand();
 
     return new RoundGetPlayersHandResult(
-      playerHand
+      playersHand
         .getCards()
         .map((card) => new RoundGetPlayersHandResultCard(card)),
-      playerHand.calculateTotal(),
-      playerHand.isResolved(),
+      playersHand.calculateTotal(),
+      playersHand.isResolved(),
     );
   }
 
@@ -116,7 +116,7 @@ export class RoundApplicationService {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
 
     return new RoundGetHandSignalOptionsResult(
-      round.getPlayerHandSignalOptions(),
+      round.getPlayersHandSignalOptions(),
     );
   }
 
@@ -129,8 +129,8 @@ export class RoundApplicationService {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
     const shoe = await this.shoeRepository.findAsync(round.shoeId);
 
-    const playerHand = round.getPlayerHand();
-    if (!playerHand.canHit()) {
+    const playersHand = round.getPlayersHand();
+    if (!playersHand.canHit()) {
       throw new RoundCannotHitError();
     }
 
@@ -150,7 +150,7 @@ export class RoundApplicationService {
   public async standAsync(command: RoundStandCommand): Promise<void> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
 
-    round.standPlayerHand();
+    round.standPlayersHand();
 
     await this.roundRepository.saveAsync(round);
   }
@@ -183,7 +183,7 @@ export class RoundApplicationService {
       shoe.draw();
     }
 
-    if (!round.getDealerHand().isResolved()) {
+    if (!round.getDealersHand().isResolved()) {
       round.standDealearsHand();
     }
   }
@@ -199,7 +199,7 @@ export class RoundApplicationService {
   ): Promise<RoundGetDealersHandResult> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
 
-    const dealersHand = round.getDealerHand();
+    const dealersHand = round.getDealersHand();
 
     return new RoundGetDealersHandResult(
       dealersHand

@@ -36,8 +36,8 @@ describe("start", () => {
 
     // Assert
     const startedRound = await roundRepository.findAsync(round.id);
-    expect(startedRound.getDealerHand().count()).toBe(2);
-    expect(startedRound.getPlayerHand().count()).toBe(2);
+    expect(startedRound.getDealersHand().count()).toBe(2);
+    expect(startedRound.getPlayersHand().count()).toBe(2);
   });
 });
 
@@ -68,14 +68,14 @@ describe("get player hand", () => {
 
     // Assert
     const startedRound = await roundRepository.findAsync(round.id);
-    const playerHand = startedRound.getPlayerHand();
-    expect(result.cards.length).toBe(playerHand.count());
+    const playersHand = startedRound.getPlayersHand();
+    expect(result.cards.length).toBe(playersHand.count());
     for (let i = 0; i < result.cards.length; i++) {
-      expect(result.cards[i].rank).toBe(playerHand.getCards()[i].rank);
-      expect(result.cards[i].suit).toBe(playerHand.getCards()[i].suit);
+      expect(result.cards[i].rank).toBe(playersHand.getCards()[i].rank);
+      expect(result.cards[i].suit).toBe(playersHand.getCards()[i].suit);
     }
-    expect(result.total).toBe(playerHand.calculateTotal());
-    expect(result.isResolved).toBe(playerHand.isResolved());
+    expect(result.total).toBe(playersHand.calculateTotal());
+    expect(result.isResolved).toBe(playersHand.isResolved());
   });
 });
 
@@ -100,7 +100,7 @@ describe("hit", () => {
     await service.startAsync(new RoundStartCommand(round.id.value));
 
     const beforeCount = (await roundRepository.findAsync(round.id))
-      .getPlayerHand()
+      .getPlayersHand()
       .count();
 
     // Act
@@ -108,7 +108,7 @@ describe("hit", () => {
 
     // Assert
     const afterCount = (await roundRepository.findAsync(round.id))
-      .getPlayerHand()
+      .getPlayersHand()
       .count();
     expect(afterCount).toBe(beforeCount + 1);
   });
@@ -139,7 +139,7 @@ describe("stand", () => {
 
     // Assert
     expect(
-      (await roundRepository.findAsync(round.id)).getPlayerHand().isResolved(),
+      (await roundRepository.findAsync(round.id)).getPlayersHand().isResolved(),
     ).toBe(true);
   });
 });
@@ -200,7 +200,7 @@ describe("complete", () => {
 
     // Assert
     expect(
-      (await roundRepository.findAsync(round.id)).getDealerHand().isResolved(),
+      (await roundRepository.findAsync(round.id)).getDealersHand().isResolved(),
     ).toBe(true);
   });
 });
@@ -233,7 +233,7 @@ describe("get dealear's hand", () => {
     // Assert
     const dealersHand = (
       await roundRepository.findAsync(round.id)
-    ).getDealerHand();
+    ).getDealersHand();
     expect(result.cards.length).toBe(dealersHand.count());
     for (let i = 0; i < result.cards.length; i++) {
       expect(result.cards[i].rank).toBe(dealersHand.getCards()[i].rank);

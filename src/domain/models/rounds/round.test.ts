@@ -20,7 +20,7 @@ describe("deal card to dealer", () => {
 
     round.dealCardToDealer(new Card(Rank.Ace, Suit.Spade));
 
-    expect(round.getDealerHand().count()).toBe(1);
+    expect(round.getDealersHand().count()).toBe(1);
   });
 });
 
@@ -35,7 +35,7 @@ describe("deal card to player", () => {
 
     round.dealCardToPlayer(new Card(Rank.Ace, Suit.Spade));
 
-    expect(round.getPlayerHand().count()).toBe(1);
+    expect(round.getPlayersHand().count()).toBe(1);
   });
 });
 
@@ -51,7 +51,7 @@ describe("get player hand signal options", () => {
       ),
     );
 
-    const options = round.getPlayerHandSignalOptions();
+    const options = round.getPlayersHandSignalOptions();
 
     expect(options).toContain(HandSignal.Hit);
   });
@@ -67,7 +67,7 @@ describe("get player hand signal options", () => {
       ),
     );
 
-    const options = round.getPlayerHandSignalOptions();
+    const options = round.getPlayersHandSignalOptions();
 
     expect(options).toContain(HandSignal.Stand);
   });
@@ -83,7 +83,7 @@ describe("get player hand signal options", () => {
       ),
     );
 
-    const options = round.getPlayerHandSignalOptions();
+    const options = round.getPlayersHandSignalOptions();
 
     expect(options).toHaveLength(0);
   });
