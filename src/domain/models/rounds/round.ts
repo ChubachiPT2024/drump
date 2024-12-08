@@ -80,6 +80,13 @@ export class Round {
   }
 
   /**
+   * ディーラーのハンドをスタンドする
+   */
+  public standDealearsHand(): void {
+    this.dealerHand = this.dealerHand.stand();
+  }
+
+  /**
    * アップカードを取得する
    *
    * @returns アップカード
@@ -87,5 +94,19 @@ export class Round {
   public getUpCard(): Card {
     // ディーラーのハンド専用のクラスを作るべきか？
     return this.dealerHand.getCards()[0];
+  }
+
+  /**
+   * ディーラーがヒットしなければならないかどうかを取得する
+   * 
+   * @returns ディーラーがヒットしなければならないかどうか
+   */
+  public shouldDealerHit(): boolean {
+    // ディーラーのハンド専用のクラスを作るべきか？
+    if (this.dealerHand.calculateSoftTotal() < 21) {
+      return this.dealerHand.calculateSoftTotal() < 17;
+    }
+    
+    return this.dealerHand.calculateHardTotal() < 17;
   }
 }

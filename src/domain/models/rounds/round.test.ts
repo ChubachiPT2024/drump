@@ -104,3 +104,59 @@ describe("get up card", () => {
     expect(upCard.suit).toBe(Suit.Spade);
   });
 });
+
+describe("should dealer hit", () => {
+  test("The dealer should hit if the soft total is less than 17.", () => {
+    const round = new Round(
+      new RoundId("roundId"),
+      new ShoeId("shoeId"),
+      new Hand([], false),
+      new Hand([], false),
+    );
+    round.dealCardToDealer(new Card(Rank.Ace, Suit.Spade));
+    round.dealCardToDealer(new Card(Rank.Five, Suit.Spade));
+
+    expect(round.shouldDealerHit()).toBe(true);
+  });
+
+  test("The dealer should not hit if the soft total is greater than equal 17 and the soft total is less than 21.", () => {
+    const round = new Round(
+      new RoundId("roundId"),
+      new ShoeId("shoeId"),
+      new Hand([], false),
+      new Hand([], false),
+    );
+    round.dealCardToDealer(new Card(Rank.Ace, Suit.Spade));
+    round.dealCardToDealer(new Card(Rank.Six, Suit.Spade));
+
+    expect(round.shouldDealerHit()).toBe(false);
+  });
+
+  test("The dealer should hit if the soft total is greater than 21 and the soft total is less than 17.", () => {
+    const round = new Round(
+      new RoundId("roundId"),
+      new ShoeId("shoeId"),
+      new Hand([], false),
+      new Hand([], false),
+    );
+    round.dealCardToDealer(new Card(Rank.Ace, Suit.Spade));
+    round.dealCardToDealer(new Card(Rank.Six, Suit.Spade));
+    round.dealCardToDealer(new Card(Rank.Seven, Suit.Spade));
+
+    expect(round.shouldDealerHit()).toBe(true);
+  });
+
+  test("The dealer should not hit if the hard total is greater than equal 17.", () => {
+    const round = new Round(
+      new RoundId("roundId"),
+      new ShoeId("shoeId"),
+      new Hand([], false),
+      new Hand([], false),
+    );
+    round.dealCardToDealer(new Card(Rank.Ace, Suit.Spade));
+    round.dealCardToDealer(new Card(Rank.Six, Suit.Spade));
+    round.dealCardToDealer(new Card(Rank.Ten, Suit.Spade));
+
+    expect(round.shouldDealerHit()).toBe(false);
+  });
+});
