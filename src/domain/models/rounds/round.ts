@@ -1,5 +1,6 @@
 import { Card } from "../cards/card";
 import { Hand } from "../hands/hand";
+import { HandSignal } from "../handSignals/handSignal";
 import { ShoeId } from "../shoes/shoeId";
 import { RoundId } from "./roundId";
 
@@ -56,5 +57,18 @@ export class Round {
    */
   public getPlayerHand(): Hand {
     return this.playerHand;
+  }
+
+  /**
+   * プレイヤーのハンドシグナルの選択肢を取得する
+   *
+   * @returns プレイヤーのハンドシグナルの選択肢
+   */
+  public getPlayerHandSignalOptions(): HandSignal[] {
+    if (this.playerHand.isResolved()) {
+      return [];
+    }
+
+    return [HandSignal.Hit, HandSignal.Stand];
   }
 }
