@@ -1,4 +1,4 @@
-import { RoundGetPlayerHandResultCard } from "./roundGetPlayerHandResultCard";
+import { RoundGetPlayerHandResultHand } from "./roundGetPlayerHandResultHand";
 
 /**
  * プレイヤーのハンド取得結果
@@ -7,7 +7,7 @@ export class RoundGetPlayerHandResult {
   /**
    * コンストラクタ
    *
-   * @param cards カード
+   * @param hand ハンド
    */
-  public constructor(public readonly cards: RoundGetPlayerHandResultCard[]) {}
+  public constructor(public readonly hand: RoundGetPlayerHandResultHand) {}
 }

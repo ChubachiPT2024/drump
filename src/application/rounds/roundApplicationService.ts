@@ -11,6 +11,7 @@ import { RoundGetPlayerHandResult } from "./roundGetPlayerHandResult";
 import { RoundGetPlayerHandResultCard } from "./roundGetPlayerHandResultCard";
 import { RoundGetHandSignalOptionsCommand } from "./roundGetHandSignalOptionsCommand";
 import { RoundGetHandSignalOptionsResult } from "./roundGetHandSignalOptionsResult";
+import { RoundGetPlayerHandResultHand } from "./roundGetPlayerHandResultHand";
 
 /**
  * ラウンドアプリケーションサービス
@@ -82,11 +83,17 @@ export class RoundApplicationService {
   ): Promise<RoundGetPlayerHandResult> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
 
+    const playerHand = round.getPlayerHand();
+
     return new RoundGetPlayerHandResult(
-      round
-        .getPlayerHand()
-        .getCards()
-        .map((card) => new RoundGetPlayerHandResultCard(card)),
+      new RoundGetPlayerHandResultHand(
+        playerHand
+          .getCards()
+          .map((card) => new RoundGetPlayerHandResultCard(card)),
+        playerHand.calculateSoftTotal(),
+        playerHand.calculateHardTotal(),
+        playerHand.isResolved(),
+      ),
     );
   }
 
