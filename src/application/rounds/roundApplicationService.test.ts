@@ -7,9 +7,6 @@ import { InMemoryShoeFactory } from "@/infrastructure/inMemory/shoes/inMemorySho
 import { Deck } from "@/domain/models/decks/deck";
 import { RoundStartCommand } from "./roundStartCommand";
 import { RoundGetPlayerHandCommand } from "./roundGetPlayerHandCommand";
-import { Card } from "@/domain/models/cards/card";
-import { Rank } from "@/domain/models/ranks/rank";
-import { Suit } from "@/domain/models/suits/suit";
 
 describe("start", () => {
   test("The dealer and player gets a hand with two cards.", async () => {
