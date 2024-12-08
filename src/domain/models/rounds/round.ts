@@ -71,4 +71,11 @@ export class Round {
 
     return [HandSignal.Hit, HandSignal.Stand];
   }
+
+  /**
+   * プレイヤーのハンドをスタンドする
+   */
+  public standPlayerHand(): void {
+    this.playerHand = this.playerHand.stand();
+  }
 }
