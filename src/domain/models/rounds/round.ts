@@ -93,7 +93,7 @@ export class Round {
    * @returns アップカード
    */
   public getUpCard(): Card {
-    // ディーラーのハンド専用のクラスを作るべきか？
+    // TODO ディーラーのハンド専用のクラスを作るべきか？
     return this.dealersHand.getCards()[0];
   }
 
@@ -103,7 +103,7 @@ export class Round {
    * @returns ディーラーがヒットしなければならないかどうか
    */
   public shouldDealerHit(): boolean {
-    // ディーラーのハンド専用のクラスを作るべきか？
+    // TODO ディーラーのハンド専用のクラスを作るべきか？
     return this.dealersHand.calculateTotal() < 17;
   }
 
