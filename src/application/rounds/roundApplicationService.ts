@@ -18,6 +18,9 @@ import { RoundStandCommand } from "./Stand/roundStandCommand";
 import { RoundCompleteCommand } from "./Complete/roundCompleteCommand";
 import { RoundGetUpCardCommand } from "./GetUpCard/roundGetUpCardCommand";
 import { RoundGetUpCardResult } from "./GetUpCard/roundGetUpCardResult";
+import { RoundGetDealersHandCommand } from "./GetDealersHand/roundGetDealersHandCommand";
+import { RoundGetDealersHandResult } from "./GetDealersHand/roundGetDealersHandResult";
+import { RoundGetDealersHandResultCard } from "./GetDealersHand/roundGetDealersHandResultCard";
 
 /**
  * ラウンドアプリケーションサービス
@@ -185,5 +188,28 @@ export class RoundApplicationService {
     if (!round.getDealerHand().isResolved()) {
       round.standDealearsHand();
     }
+  }
+
+  /**
+   * ディーラーのハンドを取得する
+   *
+   * @param command ディーラーのハンド取得コマンド
+   * @returns ディーラーのハンド取得結果
+   */
+  public async getDealersHandAsync(
+    command: RoundGetDealersHandCommand,
+  ): Promise<RoundGetDealersHandResult> {
+    const round = await this.roundRepository.findAsync(new RoundId(command.id));
+
+    const dealersHand = round.getDealerHand();
+
+    return new RoundGetDealersHandResult(
+      dealersHand
+        .getCards()
+        .map((card) => new RoundGetDealersHandResultCard(card)),
+      dealersHand.calculateSoftTotal(),
+      dealersHand.calculateHardTotal(),
+      dealersHand.isResolved(),
+    );
   }
 }
