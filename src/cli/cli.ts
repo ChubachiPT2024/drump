@@ -27,8 +27,8 @@ import { CardsService } from "@/domain/services/cardsService";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
-  [Suit.Heart, "♡"],
-  [Suit.Diamond, "♢"],
+  [Suit.Heart, "♥"],
+  [Suit.Diamond, "♦"],
   [Suit.Club, "♣"],
 ]);
 
