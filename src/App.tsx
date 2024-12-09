@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Game from "./pages/Game";
+import Match from "./pages/Match";
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
             path="/"
             element={<h1 className="font-bold">Hello World</h1>}
           />
-          <Route path="/game" element={<Game />} />
+          <Route path="/match" element={<Match />} />
         </Routes>
       </BrowserRouter>
     </>

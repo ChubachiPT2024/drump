@@ -2,32 +2,46 @@ import { useState } from "react";
 import ReactCardFlip from "react-card-flip";
 import { motion } from "framer-motion";
 
-const Card = ({ isOpen }: { isOpen: boolean }) => {
+//TODO: type cardで渡す,ownerをLiteral Union Typesで指定
+const Card = ({
+  isOpen,
+  owner,
+  value,
+  onAnimationComplete,
+}: {
+  isOpen: boolean;
+  owner: string;
+  value: number;
+  onAnimationComplete: () => void;
+}) => {
   const [isFlipped, setIsFlipped] = useState(false);
-
-  function flipCard() {
-    setIsFlipped(!isFlipped);
-  }
 
   return (
     <motion.div
-      initial={{ x: "100%" }}
-      animate={{ x: 0 }}
-      transition={{
-        type: "spring",
-        stiffness: 50,
-        damping: 10,
+      initial={{ x: "100vw", y: "25vh" }}
+      animate={{
+        x: "40vw",
+        y: owner == "dealer" ? "0%" : "50vh",
       }}
-      onAnimationComplete={
-        isOpen ? () => setIsFlipped(true) : () => setIsFlipped(false)
-      }
+      transition={{
+        type: "linear",
+        stiffness: 150,
+        damping: 20,
+      }}
+      onAnimationComplete={() => {
+        if (isOpen) {
+          setIsFlipped(true);
+        }
+        onAnimationComplete();
+      }}
+      className="flex space-x-4"
     >
       <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
-        <div onClick={flipCard} className="h-40 w-1/5 border">
-          <h2>裏だよ</h2>
+        <div className="mt-5 mr-2 h-40 w-24 border">
+          <h2 className="text-center">裏</h2>
         </div>
-        <div onClick={flipCard} className="h-40 w-1/5 border">
-          <h2>表だよ</h2>
+        <div className="mt-5 mr-2 h-40 w-24 border">
+          <h2 className="text-center">{value}</h2>
         </div>
       </ReactCardFlip>
     </motion.div>
