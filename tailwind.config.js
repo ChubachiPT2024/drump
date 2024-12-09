@@ -6,9 +6,6 @@ export default {
     "./src/**/*.{html,js,jsx,ts,tsx}",
   ],
   theme: {
-	fontFamily: {
-		roboto: ['Roboto Slab', 'serif']
-	},
   	extend: {
   		borderRadius: {
   			lg: 'var(--radius)',
