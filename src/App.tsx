@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Match from "./pages/Match";
+import Match from "./presentation/pages/Match";
 
 function App() {
   return (
