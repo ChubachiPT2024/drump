@@ -27,13 +27,13 @@ export class Hand {
   }
 
   /**
-   * ソフトトータルを計算する
+   * ハードトータルを計算する
    *
-   * @returns ソフトトータル
+   * @returns ハードトータル
    */
-  private calculateSoftTotal(): number {
+  private calculateHardTotal(): number {
     return this.cards
-      .map((card) => card.getSoftPoint())
+      .map((card) => card.getHardPoint())
       .reduce((sum, point) => (sum += point), 0);
   }
 
@@ -43,17 +43,17 @@ export class Hand {
    * @returns トータル
    */
   public calculateTotal(): number {
-    let total = this.calculateSoftTotal();
-    let numSoftAce = this.cards.filter((card) => card.rank === Rank.Ace).length;
+    const hardTotal = this.calculateHardTotal();
 
-    // トータルが 21 を超えている場合、エースを 1 枚ずつ 11 点から 1 点に変える
-    // 数式的には一発で計算できそうだが、演算誤差の問題があるので、とりあえず愚直に計算
-    while (total > 21 && numSoftAce > 0) {
-      total -= 10;
-      numSoftAce--;
+    if (!this.cards.some((card) => card.rank === Rank.Ace)) {
+      return hardTotal;
     }
 
-    return total;
+    // 11 点として数えられるエースは高々 1 枚
+    //（2 枚を 11 点として数えると、その時点で 22 になる）
+    const softTotal = hardTotal + 10;
+
+    return softTotal <= 21 ? softTotal : hardTotal;
   }
 
   /**
