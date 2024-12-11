@@ -3,7 +3,7 @@ import ReactCardFlip from "react-card-flip";
 import { motion } from "framer-motion";
 
 //TODO: type cardで渡す,ownerをLiteral Union Typesで指定
-const Card = ({
+export const Card = ({
   isOpen,
   owner,
   value,
@@ -47,5 +47,3 @@ const Card = ({
     </motion.div>
   );
 };
-
-export default Card;

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Card from "../../components/Card";
 import { Button } from "../../components/ui/button";
+import { Card } from "../../components/Card";
 
-const Match = () => {
+export const Match = () => {
   const [dealerFirstCardComplete, setDealerFirstCardComplete] = useState(false);
   const [dealerSecondCardComplete, setDealerSecondCardComplete] =
     useState(false);
@@ -71,5 +71,3 @@ const Match = () => {
     </>
   );
 };
-
-export default Match;
