@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button } from "../../components/ui/button";
-import { Card } from "../../components/Card";
+import { Button } from "../shadcnUI/components/ui/button";
+import { Card } from "../components/Card";
 
 export const Match = () => {
   const [dealerFirstCardComplete, setDealerFirstCardComplete] = useState(false);
