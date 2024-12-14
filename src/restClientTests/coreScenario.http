@@ -34,12 +34,7 @@ content-type: application/json
 
 ###
 # @name roundStart
-Post {{baseUrl}}/rounds/start Http/1.1
-content-type: application/json
-
-{
-    "id": "{{roundCreate.response.body.$.id}}"
-}
+Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/start Http/1.1
 
 ###
 # @name roundGetUpCard

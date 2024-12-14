@@ -39,9 +39,9 @@ export class RoundRouterFactory {
       }
     });
 
-    router.post("/start", async (req, res, next) => {
+    router.post("/:id/start", async (req, res, next) => {
       try {
-        const command = new RoundStartCommand(req.body.id);
+        const command = new RoundStartCommand(req.params.id);
         await this.roundApplicationService.startAsync(command);
 
         res.status(204).send();
