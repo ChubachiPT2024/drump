@@ -1,0 +1,510 @@
+<svg version="1.1" baseProfile="full" width="2498.5" height="1284.0" viewBox="0 0 2498.5 1284" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">
+<desc >#.interface: fill=lightblue
+#.enumeration: fill=lightgreen
+#.type: fill=lightgray
+[CardsService||+suffle(): void]
+[Card|-static softPoints: { A: number; &quot;2&quot;: number; &quot;3&quot;: number; &quot;4&quot;: number; &quot;5&quot;: number; &quot;6&quot;: number; &quot;7&quot;: number; &quot;8&quot;: number; &quot;9&quot;: number; &quot;10&quot;: number; J: number; Q: number; K: number; };-static hardPoints: { A: number; &quot;2&quot;: number; &quot;3&quot;: number; &quot;4&quot;: number; &quot;5&quot;: number; &quot;6&quot;: number; &quot;7&quot;: number; &quot;8&quot;: number; &quot;9&quot;: number; &quot;10&quot;: number; J: number; Q: number; K: number; };+rank: Rank;+suit: Suit|+getSoftPoint(): number;+getHardPoint(): number;+equals(): boolean]
+[Deck|-cards: Card\[\]|+static create(): Deck;+getCards(): Card\[\]]
+[Deck]  - 0..* [Card]
+[Hand|-cards: Card\[\];-isStand: boolean|+add(): Hand;-calculateHardTotal(): number;+calculateTotal(): number;+count(): number;+isBlackJack(): boolean;+isBust(): boolean;+canHit(): boolean;+stand(): Hand;+isResolved(): boolean;+getCards(): Card\[\]]
+[Hand]  - 0..* [Card]
+[Match|+id: MatchId;+shoeId: ShoeId;-roundIds: RoundId\[\]|+addRound(): void;+getRoundIds(): RoundId\[\]]
+[Match]  -  [MatchId]
+[Match]  -  [ShoeId]
+[Match]  - 0..* [RoundId]
+[&lt;interface&gt;MatchFactory||+create(): Match]
+[MatchId|+value: string|]
+[&lt;interface&gt;MatchRepository||+saveAsync(): Promise&lt;void&gt;;+findAsync(): Promise&lt;Match&gt;]
+[Round|+id: RoundId;+shoeId: ShoeId;-dealersHand: Hand;-playersHand: Hand|+dealCardToDealer(): void;+dealCardToPlayer(): void;+getDealersHand(): Hand;+getPlayersHand(): Hand;+getPlayersHandSignalOptions(): HandSignal\[\];+standPlayersHand(): void;+standDealearsHand(): void;+getUpCard(): Card;+shouldDealerHit(): boolean;+calculateResult(): RoundResult]
+[Round]  -  [RoundId]
+[Round]  -  [ShoeId]
+[Round]  -  [Hand]
+[Round]  -  [Hand]
+[&lt;interface&gt;RoundFactory||+create(): Round]
+[RoundId|+value: string|]
+[&lt;interface&gt;RoundRepository||+saveAsync(): Promise&lt;void&gt;;+findAsync(): Promise&lt;Round&gt;]
+[Shoe|+id: ShoeId;-cards: Card\[\]|+peek(): Card;+draw(): void]
+[Shoe]  -  [ShoeId]
+[Shoe]  - 0..* [Card]
+[&lt;interface&gt;ShoeFactory||+create(): Shoe]
+[ShoeId|+value: string|]
+[&lt;interface&gt;ShoeRepository||+saveAsync(): Promise&lt;void&gt;;+findAsync(): Promise&lt;Shoe&gt;]</desc>
+<g stroke-width="1.0" text-align="left" font="12pt Helvetica, Arial, sans-serif" font-size="12pt" font-family="Helvetica" font-weight="normal" font-style="normal">
+<g font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" stroke-width="3.0" stroke-linejoin="round" stroke-linecap="round" stroke="#33322E">
+<g stroke="transparent" fill="transparent">
+<rect x="0.0" y="0.0" height="1284.0" width="2498.5" stroke="none"></rect>
+</g>
+<g transform="translate(8, 8)" fill="#33322E">
+<g transform="translate(20, 20)" fill="#33322E" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal">
+<text x="108.8" y="621.0" stroke="none">0..*</text>
+<path d="M92.5 516.0 L92.5 609 L100.79420970266041 629 L100.8 629.0 " fill="none"></path>
+<text x="318.0" y="792.0" stroke="none">0..*</text>
+<path d="M543.3 589.0 L543.25 609 L353 799.9972505891594 L353.0 800.0 " fill="none"></path>
+<path d="M1885.8 218.0 L1919.5 311 L1919.5 424 L1919.5 424.0 " fill="none"></path>
+<path d="M1859.5 218.0 L1859.5 311 L1339.75 444.23483870967743 L1339.8 444.2 " fill="none"></path>
+<text x="1660.0" y="421.0" stroke="none">0..*</text>
+<path d="M1746.5 192.5 L1461.25 311 L1695 428.96359017781543 L1695.0 429.0 " fill="none"></path>
+<path d="M1215.5 230.1 L1399.75 311 L1695 434.31394533987384 L1695.0 434.3 " fill="none"></path>
+<path d="M1215.5 253.4 L1318.25 311 L1287.9144295302012 424 L1287.9 424.0 " fill="none"></path>
+<path d="M830.5 243.2 L697 311 L669.25 337.89268292682925 L669.3 337.9 " fill="none"></path>
+<path d="M830.5 227.4 L634 311 L621.8187919463087 331 L621.8 331.0 " fill="none"></path>
+<path d="M307.5 175.1 L594 311 L1216.75 446.6079649251005 L1216.8 446.6 " fill="none"></path>
+<text x="190.0" y="621.0" stroke="none">0..*</text>
+<path d="M237.3 209.5 L225 311 L225 460 L225 460 L225 609 L225 609 L225 629 L225.0 629.0 " fill="none"></path>
+<g data-name="CardsService">
+<g fill="#eee8d5" stroke="#33322E" data-name="CardsService">
+<rect x="18.5" y="109.5" height="72.0" width="124.0" data-name="CardsService"></rect>
+<path d="M18.5 141.5 L142.5 141.5" fill="none" data-name="CardsService"></path>
+<path d="M18.5 149.5 L142.5 149.5" fill="none" data-name="CardsService"></path>
+</g>
+<g transform="translate(18.5, 109.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="CardsService">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="CardsService">
+<a id="..\src\domain\services\cardsService.ts.CardsService" xlink:href="..\src\domain\services\cardsService.ts"><text x="54.0" y="14.1" stroke="none" text-anchor="middle" data-name="CardsService">CardsService</text></a>
+
+</g>
+</g>
+<g transform="translate(18.5, 141.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CardsService">
+<g transform="translate(8, 8)" fill="#33322E" data-name="CardsService">
+
+</g>
+</g>
+<g transform="translate(18.5, 149.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CardsService">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="CardsService">
+<text x="0.0" y="14.1" stroke="none" data-name="CardsService">+suffle(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="Card">
+<g fill="#eee8d5" stroke="#33322E" data-name="Card">
+<rect x="97.0" y="629.0" height="599.0" width="256.0" data-name="Card"></rect>
+<path d="M97.0 661.0 L353.0 661.0" fill="none" data-name="Card"></path>
+<path d="M97.0 1163.0 L353.0 1163.0" fill="none" data-name="Card"></path>
+</g>
+<g transform="translate(97, 629)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Card">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Card">
+<a id="..\src\domain\models\cards\card.ts.Card" xlink:href="..\src\domain\models\cards\card.ts"><text x="120.0" y="14.1" stroke="none" text-anchor="middle" data-name="Card">Card</text></a>
+
+</g>
+</g>
+<g transform="translate(97, 661)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Card">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Card">
+<text x="0.0" y="14.1" stroke="none" data-name="Card">-static softPoints: { A: number</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Card">&quot;2&quot;: number</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Card">&quot;3&quot;: number</text>
+<text x="0.0" y="62.7" stroke="none" data-name="Card">&quot;4&quot;: number</text>
+<text x="0.0" y="78.9" stroke="none" data-name="Card">&quot;5&quot;: number</text>
+<text x="0.0" y="95.1" stroke="none" data-name="Card">&quot;6&quot;: number</text>
+<text x="0.0" y="111.3" stroke="none" data-name="Card">&quot;7&quot;: number</text>
+<text x="0.0" y="127.5" stroke="none" data-name="Card">&quot;8&quot;: number</text>
+<text x="0.0" y="143.7" stroke="none" data-name="Card">&quot;9&quot;: number</text>
+<text x="0.0" y="159.9" stroke="none" data-name="Card">&quot;10&quot;: number</text>
+<text x="0.0" y="176.1" stroke="none" data-name="Card">J: number</text>
+<text x="0.0" y="192.3" stroke="none" data-name="Card">Q: number</text>
+<text x="0.0" y="208.5" stroke="none" data-name="Card">K: number</text>
+<text x="0.0" y="224.7" stroke="none" data-name="Card">}</text>
+<text x="0.0" y="240.9" stroke="none" data-name="Card">-static hardPoints: { A: number</text>
+<text x="0.0" y="257.1" stroke="none" data-name="Card">&quot;2&quot;: number</text>
+<text x="0.0" y="273.3" stroke="none" data-name="Card">&quot;3&quot;: number</text>
+<text x="0.0" y="289.5" stroke="none" data-name="Card">&quot;4&quot;: number</text>
+<text x="0.0" y="305.7" stroke="none" data-name="Card">&quot;5&quot;: number</text>
+<text x="0.0" y="321.9" stroke="none" data-name="Card">&quot;6&quot;: number</text>
+<text x="0.0" y="338.1" stroke="none" data-name="Card">&quot;7&quot;: number</text>
+<text x="0.0" y="354.3" stroke="none" data-name="Card">&quot;8&quot;: number</text>
+<text x="0.0" y="370.5" stroke="none" data-name="Card">&quot;9&quot;: number</text>
+<text x="0.0" y="386.7" stroke="none" data-name="Card">&quot;10&quot;: number</text>
+<text x="0.0" y="402.9" stroke="none" data-name="Card">J: number</text>
+<text x="0.0" y="419.1" stroke="none" data-name="Card">Q: number</text>
+<text x="0.0" y="435.3" stroke="none" data-name="Card">K: number</text>
+<text x="0.0" y="451.5" stroke="none" data-name="Card">}</text>
+<text x="0.0" y="467.7" stroke="none" data-name="Card">+rank: Rank</text>
+<text x="0.0" y="483.9" stroke="none" data-name="Card">+suit: Suit</text>
+
+</g>
+</g>
+<g transform="translate(97, 1163)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Card">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Card">
+<text x="0.0" y="14.1" stroke="none" data-name="Card">+getSoftPoint(): number</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Card">+getHardPoint(): number</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Card">+equals(): boolean</text>
+
+</g>
+</g>
+</g>
+<g data-name="Deck">
+<g fill="#eee8d5" stroke="#33322E" data-name="Deck">
+<rect x="0.0" y="404.0" height="112.0" width="185.0" data-name="Deck"></rect>
+<path d="M0.0 436.0 L185.0 436.0" fill="none" data-name="Deck"></path>
+<path d="M0.0 468.0 L185.0 468.0" fill="none" data-name="Deck"></path>
+</g>
+<g transform="translate(0, 404)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Deck">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Deck">
+<a id="..\src\domain\models\decks\deck.ts.Deck" xlink:href="..\src\domain\models\decks\deck.ts"><text x="84.5" y="14.1" stroke="none" text-anchor="middle" data-name="Deck">Deck</text></a>
+
+</g>
+</g>
+<g transform="translate(0, 436)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Deck">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Deck">
+<text x="0.0" y="14.1" stroke="none" data-name="Deck">-cards: Card[]</text>
+
+</g>
+</g>
+<g transform="translate(0, 468)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Deck">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Deck">
+<text x="0.0" y="14.1" stroke="none" data-name="Deck">+static create(): Deck</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Deck">+getCards(): Card[]</text>
+
+</g>
+</g>
+</g>
+<g data-name="Hand">
+<g fill="#eee8d5" stroke="#33322E" data-name="Hand">
+<rect x="417.3" y="331.0" height="258.0" width="252.0" data-name="Hand"></rect>
+<path d="M417.3 363.0 L669.3 363.0" fill="none" data-name="Hand"></path>
+<path d="M417.3 411.0 L669.3 411.0" fill="none" data-name="Hand"></path>
+</g>
+<g transform="translate(417.25, 331)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Hand">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Hand">
+<a id="..\src\domain\models\hands\hand.ts.Hand" xlink:href="..\src\domain\models\hands\hand.ts"><text x="118.0" y="14.1" stroke="none" text-anchor="middle" data-name="Hand">Hand</text></a>
+
+</g>
+</g>
+<g transform="translate(417.25, 363)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Hand">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Hand">
+<text x="0.0" y="14.1" stroke="none" data-name="Hand">-cards: Card[]</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Hand">-isStand: boolean</text>
+
+</g>
+</g>
+<g transform="translate(417.25, 411)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Hand">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Hand">
+<text x="0.0" y="14.1" stroke="none" data-name="Hand">+add(): Hand</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Hand">-calculateHardTotal(): number</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Hand">+calculateTotal(): number</text>
+<text x="0.0" y="62.7" stroke="none" data-name="Hand">+count(): number</text>
+<text x="0.0" y="78.9" stroke="none" data-name="Hand">+isBlackJack(): boolean</text>
+<text x="0.0" y="95.1" stroke="none" data-name="Hand">+isBust(): boolean</text>
+<text x="0.0" y="111.3" stroke="none" data-name="Hand">+canHit(): boolean</text>
+<text x="0.0" y="127.5" stroke="none" data-name="Hand">+stand(): Hand</text>
+<text x="0.0" y="143.7" stroke="none" data-name="Hand">+isResolved(): boolean</text>
+<text x="0.0" y="159.9" stroke="none" data-name="Hand">+getCards(): Card[]</text>
+
+</g>
+</g>
+</g>
+<g data-name="Match">
+<g fill="#eee8d5" stroke="#33322E" data-name="Match">
+<rect x="1746.5" y="73.0" height="145.0" width="226.0" data-name="Match"></rect>
+<path d="M1746.5 105.0 L1972.5 105.0" fill="none" data-name="Match"></path>
+<path d="M1746.5 170.0 L1972.5 170.0" fill="none" data-name="Match"></path>
+</g>
+<g transform="translate(1746.5, 73)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Match">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Match">
+<a id="..\src\domain\models\matches\match.ts.Match" xlink:href="..\src\domain\models\matches\match.ts"><text x="105.0" y="14.1" stroke="none" text-anchor="middle" data-name="Match">Match</text></a>
+
+</g>
+</g>
+<g transform="translate(1746.5, 105)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Match">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Match">
+<text x="0.0" y="14.1" stroke="none" data-name="Match">+id: MatchId</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Match">+shoeId: ShoeId</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Match">-roundIds: RoundId[]</text>
+
+</g>
+</g>
+<g transform="translate(1746.5, 170)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Match">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Match">
+<text x="0.0" y="14.1" stroke="none" data-name="Match">+addRound(): void</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Match">+getRoundIds(): RoundId[]</text>
+
+</g>
+</g>
+</g>
+<g data-name="MatchId">
+<g fill="#eee8d5" stroke="#33322E" data-name="MatchId">
+<rect x="1858.0" y="424.0" height="72.0" width="123.0" data-name="MatchId"></rect>
+<path d="M1858.0 456.0 L1981.0 456.0" fill="none" data-name="MatchId"></path>
+<path d="M1858.0 488.0 L1981.0 488.0" fill="none" data-name="MatchId"></path>
+</g>
+<g transform="translate(1858, 424)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="MatchId">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="MatchId">
+<a id="..\src\domain\models\matches\matchId.ts.MatchId" xlink:href="..\src\domain\models\matches\matchId.ts"><text x="53.5" y="14.1" stroke="none" text-anchor="middle" data-name="MatchId">MatchId</text></a>
+
+</g>
+</g>
+<g transform="translate(1858, 456)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchId">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="MatchId">
+<text x="0.0" y="14.1" stroke="none" data-name="MatchId">+value: string</text>
+
+</g>
+</g>
+<g transform="translate(1858, 488)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchId">
+<g transform="translate(8, 8)" fill="#33322E" data-name="MatchId">
+
+</g>
+</g>
+</g>
+<g data-name="ShoeId">
+<g fill="#eee8d5" stroke="#33322E" data-name="ShoeId">
+<rect x="1216.8" y="424.0" height="72.0" width="123.0" data-name="ShoeId"></rect>
+<path d="M1216.8 456.0 L1339.8 456.0" fill="none" data-name="ShoeId"></path>
+<path d="M1216.8 488.0 L1339.8 488.0" fill="none" data-name="ShoeId"></path>
+</g>
+<g transform="translate(1216.75, 424)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="ShoeId">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="ShoeId">
+<a id="..\src\domain\models\shoes\shoeId.ts.ShoeId" xlink:href="..\src\domain\models\shoes\shoeId.ts"><text x="53.5" y="14.1" stroke="none" text-anchor="middle" data-name="ShoeId">ShoeId</text></a>
+
+</g>
+</g>
+<g transform="translate(1216.75, 456)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ShoeId">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ShoeId">
+<text x="0.0" y="14.1" stroke="none" data-name="ShoeId">+value: string</text>
+
+</g>
+</g>
+<g transform="translate(1216.75, 488)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ShoeId">
+<g transform="translate(8, 8)" fill="#33322E" data-name="ShoeId">
+
+</g>
+</g>
+</g>
+<g data-name="RoundId">
+<g fill="#eee8d5" stroke="#33322E" data-name="RoundId">
+<rect x="1695.0" y="424.0" height="72.0" width="123.0" data-name="RoundId"></rect>
+<path d="M1695.0 456.0 L1818.0 456.0" fill="none" data-name="RoundId"></path>
+<path d="M1695.0 488.0 L1818.0 488.0" fill="none" data-name="RoundId"></path>
+</g>
+<g transform="translate(1695, 424)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RoundId">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="RoundId">
+<a id="..\src\domain\models\rounds\roundId.ts.RoundId" xlink:href="..\src\domain\models\rounds\roundId.ts"><text x="53.5" y="14.1" stroke="none" text-anchor="middle" data-name="RoundId">RoundId</text></a>
+
+</g>
+</g>
+<g transform="translate(1695, 456)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundId">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="RoundId">
+<text x="0.0" y="14.1" stroke="none" data-name="RoundId">+value: string</text>
+
+</g>
+</g>
+<g transform="translate(1695, 488)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundId">
+<g transform="translate(8, 8)" fill="#33322E" data-name="RoundId">
+
+</g>
+</g>
+</g>
+<g data-name="MatchFactory">
+<g fill="lightblue" stroke="#33322E" data-name="MatchFactory">
+<rect x="347.5" y="109.5" height="72.0" width="146.0" data-name="MatchFactory"></rect>
+<path d="M347.5 141.5 L493.5 141.5" fill="none" data-name="MatchFactory"></path>
+<path d="M347.5 149.5 L493.5 149.5" fill="none" data-name="MatchFactory"></path>
+</g>
+<g transform="translate(347.5, 109.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="MatchFactory">
+<a id="..\src\domain\models\matches\matchFactory.ts.MatchFactory" xlink:href="..\src\domain\models\matches\matchFactory.ts"><text x="65.0" y="14.1" stroke="none" text-anchor="middle" data-name="MatchFactory">MatchFactory</text></a>
+
+</g>
+</g>
+<g transform="translate(347.5, 141.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchFactory">
+<g transform="translate(8, 8)" fill="#33322E" data-name="MatchFactory">
+
+</g>
+</g>
+<g transform="translate(347.5, 149.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="MatchFactory">
+<text x="0.0" y="14.1" stroke="none" data-name="MatchFactory">+create(): Match</text>
+
+</g>
+</g>
+</g>
+<g data-name="MatchRepository">
+<g fill="lightblue" stroke="#33322E" data-name="MatchRepository">
+<rect x="533.5" y="101.5" height="88.0" width="257.0" data-name="MatchRepository"></rect>
+<path d="M533.5 133.5 L790.5 133.5" fill="none" data-name="MatchRepository"></path>
+<path d="M533.5 141.5 L790.5 141.5" fill="none" data-name="MatchRepository"></path>
+</g>
+<g transform="translate(533.5, 101.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchRepository">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="MatchRepository">
+<a id="..\src\domain\models\matches\matchRepository.ts.MatchRepository" xlink:href="..\src\domain\models\matches\matchRepository.ts"><text x="120.5" y="14.1" stroke="none" text-anchor="middle" data-name="MatchRepository">MatchRepository</text></a>
+
+</g>
+</g>
+<g transform="translate(533.5, 133.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchRepository">
+<g transform="translate(8, 8)" fill="#33322E" data-name="MatchRepository">
+
+</g>
+</g>
+<g transform="translate(533.5, 141.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchRepository">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="MatchRepository">
+<text x="0.0" y="14.1" stroke="none" data-name="MatchRepository">+saveAsync(): Promise&lt;void&gt;</text>
+<text x="0.0" y="30.3" stroke="none" data-name="MatchRepository">+findAsync(): Promise&lt;Match&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="Round">
+<g fill="#eee8d5" stroke="#33322E" data-name="Round">
+<rect x="830.5" y="0.0" height="291.0" width="385.0" data-name="Round"></rect>
+<path d="M830.5 32.0 L1215.5 32.0" fill="none" data-name="Round"></path>
+<path d="M830.5 113.0 L1215.5 113.0" fill="none" data-name="Round"></path>
+</g>
+<g transform="translate(830.5, 0)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Round">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Round">
+<a id="..\src\domain\models\rounds\round.ts.Round" xlink:href="..\src\domain\models\rounds\round.ts"><text x="184.5" y="14.1" stroke="none" text-anchor="middle" data-name="Round">Round</text></a>
+
+</g>
+</g>
+<g transform="translate(830.5, 32)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Round">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Round">
+<text x="0.0" y="14.1" stroke="none" data-name="Round">+id: RoundId</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Round">+shoeId: ShoeId</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Round">-dealersHand: Hand</text>
+<text x="0.0" y="62.7" stroke="none" data-name="Round">-playersHand: Hand</text>
+
+</g>
+</g>
+<g transform="translate(830.5, 113)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Round">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Round">
+<text x="0.0" y="14.1" stroke="none" data-name="Round">+dealCardToDealer(): void</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Round">+dealCardToPlayer(): void</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Round">+getDealersHand(): Hand</text>
+<text x="0.0" y="62.7" stroke="none" data-name="Round">+getPlayersHand(): Hand</text>
+<text x="0.0" y="78.9" stroke="none" data-name="Round">+getPlayersHandSignalOptions(): HandSignal[]</text>
+<text x="0.0" y="95.1" stroke="none" data-name="Round">+standPlayersHand(): void</text>
+<text x="0.0" y="111.3" stroke="none" data-name="Round">+standDealearsHand(): void</text>
+<text x="0.0" y="127.5" stroke="none" data-name="Round">+getUpCard(): Card</text>
+<text x="0.0" y="143.7" stroke="none" data-name="Round">+shouldDealerHit(): boolean</text>
+<text x="0.0" y="159.9" stroke="none" data-name="Round">+calculateResult(): RoundResult</text>
+
+</g>
+</g>
+</g>
+<g data-name="RoundFactory">
+<g fill="lightblue" stroke="#33322E" data-name="RoundFactory">
+<rect x="1255.5" y="109.5" height="72.0" width="150.0" data-name="RoundFactory"></rect>
+<path d="M1255.5 141.5 L1405.5 141.5" fill="none" data-name="RoundFactory"></path>
+<path d="M1255.5 149.5 L1405.5 149.5" fill="none" data-name="RoundFactory"></path>
+</g>
+<g transform="translate(1255.5, 109.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="RoundFactory">
+<a id="..\src\domain\models\rounds\roundFactory.ts.RoundFactory" xlink:href="..\src\domain\models\rounds\roundFactory.ts"><text x="67.0" y="14.1" stroke="none" text-anchor="middle" data-name="RoundFactory">RoundFactory</text></a>
+
+</g>
+</g>
+<g transform="translate(1255.5, 141.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundFactory">
+<g transform="translate(8, 8)" fill="#33322E" data-name="RoundFactory">
+
+</g>
+</g>
+<g transform="translate(1255.5, 149.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="RoundFactory">
+<text x="0.0" y="14.1" stroke="none" data-name="RoundFactory">+create(): Round</text>
+
+</g>
+</g>
+</g>
+<g data-name="RoundRepository">
+<g fill="lightblue" stroke="#33322E" data-name="RoundRepository">
+<rect x="1445.5" y="101.5" height="88.0" width="261.0" data-name="RoundRepository"></rect>
+<path d="M1445.5 133.5 L1706.5 133.5" fill="none" data-name="RoundRepository"></path>
+<path d="M1445.5 141.5 L1706.5 141.5" fill="none" data-name="RoundRepository"></path>
+</g>
+<g transform="translate(1445.5, 101.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundRepository">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="RoundRepository">
+<a id="..\src\domain\models\rounds\roundRepository.ts.RoundRepository" xlink:href="..\src\domain\models\rounds\roundRepository.ts"><text x="122.5" y="14.1" stroke="none" text-anchor="middle" data-name="RoundRepository">RoundRepository</text></a>
+
+</g>
+</g>
+<g transform="translate(1445.5, 133.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundRepository">
+<g transform="translate(8, 8)" fill="#33322E" data-name="RoundRepository">
+
+</g>
+</g>
+<g transform="translate(1445.5, 141.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundRepository">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="RoundRepository">
+<text x="0.0" y="14.1" stroke="none" data-name="RoundRepository">+saveAsync(): Promise&lt;void&gt;</text>
+<text x="0.0" y="30.3" stroke="none" data-name="RoundRepository">+findAsync(): Promise&lt;Round&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="Shoe">
+<g fill="#eee8d5" stroke="#33322E" data-name="Shoe">
+<rect x="182.5" y="81.5" height="128.0" width="125.0" data-name="Shoe"></rect>
+<path d="M182.5 113.5 L307.5 113.5" fill="none" data-name="Shoe"></path>
+<path d="M182.5 161.5 L307.5 161.5" fill="none" data-name="Shoe"></path>
+</g>
+<g transform="translate(182.5, 81.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Shoe">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Shoe">
+<a id="..\src\domain\models\shoes\shoe.ts.Shoe" xlink:href="..\src\domain\models\shoes\shoe.ts"><text x="54.5" y="14.1" stroke="none" text-anchor="middle" data-name="Shoe">Shoe</text></a>
+
+</g>
+</g>
+<g transform="translate(182.5, 113.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Shoe">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Shoe">
+<text x="0.0" y="14.1" stroke="none" data-name="Shoe">+id: ShoeId</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Shoe">-cards: Card[]</text>
+
+</g>
+</g>
+<g transform="translate(182.5, 161.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Shoe">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Shoe">
+<text x="0.0" y="14.1" stroke="none" data-name="Shoe">+peek(): Card</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Shoe">+draw(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="ShoeFactory">
+<g fill="lightblue" stroke="#33322E" data-name="ShoeFactory">
+<rect x="2012.5" y="109.5" height="72.0" width="139.0" data-name="ShoeFactory"></rect>
+<path d="M2012.5 141.5 L2151.5 141.5" fill="none" data-name="ShoeFactory"></path>
+<path d="M2012.5 149.5 L2151.5 149.5" fill="none" data-name="ShoeFactory"></path>
+</g>
+<g transform="translate(2012.5, 109.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ShoeFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="ShoeFactory">
+<a id="..\src\domain\models\shoes\shoeFactory.ts.ShoeFactory" xlink:href="..\src\domain\models\shoes\shoeFactory.ts"><text x="61.5" y="14.1" stroke="none" text-anchor="middle" data-name="ShoeFactory">ShoeFactory</text></a>
+
+</g>
+</g>
+<g transform="translate(2012.5, 141.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ShoeFactory">
+<g transform="translate(8, 8)" fill="#33322E" data-name="ShoeFactory">
+
+</g>
+</g>
+<g transform="translate(2012.5, 149.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ShoeFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ShoeFactory">
+<text x="0.0" y="14.1" stroke="none" data-name="ShoeFactory">+create(): Shoe</text>
+
+</g>
+</g>
+</g>
+<g data-name="ShoeRepository">
+<g fill="lightblue" stroke="#33322E" data-name="ShoeRepository">
+<rect x="2191.5" y="101.5" height="88.0" width="251.0" data-name="ShoeRepository"></rect>
+<path d="M2191.5 133.5 L2442.5 133.5" fill="none" data-name="ShoeRepository"></path>
+<path d="M2191.5 141.5 L2442.5 141.5" fill="none" data-name="ShoeRepository"></path>
+</g>
+<g transform="translate(2191.5, 101.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ShoeRepository">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="ShoeRepository">
+<a id="..\src\domain\models\shoes\shoeRepository.ts.ShoeRepository" xlink:href="..\src\domain\models\shoes\shoeRepository.ts"><text x="117.5" y="14.1" stroke="none" text-anchor="middle" data-name="ShoeRepository">ShoeRepository</text></a>
+
+</g>
+</g>
+<g transform="translate(2191.5, 133.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ShoeRepository">
+<g transform="translate(8, 8)" fill="#33322E" data-name="ShoeRepository">
+
+</g>
+</g>
+<g transform="translate(2191.5, 141.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ShoeRepository">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ShoeRepository">
+<text x="0.0" y="14.1" stroke="none" data-name="ShoeRepository">+saveAsync(): Promise&lt;void&gt;</text>
+<text x="0.0" y="30.3" stroke="none" data-name="ShoeRepository">+findAsync(): Promise&lt;Shoe&gt;</text>
+
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>
