@@ -1,4 +1,5 @@
 import { RoundCreateCommand } from "@/application/rounds/Create/roundCreateCommand";
+import { RoundGetPlayersHandCommand } from "@/application/rounds/GetPlayersHand/roundGetPlayersHandCommand";
 import { RoundGetUpCardCommand } from "@/application/rounds/GetUpCard/roundGetUpCardCommand";
 import { RoundApplicationService } from "@/application/rounds/roundApplicationService";
 import { RoundStartCommand } from "@/application/rounds/Start/roundStartCommand";
@@ -52,6 +53,18 @@ export class RoundRouterFactory {
         const command = new RoundGetUpCardCommand(req.params.id);
         const result =
           await this.roundApplicationService.getUpCardAsync(command);
+
+        res.status(200).json(result);
+      } catch (err) {
+        next(err);
+      }
+    });
+
+    router.get("/:id/players-hand", async (req, res, next) => {
+      try {
+        const command = new RoundGetPlayersHandCommand(req.params.id);
+        const result =
+          await this.roundApplicationService.getPlayersHandAsync(command);
 
         res.status(200).json(result);
       } catch (err) {
