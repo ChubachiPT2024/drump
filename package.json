@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
+    "cli": "tsx ./src/cli/cli.ts",
     "start": "tsx ./src/server.ts"
   },
   "dependencies": {
