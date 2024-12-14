@@ -1,0 +1,119 @@
+@startuml
+class Card {
+    +rank: Rank
+    +suit: Suit
+    +getSoftPoint(): number
+    +getHardPoint(): number
+    +equals(other: Card): boolean
+    -{static} softPoints: { A: number; 2: number; 3: number; 4: number; 5: number; 6: number; 7: number; 8: number; 9: number; 10: number; J: number; Q: number; K: number; }
+    -{static} hardPoints: { A: number; 2: number; 3: number; 4: number; 5: number; 6: number; 7: number; 8: number; 9: number; 10: number; J: number; Q: number; K: number; }
+}
+class Deck {
+    -cards: Card[]
+    +getCards(): Card[]
+    +{static} create(): Deck
+}
+class Hand {
+    -cards: Card[]
+    -isStand: boolean
+    +add(card: Card): Hand
+    -calculateHardTotal(): number
+    +calculateTotal(): number
+    +count(): number
+    +isBlackJack(): boolean
+    +isBust(): boolean
+    +canHit(): boolean
+    +stand(): Hand
+    +isResolved(): boolean
+    +getCards(): Card[]
+}
+class RoundId {
+    +value: string
+}
+class ShoeId {
+    +value: string
+}
+class MatchId {
+    +value: string
+}
+class Match {
+    +id: MatchId
+    +shoeId: ShoeId
+    -roundIds: RoundId[]
+    +addRound(roundId: RoundId): void
+    +getRoundIds(): RoundId[]
+}
+interface MatchFactory {
+    +create(shoeId: ShoeId): Match
+}
+interface MatchRepository {
+    +saveAsync(match: Match): Promise<void>
+    +findAsync(id: MatchId): Promise<Match>
+}
+class Round {
+    +id: RoundId
+    +shoeId: ShoeId
+    -dealersHand: Hand
+    -playersHand: Hand
+    +dealCardToDealer(card: Card): void
+    +dealCardToPlayer(card: Card): void
+    +getDealersHand(): Hand
+    +getPlayersHand(): Hand
+    +getPlayersHandSignalOptions(): HandSignal[]
+    +standPlayersHand(): void
+    +standDealearsHand(): void
+    +getUpCard(): Card
+    +shouldDealerHit(): boolean
+    +calculateResult(): RoundResult
+}
+interface RoundFactory {
+    +create(shoeId: ShoeId): Round
+}
+interface RoundRepository {
+    +saveAsync(round: Round): Promise<void>
+    +findAsync(id: RoundId): Promise<Round>
+}
+class Shoe {
+    +id: ShoeId
+    -cards: Card[]
+    +peek(): Card
+    +draw(): void
+}
+interface ShoeFactory {
+    +create(cards: Card[]): Shoe
+}
+interface ShoeRepository {
+    +saveAsync(shoe: Shoe): Promise<void>
+    +findAsync(id: ShoeId): Promise<Shoe>
+}
+class CardsService {
+    +suffle(cards: Card[]): void
+}
+Deck --> "*" Card
+Hand --> "*" Card
+Hand --> "1" Card
+Match --> "1" MatchId
+Match --> "1" ShoeId
+Match --> "*" RoundId
+Match --> "1" RoundId
+MatchFactory --> "1" ShoeId
+MatchFactory --> "1" Match
+MatchRepository --> "1" Match
+MatchRepository --> "1" MatchId
+Round --> "1" RoundId
+Round --> "1" ShoeId
+Round --> "1" Hand
+Round --> "1" Card
+RoundFactory --> "1" ShoeId
+RoundFactory --> "1" Round
+RoundRepository --> "1" Round
+RoundRepository --> "1" RoundId
+Shoe --> "1" ShoeId
+Shoe --> "*" Card
+Shoe --> "1" Card
+ShoeFactory --> "1" Card
+ShoeFactory --> "1" Shoe
+ShoeRepository --> "1" Shoe
+ShoeRepository --> "1" ShoeId
+CardsService --> "1" Card
+@enduml
