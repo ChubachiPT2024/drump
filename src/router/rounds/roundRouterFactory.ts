@@ -1,5 +1,6 @@
 import { RoundCompleteCommand } from "@/application/rounds/Complete/roundCompleteCommand";
 import { RoundCreateCommand } from "@/application/rounds/Create/roundCreateCommand";
+import { RoundGetDealersHandCommand } from "@/application/rounds/GetDealersHand/roundGetDealersHandCommand";
 import { RoundGetHandSignalOptionsCommand } from "@/application/rounds/GetHandSignalOptions/roundGetHandSignalOptionsCommand";
 import { RoundGetPlayersHandCommand } from "@/application/rounds/GetPlayersHand/roundGetPlayersHandCommand";
 import { RoundGetUpCardCommand } from "@/application/rounds/GetUpCard/roundGetUpCardCommand";
@@ -116,6 +117,18 @@ export class RoundRouterFactory {
         await this.roundApplicationService.completeAsync(command);
 
         res.status(204).send();
+      } catch (err) {
+        next(err);
+      }
+    });
+
+    router.get("/:id/dealers-hand", async (req, res, next) => {
+      try {
+        const command = new RoundGetDealersHandCommand(req.params.id);
+        const result =
+          await this.roundApplicationService.getDealersHandAsync(command);
+
+        res.status(200).json(result);
       } catch (err) {
         next(err);
       }

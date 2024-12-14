@@ -59,3 +59,7 @@ Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/stand Http/1.1
 ###
 # @name roundComplete
 Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/complete Http/1.1
+
+###
+# @name roundGetDealersHand
+Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/dealers-hand Http/1.1
