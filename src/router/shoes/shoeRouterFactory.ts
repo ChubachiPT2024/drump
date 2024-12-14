@@ -22,10 +22,14 @@ export class ShoeRouterFactory {
   public create(): Router {
     const router = Router();
 
-    router.post("/", async (_, res) => {
-      const result = await this.shoeApplicationService.createAsync();
+    router.post("/", async (_, res, next) => {
+      try {
+        const result = await this.shoeApplicationService.createAsync();
 
-      res.status(201).json(result);
+        res.status(201).json(result);
+      } catch (err) {
+        next(err);
+      }
     });
 
     return router;

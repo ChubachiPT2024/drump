@@ -24,11 +24,15 @@ export class MatchRouterFactory {
   public create(): Router {
     const router = Router();
 
-    router.post("/", async (req, res) => {
-      const command = new MatchCreateCommand(req.body.shoeId);
-      const result = await this.matchApplicationService.createAsync(command);
+    router.post("/", async (req, res, next) => {
+      try {
+        const command = new MatchCreateCommand(req.body.shoeId);
+        const result = await this.matchApplicationService.createAsync(command);
 
-      res.status(201).json(result);
+        res.status(201).json(result);
+      } catch (err) {
+        next(err);
+      }
     });
 
     router.post("/add-round", async (req, res, next) => {
