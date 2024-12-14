@@ -52,3 +52,7 @@ Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/players-hand Http/1.1
 ###
 # @name roundGetHandSignalOptions
 Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/hand-signal-options Http/1.1
+
+###
+# @name roundHit
+Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/hit Http/1.1
