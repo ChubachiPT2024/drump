@@ -1,3 +1,4 @@
+import { MatchAddRoundCommand } from "@/application/matches/AddRound/matchAddRoundCommand";
 import { MatchCreateCommand } from "@/application/matches/Create/matchCreateCommand";
 import { MatchApplicationService } from "@/application/matches/matchApplicationService";
 import { Router } from "express";
@@ -28,6 +29,17 @@ export class MatchRouterFactory {
       const result = await this.matchApplicationService.createAsync(command);
 
       res.status(201).json(result);
+    });
+
+    router.post("/add-round", async (req, res, next) => {
+      try {
+        const command = new MatchAddRoundCommand(req.body.id, req.body.roundId);
+        await this.matchApplicationService.addRoundAsync(command);
+
+        res.status(204).send();
+      } catch (err) {
+        next(err);
+      }
     });
 
     return router;
