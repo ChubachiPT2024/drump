@@ -35,9 +35,12 @@ export class MatchRouterFactory {
       }
     });
 
-    router.post("/add-round", async (req, res, next) => {
+    router.post("/:id/add-round", async (req, res, next) => {
       try {
-        const command = new MatchAddRoundCommand(req.body.id, req.body.roundId);
+        const command = new MatchAddRoundCommand(
+          req.params.id,
+          req.body.roundId,
+        );
         await this.matchApplicationService.addRoundAsync(command);
 
         res.status(204).send();

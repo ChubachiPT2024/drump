@@ -24,11 +24,10 @@ content-type: application/json
 
 ###
 # @name matchAddRound
-Post {{baseUrl}}/matches/add-round Http/1.1
+Post {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/add-round Http/1.1
 content-type: application/json
 
 {
-    "id": "{{matchCreate.response.body.$.id}}",
     "roundId": "{{roundCreate.response.body.$.id}}"
 }
 
