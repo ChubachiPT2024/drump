@@ -1,0 +1,50 @@
+@baseUrl = http://localhost:3000/api
+
+###
+# @name shoeCreate
+Post {{baseUrl}}/shoes Http/1.1
+
+###
+# @name matchCreate
+Post {{baseUrl}}/matches Http/1.1
+content-type: application/json
+
+{
+    "shoeId": "{{shoeCreate.response.body.$.id}}"
+}
+
+###
+# @name roundCreate
+Post {{baseUrl}}/rounds Http/1.1
+content-type: application/json
+
+{
+    "shoeId": "{{shoeCreate.response.body.$.id}}"
+}
+
+###
+# @name matchAddRound
+Post {{baseUrl}}/matches/add-round Http/1.1
+content-type: application/json
+
+{
+    "id": "{{matchCreate.response.body.$.id}}",
+    "roundId": "{{roundCreate.response.body.$.id}}"
+}
+
+###
+# @name roundStart
+Post {{baseUrl}}/rounds/start Http/1.1
+content-type: application/json
+
+{
+    "id": "{{roundCreate.response.body.$.id}}"
+}
+
+###
+# @name roundGetUpCard
+Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/up-card Http/1.1
+
+###
+# @name roundGetPlayersHand
+Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/players-hand Http/1.1
