@@ -1,16 +1,16 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Match } from "./presentation/pages/Match";
+import TitlePage from './presentation/pages/Title';
 
-
-function App() {
+export function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<h1 className='font-bold'>Hello World</h1>} />
+          <Route path="/match" element={<Match />} />
+          <Route path="/" element={<TitlePage />} />
         </Routes>
       </BrowserRouter>
     </>
-  )
+  );
 }
-
-export default App
