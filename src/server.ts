@@ -1,6 +1,5 @@
 import express, { json } from "express";
 import ViteExpress from "vite-express";
-import { SampleRouter } from "./router/sampleRouter";
 import { InMemoryShoeFactory } from "./infrastructure/inMemory/shoes/inMemoryShoeFactory";
 import { InMemoryShoeRepository } from "./infrastructure/inMemory/shoes/inMemoryShoeRepository";
 import { CardsService } from "./domain/services/cardsService";
@@ -49,7 +48,6 @@ const app = express();
 // 参考: https://expressjs.com/ja/guide/using-middleware.html#middleware.built-in
 app.use(json());
 
-app.use("/api/sample", SampleRouter.create());
 app.use("/api/shoes", shoeRouterFactory.create());
 app.use("/api/matches", matchRouterFactory.create());
 app.use("/api/rounds", roundRouterFactory.create());
