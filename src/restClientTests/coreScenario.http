@@ -51,3 +51,7 @@ Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/hand-signal-options Ht
 ###
 # @name roundHit
 Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/hit Http/1.1
+
+###
+# @name roundStand
+Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/stand Http/1.1
