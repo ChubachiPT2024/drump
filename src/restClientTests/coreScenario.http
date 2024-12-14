@@ -55,3 +55,7 @@ Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/hit Http/1.1
 ###
 # @name roundStand
 Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/stand Http/1.1
+
+###
+# @name roundComplete
+Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/complete Http/1.1

@@ -1,3 +1,4 @@
+import { RoundCompleteCommand } from "@/application/rounds/Complete/roundCompleteCommand";
 import { RoundCreateCommand } from "@/application/rounds/Create/roundCreateCommand";
 import { RoundGetHandSignalOptionsCommand } from "@/application/rounds/GetHandSignalOptions/roundGetHandSignalOptionsCommand";
 import { RoundGetPlayersHandCommand } from "@/application/rounds/GetPlayersHand/roundGetPlayersHandCommand";
@@ -102,6 +103,17 @@ export class RoundRouterFactory {
       try {
         const command = new RoundStandCommand(req.params.id);
         await this.roundApplicationService.standAsync(command);
+
+        res.status(204).send();
+      } catch (err) {
+        next(err);
+      }
+    });
+
+    router.post("/:id/complete", async (req, res, next) => {
+      try {
+        const command = new RoundCompleteCommand(req.params.id);
+        await this.roundApplicationService.completeAsync(command);
 
         res.status(204).send();
       } catch (err) {
