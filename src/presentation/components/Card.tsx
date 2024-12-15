@@ -37,10 +37,11 @@ export const Card = ({
       className="flex space-x-4"
     >
       <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
-        <div className="mt-5 mr-2 h-40 w-24 border">
-          <h2 className="text-center">裏</h2>
+        <div className="mt-5 mr-2 h-40 w-24">
+          <img src="./trump/back.png" alt="card-back" />
         </div>
-        <div className="mt-5 mr-2 h-40 w-24 border">
+        {/* TODO: カードの画像のパスを指定する */}
+        <div className="mt-5 mr-2 h-40 w-24">
           <h2 className="text-center">{value}</h2>
         </div>
       </ReactCardFlip>
