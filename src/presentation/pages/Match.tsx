@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../shadcnUI/components/ui/button";
 import { Card } from "../components/Card";
 
-export const Match = () => {
+export const MatchPage = () => {
   const [dealerFirstCardComplete, setDealerFirstCardComplete] = useState(false);
   const [dealerSecondCardComplete, setDealerSecondCardComplete] =
     useState(false);
