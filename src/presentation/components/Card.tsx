@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactCardFlip from "react-card-flip";
 import { motion } from "framer-motion";
 
@@ -15,6 +15,10 @@ export const Card = ({
   onAnimationComplete: () => void;
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+
+  useEffect(() => {
+    setIsFlipped(isOpen);
+  }, [isOpen]);
 
   return (
     <motion.div
