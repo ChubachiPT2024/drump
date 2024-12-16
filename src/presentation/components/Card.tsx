@@ -25,7 +25,7 @@ export const Card = ({
       initial={{ x: "100vw", y: "25vh" }}
       animate={{
         x: "40vw",
-        y: owner == "dealer" ? "0%" : "50vh",
+        y: owner == "dealer" ? "0%" : "25vh",
       }}
       transition={{
         type: "linear",

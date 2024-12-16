@@ -44,7 +44,7 @@ export const Match = () => {
   }, [cards]);
 
   return (
-    <>
+    <div className="relative min-h-screen">
       <div className="dealer flex">
         {cards
           .filter((card) => card.owner === "dealer")
@@ -87,18 +87,14 @@ export const Match = () => {
             }
           })}
       </div>
-      <div className="flex">
-        <Button onClick={handleStand} className="ml-auto">
+      <div className="absolute bottom-0 left-0 w-full flex justify-center pb-4">
+        <Button onClick={handleStand} className="mx-2">
           STAND
         </Button>
-        <Button
-          onClick={handleHit}
-          className="ml-auto"
-          disabled={!canHitByPlayer}
-        >
+        <Button onClick={handleHit} className="mx-2" disabled={!canHitByPlayer}>
           HIT
         </Button>
       </div>
-    </>
+    </div>
   );
 };
