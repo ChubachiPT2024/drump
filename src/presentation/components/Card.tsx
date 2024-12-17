@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactCardFlip from "react-card-flip";
 import { motion } from "framer-motion";
 
@@ -16,12 +16,16 @@ export const Card = ({
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
+  useEffect(() => {
+    setIsFlipped(isOpen);
+  }, [isOpen]);
+
   return (
     <motion.div
       initial={{ x: "100vw", y: "25vh" }}
       animate={{
         x: "40vw",
-        y: owner == "dealer" ? "0%" : "50vh",
+        y: owner == "dealer" ? "0%" : "25vh",
       }}
       transition={{
         type: "linear",
