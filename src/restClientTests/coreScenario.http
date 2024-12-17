@@ -1,0 +1,68 @@
+@baseUrl = http://localhost:3000/api
+
+###
+# @name shoeCreate
+Post {{baseUrl}}/shoes Http/1.1
+
+###
+# @name matchCreate
+Post {{baseUrl}}/matches Http/1.1
+content-type: application/json
+
+{
+    "shoeId": "{{shoeCreate.response.body.$.id}}"
+}
+
+###
+# @name roundCreate
+Post {{baseUrl}}/rounds Http/1.1
+content-type: application/json
+
+{
+    "shoeId": "{{shoeCreate.response.body.$.id}}"
+}
+
+###
+# @name matchAddRound
+Post {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/add-round Http/1.1
+content-type: application/json
+
+{
+    "roundId": "{{roundCreate.response.body.$.id}}"
+}
+
+###
+# @name roundStart
+Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/start Http/1.1
+
+###
+# @name roundGetUpCard
+Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/up-card Http/1.1
+
+###
+# @name roundGetPlayersHand
+Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/players-hand Http/1.1
+
+###
+# @name roundGetHandSignalOptions
+Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/hand-signal-options Http/1.1
+
+###
+# @name roundHit
+Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/hit Http/1.1
+
+###
+# @name roundStand
+Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/stand Http/1.1
+
+###
+# @name roundComplete
+Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/complete Http/1.1
+
+###
+# @name roundGetDealersHand
+Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/dealers-hand Http/1.1
+
+###
+# @name roundGetResult
+Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/result Http/1.1
