@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "../shadcnUI/components/ui/button";
 import { Card } from "../components/Card";
 
-export const Match = () => {
+export const MatchPage = () => {
   const [canHitByPlayer, setCanHitByPlayer] = useState(true);
   const [dealerCardsToShow, setDealerCardsToShow] = useState(1);
   const [playerCardsToShow, setPlayerCardsToShow] = useState(1);
