@@ -12,6 +12,7 @@ import { RoundStandCommand } from "./Stand/roundStandCommand";
 import { RoundGetUpCardCommand } from "./GetUpCard/roundGetUpCardCommand";
 import { RoundCompleteCommand } from "./Complete/roundCompleteCommand";
 import { RoundGetDealersHandCommand } from "./GetDealersHand/roundGetDealersHandCommand";
+import { RoundService } from "@/domain/services/roundService";
 
 describe("start", () => {
   test("The dealer and player gets a hand with two cards.", async () => {
@@ -25,10 +26,13 @@ describe("start", () => {
     const round = roundFactory.create(shoe.id);
     await roundRepository.saveAsync(round);
 
+    const roundService = new RoundService();
+
     const service = new RoundApplicationService(
       roundFactory,
       roundRepository,
       shoeRepository,
+      roundService,
     );
 
     // Act
@@ -53,10 +57,13 @@ describe("get player hand", () => {
     const round = roundFactory.create(shoe.id);
     await roundRepository.saveAsync(round);
 
+    const roundService = new RoundService();
+
     const service = new RoundApplicationService(
       roundFactory,
       roundRepository,
       shoeRepository,
+      roundService,
     );
 
     await service.startAsync(new RoundStartCommand(round.id.value));
@@ -91,10 +98,13 @@ describe("hit", () => {
     const round = roundFactory.create(shoe.id);
     await roundRepository.saveAsync(round);
 
+    const roundService = new RoundService();
+
     const service = new RoundApplicationService(
       roundFactory,
       roundRepository,
       shoeRepository,
+      roundService,
     );
 
     await service.startAsync(new RoundStartCommand(round.id.value));
@@ -126,10 +136,13 @@ describe("stand", () => {
     const round = roundFactory.create(shoe.id);
     await roundRepository.saveAsync(round);
 
+    const roundService = new RoundService();
+
     const service = new RoundApplicationService(
       roundFactory,
       roundRepository,
       shoeRepository,
+      roundService,
     );
 
     await service.startAsync(new RoundStartCommand(round.id.value));
@@ -156,10 +169,13 @@ describe("get up card", () => {
     const round = roundFactory.create(shoe.id);
     await roundRepository.saveAsync(round);
 
+    const roundService = new RoundService();
+
     const service = new RoundApplicationService(
       roundFactory,
       roundRepository,
       shoeRepository,
+      roundService,
     );
 
     await service.startAsync(new RoundStartCommand(round.id.value));
@@ -187,10 +203,13 @@ describe("complete", () => {
     const round = roundFactory.create(shoe.id);
     await roundRepository.saveAsync(round);
 
+    const roundService = new RoundService();
+
     const service = new RoundApplicationService(
       roundFactory,
       roundRepository,
       shoeRepository,
+      roundService,
     );
 
     await service.startAsync(new RoundStartCommand(round.id.value));
@@ -217,10 +236,13 @@ describe("get dealear's hand", () => {
     const round = roundFactory.create(shoe.id);
     await roundRepository.saveAsync(round);
 
+    const roundService = new RoundService();
+
     const service = new RoundApplicationService(
       roundFactory,
       roundRepository,
       shoeRepository,
+      roundService,
     );
 
     await service.startAsync(new RoundStartCommand(round.id.value));

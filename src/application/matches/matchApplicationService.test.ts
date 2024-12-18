@@ -9,7 +9,6 @@ import { ShoeId } from "@/domain/models/shoes/shoeId";
 import { MatchAddRoundCommand } from "./AddRound/matchAddRoundCommand";
 import { Round } from "@/domain/models/rounds/round";
 import { RoundId } from "@/domain/models/rounds/roundId";
-import { Hand } from "@/domain/models/hands/hand";
 
 describe("create", () => {
   test("Can create a match", async () => {
@@ -32,12 +31,7 @@ describe("add round", () => {
     const match = Match.create(new MatchId("matchId"), new ShoeId("shoeId"));
     await matchRepository.saveAsync(match);
     const service = new MatchApplicationService(matchFactory, matchRepository);
-    const round = new Round(
-      new RoundId("roundId"),
-      match.shoeId,
-      new Hand([], false),
-      new Hand([], false),
-    );
+    const round = Round.create(new RoundId("roundId"), match.shoeId);
 
     // Act
     await service.addRoundAsync(

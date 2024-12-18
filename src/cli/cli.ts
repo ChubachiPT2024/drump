@@ -24,6 +24,7 @@ import { RoundGetResultCommand } from "@/application/rounds/GetResult/roundGetRe
 import { exit } from "node:process";
 import { Suit } from "@/domain/models/suits/suit";
 import { CardsService } from "@/domain/services/cardsService";
+import { RoundService } from "@/domain/services/roundService";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
@@ -56,10 +57,12 @@ const matchApplicationService = new MatchApplicationService(
 
 const roundFactory = new InMemoryRoundFactory();
 const roundRepository = new InMemoryRoundRepository();
+const roundService = new RoundService();
 const roundApplicationService = new RoundApplicationService(
   roundFactory,
   roundRepository,
   shoeRepository,
+  roundService
 );
 
 // シューの作成

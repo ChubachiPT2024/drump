@@ -13,6 +13,7 @@ import { InMemoryRoundFactory } from "./infrastructure/inMemory/rounds/inMemoryR
 import { InMemoryRoundRepository } from "./infrastructure/inMemory/rounds/inMemoryRoundRepository";
 import { RoundApplicationService } from "./application/rounds/roundApplicationService";
 import { RoundRouterFactory } from "./router/rounds/roundRouterFactory";
+import { RoundService } from "./domain/services/roundService";
 
 // TODO DI フレームワークの検討
 const shoeFactory = new InMemoryShoeFactory();
@@ -35,10 +36,12 @@ const matchRouterFactory = new MatchRouterFactory(matchApplicationService);
 
 const roundFactory = new InMemoryRoundFactory();
 const roundRepository = new InMemoryRoundRepository();
+const roundService = new RoundService();
 const roundApplicationService = new RoundApplicationService(
   roundFactory,
   roundRepository,
   shoeRepository,
+  roundService
 );
 const roundRouterFactory = new RoundRouterFactory(roundApplicationService);
 

@@ -22,6 +22,7 @@ import { RoundGetDealersHandResult } from "./GetDealersHand/roundGetDealersHandR
 import { RoundGetDealersHandResultCard } from "./GetDealersHand/roundGetDealersHandResultCard";
 import { RoundGetResultCommand } from "./GetResult/roundGetResultCommand";
 import { RoundGetResultResult } from "./GetResult/roundGetResultResult";
+import { RoundService } from "@/domain/services/roundService";
 
 /**
  * ラウンドアプリケーションサービス
@@ -33,11 +34,13 @@ export class RoundApplicationService {
    * @param roundFactory ラウンドファクトリ
    * @param roundRepository ラウンドリポジトリ
    * @param shoeRepository シューリポジトリ
+   * @param roundService ラウンドサービス
    */
   public constructor(
     private readonly roundFactory: RoundFactory,
     private readonly roundRepository: RoundRepository,
     private readonly shoeRepository: ShoeRepository,
+    private readonly roundService: RoundService,
   ) {}
 
   /**
@@ -221,6 +224,11 @@ export class RoundApplicationService {
   ): Promise<RoundGetResultResult> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
 
-    return new RoundGetResultResult(round.calculateResult());
+    const roundResult = this.roundService.calculateResult(
+      round.getPlayersHand(),
+      round.getDealersHand(),
+    );
+
+    return new RoundGetResultResult(roundResult);
   }
 }

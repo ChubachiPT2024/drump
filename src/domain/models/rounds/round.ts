@@ -1,7 +1,7 @@
 import { Card } from "../cards/card";
 import { Hand } from "../hands/hand";
 import { HandSignal } from "../handSignals/handSignal";
-import { RoundResult } from "../roundResults/roundResult";
+import { RoundPlayer } from "../roundPlayers/roundPlayer";
 import { ShoeId } from "../shoes/shoeId";
 import { RoundId } from "./roundId";
 
@@ -15,14 +15,25 @@ export class Round {
    * @param id ID
    * @param shoeId シュー ID
    * @param dealersHand ディーラーのハンド
-   * @param playersHand プレイヤーのハンド
+   * @param player プレイヤー
    */
-  public constructor(
+  private constructor(
     public readonly id: RoundId,
     public readonly shoeId: ShoeId,
     private dealersHand: Hand,
-    private playersHand: Hand,
+    private readonly player: RoundPlayer,
   ) {}
+
+  /**
+   * インスタンスを生成する
+   *
+   * @param id ID
+   * @param shoeId シュー ID
+   * @returns インスタンス
+   */
+  public static create(id: RoundId, shoeId: ShoeId) {
+    return new Round(id, shoeId, new Hand([], false), RoundPlayer.create());
+  }
 
   /**
    * ディーラーにカードを配る
@@ -39,7 +50,7 @@ export class Round {
    * @param card カード
    */
   public dealCardToPlayer(card: Card): void {
-    this.playersHand = this.playersHand.add(card);
+    this.player.addCardToHand(card);
   }
 
   /**
@@ -57,7 +68,7 @@ export class Round {
    * @returns プレイヤーのハンド
    */
   public getPlayersHand(): Hand {
-    return this.playersHand;
+    return this.player.getHand();
   }
 
   /**
@@ -66,18 +77,14 @@ export class Round {
    * @returns プレイヤーのハンドシグナルの選択肢
    */
   public getPlayersHandSignalOptions(): HandSignal[] {
-    if (this.playersHand.isResolved()) {
-      return [];
-    }
-
-    return [HandSignal.Hit, HandSignal.Stand];
+    return this.player.getHandSignalOptions();
   }
 
   /**
    * プレイヤーのハンドをスタンドする
    */
   public standPlayersHand(): void {
-    this.playersHand = this.playersHand.stand();
+    this.player.stand();
   }
 
   /**
@@ -105,44 +112,5 @@ export class Round {
   public shouldDealerHit(): boolean {
     // TODO ディーラーのハンド専用のクラスを作るべきか？
     return this.dealersHand.calculateTotal() < 17;
-  }
-
-  /**
-   * ラウンドの結果を計算する
-   *
-   * @returns ラウンドの結果
-   */
-  public calculateResult(): RoundResult {
-    // プレイヤーがバスト
-    if (this.getPlayersHand().isBust()) {
-      return RoundResult.Loss;
-    }
-
-    // プレイヤーがブラックジャック
-    if (this.getPlayersHand().isBlackJack()) {
-      if (this.getDealersHand().isBlackJack()) {
-        return RoundResult.Push;
-      } else {
-        return RoundResult.Win;
-      }
-    }
-
-    // プレイヤーがブラックジャック以外の 21 以下
-    if (this.getDealersHand().isBust()) {
-      return RoundResult.Win;
-    }
-    if (this.getDealersHand().isBlackJack()) {
-      return RoundResult.Loss;
-    }
-
-    const playerTotal = this.getPlayersHand().calculateTotal();
-    const dealerTotal = this.getDealersHand().calculateTotal();
-    if (playerTotal > dealerTotal) {
-      return RoundResult.Win;
-    } else if (playerTotal === dealerTotal) {
-      return RoundResult.Push;
-    } else {
-      return RoundResult.Loss;
-    }
   }
 }
