@@ -1,5 +1,5 @@
-import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Credit } from "../credits/credit";
+import { MatchPlayer } from "../matchPlayers/matchPlayer";
 import { RoundId } from "../rounds/roundId";
 import { ShoeId } from "../shoes/shoeId";
 import { MatchId } from "./matchId";
@@ -14,13 +14,13 @@ export class Match {
    * @param id ID
    * @param shoeId シュー ID
    * @param rounds ラウンド ID リスト
-   * @param credit クレジット
+   * @param player プレイヤー
    */
   private constructor(
     public readonly id: MatchId,
     public readonly shoeId: ShoeId,
     private roundIds: RoundId[],
-    private credit: Credit,
+    private player: MatchPlayer,
   ) {}
 
   /**
@@ -31,8 +31,7 @@ export class Match {
    * @returns インスタンス
    */
   public static create(id: MatchId, shoeId: ShoeId) {
-    // TODO クレジットの初期値
-    return new Match(id, shoeId, [], new Credit(new ChipAmount(50000)));
+    return new Match(id, shoeId, [], MatchPlayer.create());
   }
 
   /**
@@ -59,6 +58,6 @@ export class Match {
    * @returns クレジット
    */
   public getCredit(): Credit {
-    return this.credit;
+    return this.player.getCredit();
   }
 }
