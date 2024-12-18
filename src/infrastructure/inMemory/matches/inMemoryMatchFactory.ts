@@ -14,6 +14,6 @@ export class InMemoryMatchFactory implements MatchFactory {
    * @returns 試合
    */
   public create(shoeId: ShoeId): Match {
-    return new Match(new MatchId(crypto.randomUUID()), shoeId, []);
+    return Match.create(new MatchId(crypto.randomUUID()), shoeId);
   }
 }

@@ -29,7 +29,7 @@ describe("add round", () => {
     // Arrange
     const matchFactory = new InMemoryMatchFactory();
     const matchRepository = new InMemoryMatchRepository();
-    const match = new Match(new MatchId("matchId"), new ShoeId("shoeId"), []);
+    const match = Match.create(new MatchId("matchId"), new ShoeId("shoeId"));
     await matchRepository.saveAsync(match);
     const service = new MatchApplicationService(matchFactory, matchRepository);
     const round = new Round(

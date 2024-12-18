@@ -7,11 +7,7 @@ import { ShoeId } from "@/domain/models/shoes/shoeId";
 describe("save", () => {
   test("Can save a match.", async () => {
     const repository = new InMemoryMatchRepository();
-    const expected = new Match(
-      new MatchId("matchId"),
-      new ShoeId("shoeId"),
-      [],
-    );
+    const expected = Match.create(new MatchId("matchId"), new ShoeId("shoeId"));
 
     await repository.saveAsync(expected);
 

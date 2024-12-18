@@ -6,7 +6,7 @@ import { RoundId } from "../rounds/roundId";
 
 describe("add round", () => {
   test("Can add a round.", () => {
-    const match = new Match(new MatchId("matchId"), new ShoeId("shoeId"), []);
+    const match = Match.create(new MatchId("matchId"), new ShoeId("shoeId"));
     const roundId = new RoundId("roundId");
 
     match.addRound(roundId);
