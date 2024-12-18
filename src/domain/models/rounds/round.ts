@@ -1,6 +1,7 @@
 import { Card } from "../cards/card";
 import { Hand } from "../hands/hand";
 import { HandSignal } from "../handSignals/handSignal";
+import { RoundDealer } from "../roundDealers/roundDealer";
 import { RoundPlayer } from "../roundPlayers/roundPlayer";
 import { ShoeId } from "../shoes/shoeId";
 import { RoundId } from "./roundId";
@@ -14,13 +15,13 @@ export class Round {
    *
    * @param id ID
    * @param shoeId シュー ID
-   * @param dealersHand ディーラーのハンド
+   * @param dealer ディーラー
    * @param player プレイヤー
    */
   private constructor(
     public readonly id: RoundId,
     public readonly shoeId: ShoeId,
-    private dealersHand: Hand,
+    private readonly dealer: RoundDealer,
     private readonly player: RoundPlayer,
   ) {}
 
@@ -32,7 +33,7 @@ export class Round {
    * @returns インスタンス
    */
   public static create(id: RoundId, shoeId: ShoeId) {
-    return new Round(id, shoeId, new Hand([], false), RoundPlayer.create());
+    return new Round(id, shoeId, RoundDealer.create(), RoundPlayer.create());
   }
 
   /**
@@ -41,7 +42,7 @@ export class Round {
    * @param card カード
    */
   public dealCardToDealer(card: Card): void {
-    this.dealersHand = this.dealersHand.add(card);
+    this.dealer.addCardToHand(card);
   }
 
   /**
@@ -59,7 +60,7 @@ export class Round {
    * @returns ディーラーのハンド
    */
   public getDealersHand(): Hand {
-    return this.dealersHand;
+    return this.dealer.getHand();
   }
 
   /**
@@ -91,7 +92,7 @@ export class Round {
    * ディーラーのハンドをスタンドする
    */
   public standDealearsHand(): void {
-    this.dealersHand = this.dealersHand.stand();
+    this.dealer.stand();
   }
 
   /**
@@ -100,8 +101,7 @@ export class Round {
    * @returns アップカード
    */
   public getUpCard(): Card {
-    // TODO ディーラーのハンド専用のクラスを作るべきか？
-    return this.dealersHand.getCards()[0];
+    return this.dealer.getUpCard();
   }
 
   /**
@@ -110,7 +110,6 @@ export class Round {
    * @returns ディーラーがヒットしなければならないかどうか
    */
   public shouldDealerHit(): boolean {
-    // TODO ディーラーのハンド専用のクラスを作るべきか？
-    return this.dealersHand.calculateTotal() < 17;
+    return this.dealer.shouldHit();
   }
 }

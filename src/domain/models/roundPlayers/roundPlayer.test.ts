@@ -5,6 +5,16 @@ import { Rank } from "../ranks/rank";
 import { Suit } from "../suits/suit";
 import { HandSignal } from "../handSignals/handSignal";
 
+describe("add card to hand", () => {
+  test("It adds a card to the hand.", () => {
+    const roundPlayer = RoundPlayer.create();
+
+    roundPlayer.addCardToHand(new Card(Rank.Ace, Suit.Spade));
+
+    expect(roundPlayer.getHand().count()).toBe(1);
+  });
+});
+
 describe("get hand signal options", () => {
   test("Can hit if the hand is not resolved", () => {
     const roundPlayer = RoundPlayer.create();
