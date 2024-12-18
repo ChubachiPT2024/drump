@@ -19,7 +19,7 @@ export class RoundPlayer {
    * @returns インスタンス
    */
   public static create(): RoundPlayer {
-    return new RoundPlayer(new Hand([], false));
+    return new RoundPlayer(Hand.create());
   }
 
   /**

@@ -1,179 +1,173 @@
 import { describe, expect, test } from "vitest";
-import { Hand } from "../models/hands/hand";
 import { Card } from "../models/cards/card";
 import { Rank } from "../models/ranks/rank";
 import { Suit } from "../models/suits/suit";
 import { RoundResult } from "../models/roundResults/roundResult";
 import { RoundService } from "./roundService";
+import { RoundPlayer } from "../models/roundPlayers/roundPlayer";
+import { RoundDealer } from "../models/roundDealers/roundDealer";
 
 describe("calculate result", () => {
   test.each([
     // プレイヤー: バスト, ディーラー: バスト
     {
-      playersHand: new Hand(
-        [
-          new Card(Rank.Ten, Suit.Spade),
-          new Card(Rank.Ten, Suit.Spade),
-          new Card(Rank.Ten, Suit.Spade),
-        ],
-        false,
-      ),
-      dealersHand: new Hand(
-        [
-          new Card(Rank.Ten, Suit.Spade),
-          new Card(Rank.Seven, Suit.Spade),
-          new Card(Rank.Seven, Suit.Spade),
-        ],
-        false,
-      ),
+      playersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
+      dealersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Seven, Suit.Spade),
+        new Card(Rank.Seven, Suit.Spade),
+      ],
       expected: RoundResult.Loss,
     },
     // プレイヤー: バスト, ディーラー: ブラックジャック
     {
-      playersHand: new Hand(
-        [
-          new Card(Rank.Ten, Suit.Spade),
-          new Card(Rank.Ten, Suit.Spade),
-          new Card(Rank.Ten, Suit.Spade),
-        ],
-        false,
-      ),
-      dealersHand: new Hand(
-        [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
-        false,
-      ),
+      playersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
+      dealersCards: [
+        new Card(Rank.Ace, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
       expected: RoundResult.Loss,
     },
     // プレイヤー: バスト, ディーラー: ブラックジャック以外の 21 以下
     {
-      playersHand: new Hand(
-        [
-          new Card(Rank.Ten, Suit.Spade),
-          new Card(Rank.Ten, Suit.Spade),
-          new Card(Rank.Ten, Suit.Spade),
-        ],
-        false,
-      ),
-      dealersHand: new Hand(
-        [new Card(Rank.Ten, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
-        true,
-      ),
+      playersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
+      dealersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
       expected: RoundResult.Loss,
     },
     // プレイヤー: ブラックジャック, ディーラー: バスト
     {
-      playersHand: new Hand(
-        [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
-        false,
-      ),
-      dealersHand: new Hand(
-        [
-          new Card(Rank.Ten, Suit.Spade),
-          new Card(Rank.Ten, Suit.Spade),
-          new Card(Rank.Ten, Suit.Spade),
-        ],
-        false,
-      ),
+      playersCards: [
+        new Card(Rank.Ace, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
+      dealersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
       expected: RoundResult.Win,
     },
     // プレイヤー: ブラックジャック, ディーラー: ブラックジャック以外の 21 以下
     {
-      playersHand: new Hand(
-        [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
-        false,
-      ),
-      dealersHand: new Hand(
-        [new Card(Rank.Ten, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
-        true,
-      ),
+      playersCards: [
+        new Card(Rank.Ace, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
+      dealersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
       expected: RoundResult.Win,
     },
     // プレイヤー: ブラックジャック, ディーラー: ブラックジャック
     {
-      playersHand: new Hand(
-        [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
-        false,
-      ),
-      dealersHand: new Hand(
-        [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
-        false,
-      ),
+      playersCards: [
+        new Card(Rank.Ace, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
+      dealersCards: [
+        new Card(Rank.Ace, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
       expected: RoundResult.Push,
     },
     // プレイヤー: ブラックジャック以外の 21 以下, ディーラー: バスト
     {
-      playersHand: new Hand(
-        [new Card(Rank.Ten, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
-        true,
-      ),
-      dealersHand: new Hand(
-        [
-          new Card(Rank.Ten, Suit.Spade),
-          new Card(Rank.Seven, Suit.Spade),
-          new Card(Rank.Seven, Suit.Spade),
-        ],
-        false,
-      ),
+      playersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
+      dealersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Seven, Suit.Spade),
+        new Card(Rank.Seven, Suit.Spade),
+      ],
       expected: RoundResult.Win,
     },
     // プレイヤー: ブラックジャック以外の 21 以下, ディーラー: ブラックジャック
     {
-      playersHand: new Hand(
-        [new Card(Rank.Ten, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
-        true,
-      ),
-      dealersHand: new Hand(
-        [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
-        false,
-      ),
+      playersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
+      dealersCards: [
+        new Card(Rank.Ace, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
       expected: RoundResult.Loss,
     },
     // プレイヤー: ブラックジャック以外の 21 以下, ディーラー: ブラックジャック以外の 21 以下, (プレイヤーのトータル) > (ディーラーのトータル)
     {
-      playersHand: new Hand(
-        [new Card(Rank.Ten, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
-        true,
-      ),
-      dealersHand: new Hand(
-        [new Card(Rank.Ten, Suit.Spade), new Card(Rank.Nine, Suit.Spade)],
-        true,
-      ),
+      playersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
+      dealersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Nine, Suit.Spade),
+      ],
       expected: RoundResult.Win,
     },
     // プレイヤー: ブラックジャック以外の 21 以下, ディーラー: ブラックジャック以外の 21 以下, (プレイヤーのトータル) = (ディーラーのトータル)
     {
-      playersHand: new Hand(
-        [new Card(Rank.Ten, Suit.Spade), new Card(Rank.Nine, Suit.Spade)],
-        true,
-      ),
-      dealersHand: new Hand(
-        [new Card(Rank.Ten, Suit.Spade), new Card(Rank.Nine, Suit.Spade)],
-        true,
-      ),
+      playersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Nine, Suit.Spade),
+      ],
+      dealersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Nine, Suit.Spade),
+      ],
       expected: RoundResult.Push,
     },
     // プレイヤー: ブラックジャック以外の 21 以下, ディーラー: ブラックジャック以外の 21 以下, (プレイヤーのトータル) < (ディーラーのトータル)
     {
-      playersHand: new Hand(
-        [new Card(Rank.Ten, Suit.Spade), new Card(Rank.Nine, Suit.Spade)],
-        true,
-      ),
-      dealersHand: new Hand(
-        [new Card(Rank.Ten, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
-        true,
-      ),
+      playersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Nine, Suit.Spade),
+      ],
+      dealersCards: [
+        new Card(Rank.Ten, Suit.Spade),
+        new Card(Rank.Ten, Suit.Spade),
+      ],
       expected: RoundResult.Loss,
     },
   ] as {
-    playersHand: Hand;
-    dealersHand: Hand;
+    playersCards: Card[];
+    dealersCards: Card[];
     expected: RoundResult;
-  }[])("The result of a round.", ({ playersHand, dealersHand, expected }) => {
+  }[])("The result of a round.", ({ playersCards, dealersCards, expected }) => {
     // Arrange
     const roundService = new RoundService();
+    const roundPlayer = RoundPlayer.create();
+    for (const playersCard of playersCards) {
+      roundPlayer.addCardToHand(playersCard);
+    }
+    const roundDealer = RoundDealer.create();
+    for (const dealearsCard of dealersCards) {
+      roundDealer.addCardToHand(dealearsCard);
+    }
 
     // Act
-    const result = roundService.calculateResult(playersHand, dealersHand);
+    const result = roundService.calculateResult(
+      roundPlayer.getHand(),
+      roundDealer.getHand(),
+    );
 
     // Assert
     expect(result).toBe(expected);

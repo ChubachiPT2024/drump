@@ -18,7 +18,7 @@ export class RoundDealer {
    * @returns インスタンス
    */
   public static create(): RoundDealer {
-    return new RoundDealer(new Hand([], false));
+    return new RoundDealer(Hand.create());
   }
 
   /**
