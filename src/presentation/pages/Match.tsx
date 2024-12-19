@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
+
 import { Button } from "../shadcnUI/components/ui/button";
+
 import { Card } from "../components/Card";
+import { BetModal } from "../components/match/bet-modal";
 
 export const MatchPage = () => {
   const [canHitByPlayer, setCanHitByPlayer] = useState(true);
@@ -95,6 +98,7 @@ export const MatchPage = () => {
           HIT
         </Button>
       </div>
+      <BetModal />
     </div>
   );
 };
