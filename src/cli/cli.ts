@@ -27,6 +27,8 @@ import { CardsService } from "@/domain/services/cardsService";
 import { RoundService } from "@/domain/services/roundService";
 import { InMemoryDealerFactory } from "@/infrastructure/inMemory/dealears/inMemoryDealearFactory";
 import { InMemoryDealerRepository } from "@/infrastructure/inMemory/dealears/inMemoryDealerRepository";
+import { InMemoryPlayerFactory } from "@/infrastructure/inMemory/players/inMemoryPlayerFactory";
+import { InMemoryPlayerRepository } from "@/infrastructure/inMemory/players/inMemoryPlayerRepository";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
@@ -60,15 +62,20 @@ const matchApplicationService = new MatchApplicationService(
 const dealerFactory = new InMemoryDealerFactory();
 const dealerRepository = new InMemoryDealerRepository();
 
+const playerFactory = new InMemoryPlayerFactory();
+const playerRepository = new InMemoryPlayerRepository();
+
 const roundFactory = new InMemoryRoundFactory();
 const roundRepository = new InMemoryRoundRepository();
 const roundService = new RoundService();
 const roundApplicationService = new RoundApplicationService(
   roundFactory,
   dealerFactory,
+  playerFactory,
   roundRepository,
   shoeRepository,
   dealerRepository,
+  playerRepository,
   roundService,
 );
 

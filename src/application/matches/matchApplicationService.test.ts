@@ -10,6 +10,7 @@ import { MatchAddRoundCommand } from "./AddRound/matchAddRoundCommand";
 import { Round } from "@/domain/models/rounds/round";
 import { RoundId } from "@/domain/models/rounds/roundId";
 import { DealerId } from "@/domain/models/dealers/dealerId";
+import { PlayerId } from "@/domain/models/players/playerId";
 
 describe("create", () => {
   test("Can create a match", async () => {
@@ -32,10 +33,11 @@ describe("add round", () => {
     const match = Match.create(new MatchId("matchId"), new ShoeId("shoeId"));
     await matchRepository.saveAsync(match);
     const service = new MatchApplicationService(matchFactory, matchRepository);
-    const round = Round.create(
+    const round = new Round(
       new RoundId("roundId"),
       match.shoeId,
       new DealerId("dealerId"),
+      new PlayerId("playerId"),
     );
 
     // Act

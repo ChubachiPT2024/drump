@@ -25,6 +25,9 @@ import { RoundGetResultResult } from "./GetResult/roundGetResultResult";
 import { RoundService } from "@/domain/services/roundService";
 import { DealerRepository } from "@/domain/models/dealers/dealerRepository";
 import { DealerFactory } from "@/domain/models/dealers/dealerFactory";
+import { PlayerRepository } from "@/domain/models/players/playerRepository";
+import { PlayerFactory } from "@/domain/models/players/playerFactory";
+import { UserId } from "@/domain/models/users/userId";
 
 /**
  * ラウンドアプリケーションサービス
@@ -35,17 +38,21 @@ export class RoundApplicationService {
    *
    * @param roundFactory ラウンドファクトリ
    * @param dealerFactory ディーラーファクトリ
+   * @param playerFactory プレイヤーファクトリ
    * @param roundRepository ラウンドリポジトリ
    * @param shoeRepository シューリポジトリ
    * @param dealerRepository ディーラーリポジトリ
+   * @param playerRepository プレイヤーリポジトリ
    * @param roundService ラウンドサービス
    */
   public constructor(
     private readonly roundFactory: RoundFactory,
     private readonly dealerFactory: DealerFactory,
+    private readonly playerFactory: PlayerFactory,
     private readonly roundRepository: RoundRepository,
     private readonly shoeRepository: ShoeRepository,
     private readonly dealerRepository: DealerRepository,
+    private readonly playerRepository: PlayerRepository,
     private readonly roundService: RoundService,
   ) {}
 
@@ -62,9 +69,15 @@ export class RoundApplicationService {
     const dealer = this.dealerFactory.create();
     await this.dealerRepository.saveAsync(dealer);
 
+    // TODO playerApplicationService.createAsync() を作って分割を検討
+    // TODO 選択されたユーザ ID
+    const player = this.playerFactory.create(new UserId("userId"));
+    await this.playerRepository.saveAsync(player);
+
     const round = this.roundFactory.create(
       new ShoeId(command.shoeId),
       dealer.id,
+      player.id,
     );
     await this.roundRepository.saveAsync(round);
 
@@ -80,6 +93,7 @@ export class RoundApplicationService {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
     const shoe = await this.shoeRepository.findAsync(round.shoeId);
     const dealer = await this.dealerRepository.findAsync(round.dealerId);
+    const player = await this.playerRepository.findAsync(round.playerId);
 
     // TODO ラウンドがまだ開始していないことの検証
 
@@ -89,14 +103,14 @@ export class RoundApplicationService {
     }
 
     for (let i = 0; i < 2; i++) {
-      round.dealCardToPlayer(shoe.peek());
+      player.addCardToHand(shoe.peek());
       shoe.draw();
     }
 
     // TODO トランザクション処理
-    await this.roundRepository.saveAsync(round);
     await this.shoeRepository.saveAsync(shoe);
     await this.dealerRepository.saveAsync(dealer);
+    await this.playerRepository.saveAsync(player);
   }
 
   /**
@@ -109,8 +123,9 @@ export class RoundApplicationService {
     command: RoundGetPlayersHandCommand,
   ): Promise<RoundGetPlayersHandResult> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
+    const player = await this.playerRepository.findAsync(round.playerId);
 
-    const playersHand = round.getPlayersHand();
+    const playersHand = player.getHand();
 
     return new RoundGetPlayersHandResult(
       playersHand
@@ -131,10 +146,9 @@ export class RoundApplicationService {
     command: RoundGetHandSignalOptionsCommand,
   ): Promise<RoundGetHandSignalOptionsResult> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
+    const player = await this.playerRepository.findAsync(round.playerId);
 
-    return new RoundGetHandSignalOptionsResult(
-      round.getPlayersHandSignalOptions(),
-    );
+    return new RoundGetHandSignalOptionsResult(player.getHandSignalOptions());
   }
 
   /**
@@ -145,18 +159,18 @@ export class RoundApplicationService {
   public async hitAsync(command: RoundHitCommand): Promise<void> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
     const shoe = await this.shoeRepository.findAsync(round.shoeId);
+    const player = await this.playerRepository.findAsync(round.playerId);
 
-    const playersHand = round.getPlayersHand();
-    if (!playersHand.canHit()) {
+    if (!player.getHand().canHit()) {
       throw new RoundCannotHitError();
     }
 
-    round.dealCardToPlayer(shoe.peek());
+    player.addCardToHand(shoe.peek());
     shoe.draw();
 
     // TODO トランザクション処理
-    await this.roundRepository.saveAsync(round);
     await this.shoeRepository.saveAsync(shoe);
+    await this.playerRepository.saveAsync(player);
   }
 
   /**
@@ -166,10 +180,11 @@ export class RoundApplicationService {
    */
   public async standAsync(command: RoundStandCommand): Promise<void> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
+    const player = await this.playerRepository.findAsync(round.playerId);
 
-    round.standPlayersHand();
+    player.stand();
 
-    await this.roundRepository.saveAsync(round);
+    await this.playerRepository.saveAsync(player);
   }
 
   /**
@@ -245,9 +260,10 @@ export class RoundApplicationService {
   ): Promise<RoundGetResultResult> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
     const dealer = await this.dealerRepository.findAsync(round.dealerId);
+    const player = await this.playerRepository.findAsync(round.playerId);
 
     const roundResult = this.roundService.calculateResult(
-      round.getPlayersHand(),
+      player.getHand(),
       dealer.getHand(),
     );
 

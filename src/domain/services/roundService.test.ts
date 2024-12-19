@@ -4,9 +4,10 @@ import { Rank } from "../models/ranks/rank";
 import { Suit } from "../models/suits/suit";
 import { RoundResult } from "../models/roundResults/roundResult";
 import { RoundService } from "./roundService";
-import { RoundPlayer } from "../models/roundPlayers/roundPlayer";
+import { Player } from "../models/players/player";
 import { Dealer } from "../models/dealers/dealer";
 import { DealerId } from "../models/dealers/dealerId";
+import { PlayerId } from "../models/players/playerId";
 
 describe("calculate result", () => {
   test.each([
@@ -155,9 +156,12 @@ describe("calculate result", () => {
   }[])("The result of a round.", ({ playersCards, dealersCards, expected }) => {
     // Arrange
     const roundService = new RoundService();
-    const roundPlayer = RoundPlayer.create();
+    const player = Player.create(
+      new PlayerId("playerId"),
+      new DealerId("dealerId"),
+    );
     for (const playersCard of playersCards) {
-      roundPlayer.addCardToHand(playersCard);
+      player.addCardToHand(playersCard);
     }
     const dealer = Dealer.create(new DealerId("dealerId"));
     for (const dealearsCard of dealersCards) {
@@ -166,7 +170,7 @@ describe("calculate result", () => {
 
     // Act
     const result = roundService.calculateResult(
-      roundPlayer.getHand(),
+      player.getHand(),
       dealer.getHand(),
     );
 

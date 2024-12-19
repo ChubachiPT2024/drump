@@ -1,4 +1,5 @@
 import { DealerId } from "@/domain/models/dealers/dealerId";
+import { PlayerId } from "@/domain/models/players/playerId";
 import { Round } from "@/domain/models/rounds/round";
 import { RoundFactory } from "@/domain/models/rounds/roundFactory";
 import { RoundId } from "@/domain/models/rounds/roundId";
@@ -13,9 +14,15 @@ export class InMemoryRoundFactory implements RoundFactory {
    *
    * @param shoeId シュー ID
    * @param dealerId ディーラー ID
+   * @param playerId プレイヤー ID
    * @returns ラウンド
    */
-  public create(shoeId: ShoeId, dealerId: DealerId): Round {
-    return Round.create(new RoundId(crypto.randomUUID()), shoeId, dealerId);
+  public create(shoeId: ShoeId, dealerId: DealerId, playerId: PlayerId): Round {
+    return new Round(
+      new RoundId(crypto.randomUUID()),
+      shoeId,
+      dealerId,
+      playerId,
+    );
   }
 }

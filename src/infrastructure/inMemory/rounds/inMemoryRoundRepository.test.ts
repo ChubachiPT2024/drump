@@ -4,14 +4,16 @@ import { Round } from "@/domain/models/rounds/round";
 import { ShoeId } from "@/domain/models/shoes/shoeId";
 import { RoundId } from "@/domain/models/rounds/roundId";
 import { DealerId } from "@/domain/models/dealers/dealerId";
+import { PlayerId } from "@/domain/models/players/playerId";
 
 describe("save", () => {
   test("Can save a round.", async () => {
     const repository = new InMemoryRoundRepository();
-    const expected = Round.create(
+    const expected = new Round(
       new RoundId("roundId"),
       new ShoeId("shoeId"),
       new DealerId("dealerId"),
+      new PlayerId("playerId"),
     );
 
     await repository.saveAsync(expected);
