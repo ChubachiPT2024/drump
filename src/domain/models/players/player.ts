@@ -1,4 +1,5 @@
 import { Card } from "../cards/card";
+import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Hand } from "../hands/hand";
 import { HandSignal } from "../handSignals/handSignal";
 import { UserId } from "../users/userId";
@@ -13,11 +14,15 @@ export class Player {
    *
    * @param id ID
    * @param userId ユーザ ID
+   * @param credit クレジット
+   * @param bet ベット
    * @param hand ハンド
    */
   private constructor(
     public readonly id: PlayerId,
     public readonly userId: UserId,
+    private credit: ChipAmount,
+    private bet: ChipAmount,
     private hand: Hand,
   ) {}
 
@@ -29,7 +34,32 @@ export class Player {
    * @returns インスタンス
    */
   public static create(id: PlayerId, userId: UserId): Player {
-    return new Player(id, userId, Hand.create());
+    // TODO クレジットの初期値
+    return new Player(
+      id,
+      userId,
+      new ChipAmount(50000),
+      new ChipAmount(0),
+      Hand.create(),
+    );
+  }
+
+  /**
+   * クレジットを取得する
+   *
+   * @returns クレジット
+   */
+  public getCredit(): ChipAmount {
+    return this.credit;
+  }
+
+  /**
+   * ベットを取得する
+   *
+   * @returns ベット
+   */
+  public getBet(): ChipAmount {
+    return this.bet;
   }
 
   /**

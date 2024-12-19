@@ -1,5 +1,3 @@
-import { Credit } from "../credits/credit";
-import { MatchPlayer } from "../matchPlayers/matchPlayer";
 import { RoundId } from "../rounds/roundId";
 import { ShoeId } from "../shoes/shoeId";
 import { MatchId } from "./matchId";
@@ -14,13 +12,11 @@ export class Match {
    * @param id ID
    * @param shoeId シュー ID
    * @param rounds ラウンド ID リスト
-   * @param player プレイヤー
    */
   private constructor(
     public readonly id: MatchId,
     public readonly shoeId: ShoeId,
     private roundIds: RoundId[],
-    private player: MatchPlayer,
   ) {}
 
   /**
@@ -31,7 +27,7 @@ export class Match {
    * @returns インスタンス
    */
   public static create(id: MatchId, shoeId: ShoeId) {
-    return new Match(id, shoeId, [], MatchPlayer.create());
+    return new Match(id, shoeId, []);
   }
 
   /**
@@ -50,14 +46,5 @@ export class Match {
    */
   public getRoundIds(): RoundId[] {
     return [...this.roundIds];
-  }
-
-  /**
-   * クレジットを取得する
-   *
-   * @returns クレジット
-   */
-  public getCredit(): Credit {
-    return this.player.getCredit();
   }
 }
