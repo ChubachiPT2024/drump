@@ -3,7 +3,6 @@ import { MatchApplicationService } from "@/application/matches/matchApplicationS
 import { MatchCreateCommand } from "@/application/matches/Create/matchCreateCommand";
 import { RoundApplicationService } from "@/application/rounds/roundApplicationService";
 import { RoundCreateCommand } from "@/application/rounds/Create/roundCreateCommand";
-import { RoundGetHandSignalOptionsCommand } from "@/application/rounds/GetHandSignalOptions/roundGetHandSignalOptionsCommand";
 import { RoundStartCommand } from "@/application/rounds/Start/roundStartCommand";
 import { ShoeApplicationService } from "@/application/shoes/shoeApplicationService";
 import { InMemoryMatchFactory } from "@/infrastructure/inMemory/matches/inMemoryMatchFactory";
@@ -31,6 +30,7 @@ import { InMemoryPlayerRepository } from "@/infrastructure/inMemory/players/inMe
 import { PlayerApplicationService } from "@/application/players/playerApplicationService";
 import { PlayerCreateCommand } from "@/application/players/Create/playerCreateCommand";
 import { PlayerGetHandCommand } from "@/application/players/GetHand/playerGetHandCommand";
+import { PlayerGetHandSignalOptionsCommand } from "@/application/players/GetHandSignalOptions/playerGetHandSignalOptionsCommand";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
@@ -144,11 +144,11 @@ while (true) {
   }
 
   // ハンドシグナルの選択肢表示
-  const roundGetHandSignalOptionsResult =
-    await roundApplicationService.getHandSignalOptionsAsync(
-      new RoundGetHandSignalOptionsCommand(roundId),
+  const playerGetHandSignalOptionsResult =
+    await playerApplicationService.getHandSignalOptionsAsync(
+      new PlayerGetHandSignalOptionsCommand(playerId),
     );
-  const handSignals = roundGetHandSignalOptionsResult.handSignals;
+  const handSignals = playerGetHandSignalOptionsResult.handSignals;
 
   console.log("[Hand signal options]");
   for (const [i, handSignal] of handSignals.entries()) {

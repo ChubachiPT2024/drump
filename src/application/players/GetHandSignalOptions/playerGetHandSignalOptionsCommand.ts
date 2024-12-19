@@ -1,7 +1,7 @@
 /**
  * ハンドシグナルの選択肢取得コマンド
  */
-export class RoundGetHandSignalOptionsCommand {
+export class PlayerGetHandSignalOptionsCommand {
   /**
    * コンストラクタ
    *

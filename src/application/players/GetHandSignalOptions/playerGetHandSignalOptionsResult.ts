@@ -3,7 +3,7 @@ import { HandSignal } from "@/domain/models/handSignals/handSignal";
 /**
  * ハンドシグナルの選択肢取得結果
  */
-export class RoundGetHandSignalOptionsResult {
+export class PlayerGetHandSignalOptionsResult {
   /**
    * コンストラクタ
    *

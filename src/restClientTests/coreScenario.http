@@ -55,8 +55,8 @@ Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/up-card Http/1.1
 Get {{baseUrl}}/players/{{playerCreate.response.body.$.id}}/hand Http/1.1
 
 ###
-# @name roundGetHandSignalOptions
-Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/hand-signal-options Http/1.1
+# @name playerGetHandSignalOptions
+Get {{baseUrl}}/players/{{playerCreate.response.body.$.id}}/hand-signal-options Http/1.1
 
 ###
 # @name roundHit

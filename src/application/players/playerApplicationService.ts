@@ -7,6 +7,8 @@ import { PlayerGetHandCommand } from "./GetHand/playerGetHandCommand";
 import { PlayerGetHandResult } from "./GetHand/playerGetHandResult";
 import { PlayerId } from "@/domain/models/players/playerId";
 import { PlayerGetHandResultCard } from "./GetHand/playerGetHandResultCard";
+import { PlayerGetHandSignalOptionsCommand } from "./GetHandSignalOptions/playerGetHandSignalOptionsCommand";
+import { PlayerGetHandSignalOptionsResult } from "./GetHandSignalOptions/playerGetHandSignalOptionsResult";
 
 /**
  * プレイヤーアプリケーションサービス
@@ -59,5 +61,21 @@ export class PlayerApplicationService {
       playersHand.calculateTotal(),
       playersHand.isResolved(),
     );
+  }
+
+  /**
+   * ハンドシグナルの選択肢を取得する
+   *
+   * @param command ハンドシグナルの選択肢取得コマンド
+   * @returns ハンドシグナルの選択肢取得結果
+   */
+  public async getHandSignalOptionsAsync(
+    command: PlayerGetHandSignalOptionsCommand,
+  ): Promise<PlayerGetHandSignalOptionsResult> {
+    const player = await this.playerRepository.findAsync(
+      new PlayerId(command.id),
+    );
+
+    return new PlayerGetHandSignalOptionsResult(player.getHandSignalOptions());
   }
 }

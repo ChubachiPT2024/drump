@@ -6,8 +6,6 @@ import { ShoeId } from "@/domain/models/shoes/shoeId";
 import { RoundStartCommand } from "./Start/roundStartCommand";
 import { RoundId } from "@/domain/models/rounds/roundId";
 import { ShoeRepository } from "@/domain/models/shoes/shoeRepository";
-import { RoundGetHandSignalOptionsCommand } from "./GetHandSignalOptions/roundGetHandSignalOptionsCommand";
-import { RoundGetHandSignalOptionsResult } from "./GetHandSignalOptions/roundGetHandSignalOptionsResult";
 import { RoundHitCommand } from "./Hit/roundHitCommand";
 import { RoundCannotHitError } from "./Hit/roundCannotHitError";
 import { RoundStandCommand } from "./Stand/roundStandCommand";
@@ -100,21 +98,6 @@ export class RoundApplicationService {
     await this.shoeRepository.saveAsync(shoe);
     await this.dealerRepository.saveAsync(dealer);
     await this.playerRepository.saveAsync(player);
-  }
-
-  /**
-   * プレイヤーのハンドシグナルの選択肢を取得する
-   *
-   * @param command プレイヤーのハンドシグナルの選択肢取得コマンド
-   * @returns プレイヤーのハンドシグナルの選択肢取得結果
-   */
-  public async getHandSignalOptionsAsync(
-    command: RoundGetHandSignalOptionsCommand,
-  ): Promise<RoundGetHandSignalOptionsResult> {
-    const round = await this.roundRepository.findAsync(new RoundId(command.id));
-    const player = await this.playerRepository.findAsync(round.playerId);
-
-    return new RoundGetHandSignalOptionsResult(player.getHandSignalOptions());
   }
 
   /**

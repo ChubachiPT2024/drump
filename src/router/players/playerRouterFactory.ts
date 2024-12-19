@@ -1,5 +1,6 @@
 import { PlayerCreateCommand } from "@/application/players/Create/playerCreateCommand";
 import { PlayerGetHandCommand } from "@/application/players/GetHand/playerGetHandCommand";
+import { PlayerGetHandSignalOptionsCommand } from "@/application/players/GetHandSignalOptions/playerGetHandSignalOptionsCommand";
 import { PlayerApplicationService } from "@/application/players/playerApplicationService";
 import { Router } from "express";
 
@@ -40,6 +41,20 @@ export class PlayerRouterFactory {
         const command = new PlayerGetHandCommand(req.params.id);
         const result =
           await this.playerApplicationService.getHandAsync(command);
+
+        res.status(200).json(result);
+      } catch (err) {
+        next(err);
+      }
+    });
+
+    router.get("/:id/hand-signal-options", async (req, res, next) => {
+      try {
+        const command = new PlayerGetHandSignalOptionsCommand(req.params.id);
+        const result =
+          await this.playerApplicationService.getHandSignalOptionsAsync(
+            command,
+          );
 
         res.status(200).json(result);
       } catch (err) {
