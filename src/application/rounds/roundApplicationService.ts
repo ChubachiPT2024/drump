@@ -6,9 +6,6 @@ import { ShoeId } from "@/domain/models/shoes/shoeId";
 import { RoundStartCommand } from "./Start/roundStartCommand";
 import { RoundId } from "@/domain/models/rounds/roundId";
 import { ShoeRepository } from "@/domain/models/shoes/shoeRepository";
-import { RoundGetPlayersHandCommand } from "./GetPlayersHand/roundGetPlayersHandCommand";
-import { RoundGetPlayersHandResult } from "./GetPlayersHand/roundGetPlayersHandResult";
-import { RoundGetPlayersHandResultCard } from "./GetPlayersHand/roundGetPlayersHandResultCard";
 import { RoundGetHandSignalOptionsCommand } from "./GetHandSignalOptions/roundGetHandSignalOptionsCommand";
 import { RoundGetHandSignalOptionsResult } from "./GetHandSignalOptions/roundGetHandSignalOptionsResult";
 import { RoundHitCommand } from "./Hit/roundHitCommand";
@@ -26,8 +23,7 @@ import { RoundService } from "@/domain/services/roundService";
 import { DealerRepository } from "@/domain/models/dealers/dealerRepository";
 import { DealerFactory } from "@/domain/models/dealers/dealerFactory";
 import { PlayerRepository } from "@/domain/models/players/playerRepository";
-import { PlayerFactory } from "@/domain/models/players/playerFactory";
-import { UserId } from "@/domain/models/users/userId";
+import { PlayerId } from "@/domain/models/players/playerId";
 
 /**
  * ラウンドアプリケーションサービス
@@ -38,7 +34,6 @@ export class RoundApplicationService {
    *
    * @param roundFactory ラウンドファクトリ
    * @param dealerFactory ディーラーファクトリ
-   * @param playerFactory プレイヤーファクトリ
    * @param roundRepository ラウンドリポジトリ
    * @param shoeRepository シューリポジトリ
    * @param dealerRepository ディーラーリポジトリ
@@ -48,7 +43,6 @@ export class RoundApplicationService {
   public constructor(
     private readonly roundFactory: RoundFactory,
     private readonly dealerFactory: DealerFactory,
-    private readonly playerFactory: PlayerFactory,
     private readonly roundRepository: RoundRepository,
     private readonly shoeRepository: ShoeRepository,
     private readonly dealerRepository: DealerRepository,
@@ -69,15 +63,10 @@ export class RoundApplicationService {
     const dealer = this.dealerFactory.create();
     await this.dealerRepository.saveAsync(dealer);
 
-    // TODO playerApplicationService.createAsync() を作って分割を検討
-    // TODO 選択されたユーザ ID
-    const player = this.playerFactory.create(new UserId("userId"));
-    await this.playerRepository.saveAsync(player);
-
     const round = this.roundFactory.create(
       new ShoeId(command.shoeId),
       dealer.id,
-      player.id,
+      new PlayerId(command.playerId),
     );
     await this.roundRepository.saveAsync(round);
 
@@ -111,29 +100,6 @@ export class RoundApplicationService {
     await this.shoeRepository.saveAsync(shoe);
     await this.dealerRepository.saveAsync(dealer);
     await this.playerRepository.saveAsync(player);
-  }
-
-  /**
-   * プレイヤーのハンドを取得する
-   *
-   * @param command プレイヤーのハンド取得コマンド
-   * @returns プレイヤーのハンド取得結果
-   */
-  public async getPlayersHandAsync(
-    command: RoundGetPlayersHandCommand,
-  ): Promise<RoundGetPlayersHandResult> {
-    const round = await this.roundRepository.findAsync(new RoundId(command.id));
-    const player = await this.playerRepository.findAsync(round.playerId);
-
-    const playersHand = player.getHand();
-
-    return new RoundGetPlayersHandResult(
-      playersHand
-        .getCards()
-        .map((card) => new RoundGetPlayersHandResultCard(card)),
-      playersHand.calculateTotal(),
-      playersHand.isResolved(),
-    );
   }
 
   /**

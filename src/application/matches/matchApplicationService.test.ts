@@ -18,7 +18,9 @@ describe("create", () => {
     const matchRepository = new InMemoryMatchRepository();
     const service = new MatchApplicationService(matchFactory, matchRepository);
 
-    const result = await service.createAsync(new MatchCreateCommand("shoeId"));
+    const result = await service.createAsync(
+      new MatchCreateCommand("shoeId", "playerId"),
+    );
 
     const match = await matchRepository.findAsync(new MatchId(result.id));
     expect(match).toBeDefined();
@@ -30,7 +32,11 @@ describe("add round", () => {
     // Arrange
     const matchFactory = new InMemoryMatchFactory();
     const matchRepository = new InMemoryMatchRepository();
-    const match = Match.create(new MatchId("matchId"), new ShoeId("shoeId"));
+    const match = Match.create(
+      new MatchId("matchId"),
+      new ShoeId("shoeId"),
+      new PlayerId("playerId"),
+    );
     await matchRepository.saveAsync(match);
     const service = new MatchApplicationService(matchFactory, matchRepository);
     const round = new Round(

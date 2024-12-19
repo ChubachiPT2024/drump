@@ -18,6 +18,8 @@ import { InMemoryDealerFactory } from "./infrastructure/inMemory/dealears/inMemo
 import { InMemoryDealerRepository } from "./infrastructure/inMemory/dealears/inMemoryDealerRepository";
 import { InMemoryPlayerFactory } from "./infrastructure/inMemory/players/inMemoryPlayerFactory";
 import { InMemoryPlayerRepository } from "./infrastructure/inMemory/players/inMemoryPlayerRepository";
+import { PlayerApplicationService } from "./application/players/playerApplicationService";
+import { PlayerRouterFactory } from "./router/players/playerRouterFactory";
 
 // TODO DI フレームワークの検討
 const shoeFactory = new InMemoryShoeFactory();
@@ -43,6 +45,11 @@ const dealerRepository = new InMemoryDealerRepository();
 
 const playerFactory = new InMemoryPlayerFactory();
 const playerRepository = new InMemoryPlayerRepository();
+const playerApplicationService = new PlayerApplicationService(
+  playerFactory,
+  playerRepository,
+);
+const playerRouterFactory = new PlayerRouterFactory(playerApplicationService);
 
 const roundFactory = new InMemoryRoundFactory();
 const roundRepository = new InMemoryRoundRepository();
@@ -50,7 +57,6 @@ const roundService = new RoundService();
 const roundApplicationService = new RoundApplicationService(
   roundFactory,
   dealerFactory,
-  playerFactory,
   roundRepository,
   shoeRepository,
   dealerRepository,
@@ -68,5 +74,6 @@ app.use(json());
 app.use("/api/shoes", shoeRouterFactory.create());
 app.use("/api/matches", matchRouterFactory.create());
 app.use("/api/rounds", roundRouterFactory.create());
+app.use("/api/players", playerRouterFactory.create());
 
 ViteExpress.listen(app, 3000, () => console.log("Server is listening..."));

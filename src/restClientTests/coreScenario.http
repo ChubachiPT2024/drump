@@ -5,12 +5,22 @@
 Post {{baseUrl}}/shoes Http/1.1
 
 ###
+# @name playerCreate
+Post {{baseUrl}}/players Http/1.1
+content-type: application/json
+
+{
+    "userId": "userId"
+}
+
+###
 # @name matchCreate
 Post {{baseUrl}}/matches Http/1.1
 content-type: application/json
 
 {
-    "shoeId": "{{shoeCreate.response.body.$.id}}"
+    "shoeId": "{{shoeCreate.response.body.$.id}}",
+    "playerId": "{{playerCreate.response.body.$.id}}"
 }
 
 ###
@@ -19,7 +29,8 @@ Post {{baseUrl}}/rounds Http/1.1
 content-type: application/json
 
 {
-    "shoeId": "{{shoeCreate.response.body.$.id}}"
+    "shoeId": "{{shoeCreate.response.body.$.id}}",
+    "playerId": "{{playerCreate.response.body.$.id}}"
 }
 
 ###
@@ -40,8 +51,8 @@ Post {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/start Http/1.1
 Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/up-card Http/1.1
 
 ###
-# @name roundGetPlayersHand
-Get {{baseUrl}}/rounds/{{roundCreate.response.body.$.id}}/players-hand Http/1.1
+# @name playerGetHand
+Get {{baseUrl}}/players/{{playerCreate.response.body.$.id}}/hand Http/1.1
 
 ###
 # @name roundGetHandSignalOptions

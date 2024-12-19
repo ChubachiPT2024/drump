@@ -5,7 +5,7 @@ import { Suit } from "@/domain/models/suits/suit";
 /**
  * プレイヤーのハンド取得結果のカード
  */
-export class RoundGetPlayersHandResultCard {
+export class PlayerGetHandResultCard {
   /**
    * ランク
    */

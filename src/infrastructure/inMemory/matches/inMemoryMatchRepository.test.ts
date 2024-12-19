@@ -3,11 +3,16 @@ import { InMemoryMatchRepository } from "./inMemoryMatchRepository";
 import { Match } from "@/domain/models/matches/match";
 import { MatchId } from "@/domain/models/matches/matchId";
 import { ShoeId } from "@/domain/models/shoes/shoeId";
+import { PlayerId } from "@/domain/models/players/playerId";
 
 describe("save", () => {
   test("Can save a match.", async () => {
     const repository = new InMemoryMatchRepository();
-    const expected = Match.create(new MatchId("matchId"), new ShoeId("shoeId"));
+    const expected = Match.create(
+      new MatchId("matchId"),
+      new ShoeId("shoeId"),
+      new PlayerId("playerId"),
+    );
 
     await repository.saveAsync(expected);
 

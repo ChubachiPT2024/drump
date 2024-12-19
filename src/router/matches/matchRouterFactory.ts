@@ -26,7 +26,10 @@ export class MatchRouterFactory {
 
     router.post("/", async (req, res, next) => {
       try {
-        const command = new MatchCreateCommand(req.body.shoeId);
+        const command = new MatchCreateCommand(
+          req.body.shoeId,
+          req.body.playerId,
+        );
         const result = await this.matchApplicationService.createAsync(command);
 
         res.status(201).json(result);

@@ -1,9 +1,9 @@
-import { RoundGetPlayersHandResultCard } from "./roundGetPlayersHandResultCard";
+import { PlayerGetHandResultCard } from "./playerGetHandResultCard";
 
 /**
  * プレイヤーのハンド取得結果
  */
-export class RoundGetPlayersHandResult {
+export class PlayerGetHandResult {
   /**
    * コンストラクタ
    *
@@ -12,7 +12,7 @@ export class RoundGetPlayersHandResult {
    * @param isResolved ハンドが決まっているかどうか
    */
   public constructor(
-    public readonly cards: RoundGetPlayersHandResultCard[],
+    public readonly cards: PlayerGetHandResultCard[],
     public readonly total: number,
     public readonly isResolved: boolean,
   ) {}

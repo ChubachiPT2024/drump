@@ -3,10 +3,15 @@ import { Match } from "./match";
 import { MatchId } from "./matchId";
 import { ShoeId } from "../shoes/shoeId";
 import { RoundId } from "../rounds/roundId";
+import { PlayerId } from "../players/playerId";
 
 describe("add round", () => {
   test("Can add a round.", () => {
-    const match = Match.create(new MatchId("matchId"), new ShoeId("shoeId"));
+    const match = Match.create(
+      new MatchId("matchId"),
+      new ShoeId("shoeId"),
+      new PlayerId("playerId"),
+    );
     const roundId = new RoundId("roundId");
 
     match.addRound(roundId);

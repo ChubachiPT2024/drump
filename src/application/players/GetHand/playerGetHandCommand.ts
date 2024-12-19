@@ -1,7 +1,7 @@
 /**
  * プレイヤーのハンド取得コマンド
  */
-export class RoundGetPlayersHandCommand {
+export class PlayerGetHandCommand {
   /**
    * コンストラクタ
    *

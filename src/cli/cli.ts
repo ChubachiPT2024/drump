@@ -4,7 +4,6 @@ import { MatchCreateCommand } from "@/application/matches/Create/matchCreateComm
 import { RoundApplicationService } from "@/application/rounds/roundApplicationService";
 import { RoundCreateCommand } from "@/application/rounds/Create/roundCreateCommand";
 import { RoundGetHandSignalOptionsCommand } from "@/application/rounds/GetHandSignalOptions/roundGetHandSignalOptionsCommand";
-import { RoundGetPlayersHandCommand } from "@/application/rounds/GetPlayersHand/roundGetPlayersHandCommand";
 import { RoundStartCommand } from "@/application/rounds/Start/roundStartCommand";
 import { ShoeApplicationService } from "@/application/shoes/shoeApplicationService";
 import { InMemoryMatchFactory } from "@/infrastructure/inMemory/matches/inMemoryMatchFactory";
@@ -29,6 +28,9 @@ import { InMemoryDealerFactory } from "@/infrastructure/inMemory/dealears/inMemo
 import { InMemoryDealerRepository } from "@/infrastructure/inMemory/dealears/inMemoryDealerRepository";
 import { InMemoryPlayerFactory } from "@/infrastructure/inMemory/players/inMemoryPlayerFactory";
 import { InMemoryPlayerRepository } from "@/infrastructure/inMemory/players/inMemoryPlayerRepository";
+import { PlayerApplicationService } from "@/application/players/playerApplicationService";
+import { PlayerCreateCommand } from "@/application/players/Create/playerCreateCommand";
+import { PlayerGetHandCommand } from "@/application/players/GetHand/playerGetHandCommand";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
@@ -64,6 +66,10 @@ const dealerRepository = new InMemoryDealerRepository();
 
 const playerFactory = new InMemoryPlayerFactory();
 const playerRepository = new InMemoryPlayerRepository();
+const playerApplicationService = new PlayerApplicationService(
+  playerFactory,
+  playerRepository,
+);
 
 const roundFactory = new InMemoryRoundFactory();
 const roundRepository = new InMemoryRoundRepository();
@@ -71,7 +77,6 @@ const roundService = new RoundService();
 const roundApplicationService = new RoundApplicationService(
   roundFactory,
   dealerFactory,
-  playerFactory,
   roundRepository,
   shoeRepository,
   dealerRepository,
@@ -79,19 +84,25 @@ const roundApplicationService = new RoundApplicationService(
   roundService,
 );
 
+// プレイヤーの作成
+const playerCreateResult = await playerApplicationService.createAsync(
+  new PlayerCreateCommand("userId"),
+);
+const playerId = playerCreateResult.id;
+
 // シューの作成
 const shoeCreateResult = await shoeApplicationService.createAsync();
 const shoeId = shoeCreateResult.id;
 
 // 試合の作成
 const matchCreateResult = await matchApplicationService.createAsync(
-  new MatchCreateCommand(shoeId),
+  new MatchCreateCommand(shoeId, playerId),
 );
 const matchId = matchCreateResult.id;
 
 // ラウンドの作成
 const roundCreateResult = await roundApplicationService.createAsync(
-  new RoundCreateCommand(shoeId),
+  new RoundCreateCommand(shoeId, playerId),
 );
 const roundId = roundCreateResult.id;
 
@@ -117,8 +128,8 @@ console.log();
 
 while (true) {
   // プレイヤーのハンド表示
-  const playersHand = await roundApplicationService.getPlayersHandAsync(
-    new RoundGetPlayersHandCommand(roundId),
+  const playersHand = await playerApplicationService.getHandAsync(
+    new PlayerGetHandCommand(playerId),
   );
 
   console.log("[Player's hand]");

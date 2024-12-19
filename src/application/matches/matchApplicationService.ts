@@ -6,6 +6,7 @@ import { MatchCreateResult } from "./Create/matchCreateResult";
 import { MatchAddRoundCommand } from "./AddRound/matchAddRoundCommand";
 import { MatchId } from "@/domain/models/matches/matchId";
 import { RoundId } from "@/domain/models/rounds/roundId";
+import { PlayerId } from "@/domain/models/players/playerId";
 
 /**
  * 試合アプリケーションサービス
@@ -31,7 +32,10 @@ export class MatchApplicationService {
   public async createAsync(
     command: MatchCreateCommand,
   ): Promise<MatchCreateResult> {
-    const match = this.matchFactory.create(new ShoeId(command.shodId));
+    const match = this.matchFactory.create(
+      new ShoeId(command.shodId),
+      new PlayerId(command.playerId),
+    );
 
     await this.matchRepository.saveAsync(match);
 

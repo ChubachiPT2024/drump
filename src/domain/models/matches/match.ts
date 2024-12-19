@@ -1,3 +1,4 @@
+import { PlayerId } from "../players/playerId";
 import { RoundId } from "../rounds/roundId";
 import { ShoeId } from "../shoes/shoeId";
 import { MatchId } from "./matchId";
@@ -11,11 +12,13 @@ export class Match {
    *
    * @param id ID
    * @param shoeId シュー ID
+   * @param playerId プレイヤー ID
    * @param rounds ラウンド ID リスト
    */
   private constructor(
     public readonly id: MatchId,
     public readonly shoeId: ShoeId,
+    public readonly playerId: PlayerId,
     private roundIds: RoundId[],
   ) {}
 
@@ -24,10 +27,11 @@ export class Match {
    *
    * @param id ID
    * @param shoeId シュー ID
+   * @param playerId プレイヤー ID
    * @returns インスタンス
    */
-  public static create(id: MatchId, shoeId: ShoeId) {
-    return new Match(id, shoeId, []);
+  public static create(id: MatchId, shoeId: ShoeId, playerId: PlayerId) {
+    return new Match(id, shoeId, playerId, []);
   }
 
   /**
