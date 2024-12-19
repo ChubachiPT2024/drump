@@ -51,7 +51,7 @@ export const BetModal = () => {
                 variant="danger"
                 onClick={() => setBetAmount(0)}
               >
-                <span className="text-base md:text-xl">CREAR</span>
+                <span className="text-base md:text-xl">CLEAR</span>
               </Button>
             </div>
           </div>
