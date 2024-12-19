@@ -14,6 +14,8 @@ import { InMemoryRoundRepository } from "./infrastructure/inMemory/rounds/inMemo
 import { RoundApplicationService } from "./application/rounds/roundApplicationService";
 import { RoundRouterFactory } from "./router/rounds/roundRouterFactory";
 import { RoundService } from "./domain/services/roundService";
+import { InMemoryDealerFactory } from "./infrastructure/inMemory/dealears/inMemoryDealearFactory";
+import { InMemoryDealerRepository } from "./infrastructure/inMemory/dealears/inMemoryDealerRepository";
 
 // TODO DI フレームワークの検討
 const shoeFactory = new InMemoryShoeFactory();
@@ -34,14 +36,19 @@ const matchApplicationService = new MatchApplicationService(
 );
 const matchRouterFactory = new MatchRouterFactory(matchApplicationService);
 
+const dealerFactory = new InMemoryDealerFactory();
+const dealerRepository = new InMemoryDealerRepository();
+
 const roundFactory = new InMemoryRoundFactory();
 const roundRepository = new InMemoryRoundRepository();
 const roundService = new RoundService();
 const roundApplicationService = new RoundApplicationService(
   roundFactory,
+  dealerFactory,
   roundRepository,
   shoeRepository,
-  roundService
+  dealerRepository,
+  roundService,
 );
 const roundRouterFactory = new RoundRouterFactory(roundApplicationService);
 

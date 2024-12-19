@@ -1,10 +1,10 @@
 import { Card } from "../cards/card";
 import { Hand } from "../hands/hand";
 import { HandSignal } from "../handSignals/handSignal";
-import { RoundDealer } from "../roundDealers/roundDealer";
 import { RoundPlayer } from "../roundPlayers/roundPlayer";
 import { ShoeId } from "../shoes/shoeId";
 import { RoundId } from "./roundId";
+import { DealerId } from "../dealers/dealerId";
 
 /**
  * ラウンド
@@ -15,13 +15,13 @@ export class Round {
    *
    * @param id ID
    * @param shoeId シュー ID
-   * @param dealer ディーラー
+   * @param dealerId ディーラー ID
    * @param player プレイヤー
    */
   private constructor(
     public readonly id: RoundId,
     public readonly shoeId: ShoeId,
-    private readonly dealer: RoundDealer,
+    public readonly dealerId: DealerId,
     private readonly player: RoundPlayer,
   ) {}
 
@@ -30,19 +30,11 @@ export class Round {
    *
    * @param id ID
    * @param shoeId シュー ID
+   * @param dealerId ディーラー ID
    * @returns インスタンス
    */
-  public static create(id: RoundId, shoeId: ShoeId) {
-    return new Round(id, shoeId, RoundDealer.create(), RoundPlayer.create());
-  }
-
-  /**
-   * ディーラーにカードを配る
-   *
-   * @param card カード
-   */
-  public dealCardToDealer(card: Card): void {
-    this.dealer.addCardToHand(card);
+  public static create(id: RoundId, shoeId: ShoeId, dealerId: DealerId) {
+    return new Round(id, shoeId, dealerId, RoundPlayer.create());
   }
 
   /**
@@ -52,15 +44,6 @@ export class Round {
    */
   public dealCardToPlayer(card: Card): void {
     this.player.addCardToHand(card);
-  }
-
-  /**
-   * ディーラーのハンドを取得する
-   *
-   * @returns ディーラーのハンド
-   */
-  public getDealersHand(): Hand {
-    return this.dealer.getHand();
   }
 
   /**
@@ -86,30 +69,5 @@ export class Round {
    */
   public standPlayersHand(): void {
     this.player.stand();
-  }
-
-  /**
-   * ディーラーのハンドをスタンドする
-   */
-  public standDealearsHand(): void {
-    this.dealer.stand();
-  }
-
-  /**
-   * アップカードを取得する
-   *
-   * @returns アップカード
-   */
-  public getUpCard(): Card {
-    return this.dealer.getUpCard();
-  }
-
-  /**
-   * ディーラーがヒットしなければならないかどうかを取得する
-   *
-   * @returns ディーラーがヒットしなければならないかどうか
-   */
-  public shouldDealerHit(): boolean {
-    return this.dealer.shouldHit();
   }
 }

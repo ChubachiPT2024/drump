@@ -25,6 +25,8 @@ import { exit } from "node:process";
 import { Suit } from "@/domain/models/suits/suit";
 import { CardsService } from "@/domain/services/cardsService";
 import { RoundService } from "@/domain/services/roundService";
+import { InMemoryDealerFactory } from "@/infrastructure/inMemory/dealears/inMemoryDealearFactory";
+import { InMemoryDealerRepository } from "@/infrastructure/inMemory/dealears/inMemoryDealerRepository";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
@@ -55,14 +57,19 @@ const matchApplicationService = new MatchApplicationService(
   matchRepository,
 );
 
+const dealerFactory = new InMemoryDealerFactory();
+const dealerRepository = new InMemoryDealerRepository();
+
 const roundFactory = new InMemoryRoundFactory();
 const roundRepository = new InMemoryRoundRepository();
 const roundService = new RoundService();
 const roundApplicationService = new RoundApplicationService(
   roundFactory,
+  dealerFactory,
   roundRepository,
   shoeRepository,
-  roundService
+  dealerRepository,
+  roundService,
 );
 
 // シューの作成

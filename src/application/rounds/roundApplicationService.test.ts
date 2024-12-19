@@ -13,6 +13,8 @@ import { RoundGetUpCardCommand } from "./GetUpCard/roundGetUpCardCommand";
 import { RoundCompleteCommand } from "./Complete/roundCompleteCommand";
 import { RoundGetDealersHandCommand } from "./GetDealersHand/roundGetDealersHandCommand";
 import { RoundService } from "@/domain/services/roundService";
+import { InMemoryDealerRepository } from "@/infrastructure/inMemory/dealears/inMemoryDealerRepository";
+import { InMemoryDealerFactory } from "@/infrastructure/inMemory/dealears/inMemoryDealearFactory";
 
 describe("start", () => {
   test("The dealer and player gets a hand with two cards.", async () => {
@@ -21,17 +23,24 @@ describe("start", () => {
     const shoe = new InMemoryShoeFactory().create(Deck.create().getCards());
     await shoeRepository.saveAsync(shoe);
 
+    const dealerRepository = new InMemoryDealerRepository();
+    const dealerFactor = new InMemoryDealerFactory();
+    const dealer = dealerFactor.create();
+    await dealerRepository.saveAsync(dealer);
+
     const roundFactory = new InMemoryRoundFactory();
     const roundRepository = new InMemoryRoundRepository();
-    const round = roundFactory.create(shoe.id);
+    const round = roundFactory.create(shoe.id, dealer.id);
     await roundRepository.saveAsync(round);
 
     const roundService = new RoundService();
 
     const service = new RoundApplicationService(
       roundFactory,
+      dealerFactor,
       roundRepository,
       shoeRepository,
+      dealerRepository,
       roundService,
     );
 
@@ -39,9 +48,9 @@ describe("start", () => {
     await service.startAsync(new RoundStartCommand(round.id.value));
 
     // Assert
-    const startedRound = await roundRepository.findAsync(round.id);
-    expect(startedRound.getDealersHand().count()).toBe(2);
-    expect(startedRound.getPlayersHand().count()).toBe(2);
+    const startedDealer = await dealerRepository.findAsync(dealer.id);
+    expect(startedDealer.getHand().count()).toBe(2);
+    expect(startedDealer.getHand().count()).toBe(2);
   });
 });
 
@@ -52,17 +61,24 @@ describe("get player hand", () => {
     const shoe = new InMemoryShoeFactory().create(Deck.create().getCards());
     await shoeRepository.saveAsync(shoe);
 
+    const dealerRepository = new InMemoryDealerRepository();
+    const dealerFactor = new InMemoryDealerFactory();
+    const dealer = dealerFactor.create();
+    await dealerRepository.saveAsync(dealer);
+
     const roundFactory = new InMemoryRoundFactory();
     const roundRepository = new InMemoryRoundRepository();
-    const round = roundFactory.create(shoe.id);
+    const round = roundFactory.create(shoe.id, dealer.id);
     await roundRepository.saveAsync(round);
 
     const roundService = new RoundService();
 
     const service = new RoundApplicationService(
       roundFactory,
+      dealerFactor,
       roundRepository,
       shoeRepository,
+      dealerRepository,
       roundService,
     );
 
@@ -93,17 +109,24 @@ describe("hit", () => {
     const shoe = new InMemoryShoeFactory().create(Deck.create().getCards());
     await shoeRepository.saveAsync(shoe);
 
+    const dealerRepository = new InMemoryDealerRepository();
+    const dealerFactor = new InMemoryDealerFactory();
+    const dealer = dealerFactor.create();
+    await dealerRepository.saveAsync(dealer);
+
     const roundFactory = new InMemoryRoundFactory();
     const roundRepository = new InMemoryRoundRepository();
-    const round = roundFactory.create(shoe.id);
+    const round = roundFactory.create(shoe.id, dealer.id);
     await roundRepository.saveAsync(round);
 
     const roundService = new RoundService();
 
     const service = new RoundApplicationService(
       roundFactory,
+      dealerFactor,
       roundRepository,
       shoeRepository,
+      dealerRepository,
       roundService,
     );
 
@@ -131,17 +154,24 @@ describe("stand", () => {
     const shoe = new InMemoryShoeFactory().create(Deck.create().getCards());
     await shoeRepository.saveAsync(shoe);
 
+    const dealerRepository = new InMemoryDealerRepository();
+    const dealerFactor = new InMemoryDealerFactory();
+    const dealer = dealerFactor.create();
+    await dealerRepository.saveAsync(dealer);
+
     const roundFactory = new InMemoryRoundFactory();
     const roundRepository = new InMemoryRoundRepository();
-    const round = roundFactory.create(shoe.id);
+    const round = roundFactory.create(shoe.id, dealer.id);
     await roundRepository.saveAsync(round);
 
     const roundService = new RoundService();
 
     const service = new RoundApplicationService(
       roundFactory,
+      dealerFactor,
       roundRepository,
       shoeRepository,
+      dealerRepository,
       roundService,
     );
 
@@ -164,17 +194,24 @@ describe("get up card", () => {
     const shoe = new InMemoryShoeFactory().create(Deck.create().getCards());
     await shoeRepository.saveAsync(shoe);
 
+    const dealerRepository = new InMemoryDealerRepository();
+    const dealerFactor = new InMemoryDealerFactory();
+    const dealer = dealerFactor.create();
+    await dealerRepository.saveAsync(dealer);
+
     const roundFactory = new InMemoryRoundFactory();
     const roundRepository = new InMemoryRoundRepository();
-    const round = roundFactory.create(shoe.id);
+    const round = roundFactory.create(shoe.id, dealer.id);
     await roundRepository.saveAsync(round);
 
     const roundService = new RoundService();
 
     const service = new RoundApplicationService(
       roundFactory,
+      dealerFactor,
       roundRepository,
       shoeRepository,
+      dealerRepository,
       roundService,
     );
 
@@ -186,8 +223,8 @@ describe("get up card", () => {
     );
 
     // Assert
-    expect(result.rank).toBe(round.getUpCard().rank);
-    expect(result.suit).toBe(round.getUpCard().suit);
+    expect(result.rank).toBe(dealer.getUpCard().rank);
+    expect(result.suit).toBe(dealer.getUpCard().suit);
   });
 });
 
@@ -198,17 +235,24 @@ describe("complete", () => {
     const shoe = new InMemoryShoeFactory().create(Deck.create().getCards());
     await shoeRepository.saveAsync(shoe);
 
+    const dealerRepository = new InMemoryDealerRepository();
+    const dealerFactor = new InMemoryDealerFactory();
+    const dealer = dealerFactor.create();
+    await dealerRepository.saveAsync(dealer);
+
     const roundFactory = new InMemoryRoundFactory();
     const roundRepository = new InMemoryRoundRepository();
-    const round = roundFactory.create(shoe.id);
+    const round = roundFactory.create(shoe.id, dealer.id);
     await roundRepository.saveAsync(round);
 
     const roundService = new RoundService();
 
     const service = new RoundApplicationService(
       roundFactory,
+      dealerFactor,
       roundRepository,
       shoeRepository,
+      dealerRepository,
       roundService,
     );
 
@@ -219,7 +263,7 @@ describe("complete", () => {
 
     // Assert
     expect(
-      (await roundRepository.findAsync(round.id)).getDealersHand().isResolved(),
+      (await dealerRepository.findAsync(dealer.id)).getHand().isResolved(),
     ).toBe(true);
   });
 });
@@ -231,17 +275,24 @@ describe("get dealear's hand", () => {
     const shoe = new InMemoryShoeFactory().create(Deck.create().getCards());
     await shoeRepository.saveAsync(shoe);
 
+    const dealerRepository = new InMemoryDealerRepository();
+    const dealerFactor = new InMemoryDealerFactory();
+    const dealer = dealerFactor.create();
+    await dealerRepository.saveAsync(dealer);
+
     const roundFactory = new InMemoryRoundFactory();
     const roundRepository = new InMemoryRoundRepository();
-    const round = roundFactory.create(shoe.id);
+    const round = roundFactory.create(shoe.id, dealer.id);
     await roundRepository.saveAsync(round);
 
     const roundService = new RoundService();
 
     const service = new RoundApplicationService(
       roundFactory,
+      dealerFactor,
       roundRepository,
       shoeRepository,
+      dealerRepository,
       roundService,
     );
 
@@ -253,9 +304,7 @@ describe("get dealear's hand", () => {
     );
 
     // Assert
-    const dealersHand = (
-      await roundRepository.findAsync(round.id)
-    ).getDealersHand();
+    const dealersHand = (await dealerRepository.findAsync(dealer.id)).getHand();
     expect(result.cards.length).toBe(dealersHand.count());
     for (let i = 0; i < result.cards.length; i++) {
       expect(result.cards[i].rank).toBe(dealersHand.getCards()[i].rank);

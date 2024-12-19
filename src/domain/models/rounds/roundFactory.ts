@@ -1,3 +1,4 @@
+import { DealerId } from "../dealers/dealerId";
 import { ShoeId } from "../shoes/shoeId";
 import { Round } from "./round";
 
@@ -8,7 +9,8 @@ export interface RoundFactory {
   /**
    * ラウンドを生成する
    *
+   * @param dealerId ディーラー ID
    * @param shoeId シュー ID
    */
-  create(shoeId: ShoeId): Round;
+  create(shoeId: ShoeId, dealerId: DealerId): Round;
 }

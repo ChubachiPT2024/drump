@@ -1,24 +1,30 @@
 import { Card } from "../cards/card";
 import { Hand } from "../hands/hand";
+import { DealerId } from "./dealerId";
 
 /**
- * ラウンドのディーラー
+ * ディーラー
  */
-export class RoundDealer {
+export class Dealer {
   /**
    * コンストラクタ
    *
+   * @param id ID
    * @param hand ハンド
    */
-  private constructor(private hand: Hand) {}
+  private constructor(
+    public readonly id: DealerId,
+    private hand: Hand,
+  ) {}
 
   /**
    * インスタンスを生成する
    *
+   * @param id ID
    * @returns インスタンス
    */
-  public static create(): RoundDealer {
-    return new RoundDealer(Hand.create());
+  public static create(id: DealerId): Dealer {
+    return new Dealer(id, Hand.create());
   }
 
   /**

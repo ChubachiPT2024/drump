@@ -23,6 +23,8 @@ import { RoundGetDealersHandResultCard } from "./GetDealersHand/roundGetDealersH
 import { RoundGetResultCommand } from "./GetResult/roundGetResultCommand";
 import { RoundGetResultResult } from "./GetResult/roundGetResultResult";
 import { RoundService } from "@/domain/services/roundService";
+import { DealerRepository } from "@/domain/models/dealers/dealerRepository";
+import { DealerFactory } from "@/domain/models/dealers/dealerFactory";
 
 /**
  * ラウンドアプリケーションサービス
@@ -32,14 +34,18 @@ export class RoundApplicationService {
    * コンストラクタ
    *
    * @param roundFactory ラウンドファクトリ
+   * @param dealerFactory ディーラーファクトリ
    * @param roundRepository ラウンドリポジトリ
    * @param shoeRepository シューリポジトリ
+   * @param dealerRepository ディーラーリポジトリ
    * @param roundService ラウンドサービス
    */
   public constructor(
     private readonly roundFactory: RoundFactory,
+    private readonly dealerFactory: DealerFactory,
     private readonly roundRepository: RoundRepository,
     private readonly shoeRepository: ShoeRepository,
+    private readonly dealerRepository: DealerRepository,
     private readonly roundService: RoundService,
   ) {}
 
@@ -52,8 +58,14 @@ export class RoundApplicationService {
   public async createAsync(
     command: RoundCreateCommand,
   ): Promise<RoundCreateResult> {
-    const round = this.roundFactory.create(new ShoeId(command.shoeId));
+    // TODO dealerApplicationService.createAsync() を作って分割を検討
+    const dealer = this.dealerFactory.create();
+    await this.dealerRepository.saveAsync(dealer);
 
+    const round = this.roundFactory.create(
+      new ShoeId(command.shoeId),
+      dealer.id,
+    );
     await this.roundRepository.saveAsync(round);
 
     return new RoundCreateResult(round.id.value);
@@ -67,11 +79,12 @@ export class RoundApplicationService {
   public async startAsync(command: RoundStartCommand): Promise<void> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
     const shoe = await this.shoeRepository.findAsync(round.shoeId);
+    const dealer = await this.dealerRepository.findAsync(round.dealerId);
 
     // TODO ラウンドがまだ開始していないことの検証
 
     for (let i = 0; i < 2; i++) {
-      round.dealCardToDealer(shoe.peek());
+      dealer.addCardToHand(shoe.peek());
       shoe.draw();
     }
 
@@ -83,6 +96,7 @@ export class RoundApplicationService {
     // TODO トランザクション処理
     await this.roundRepository.saveAsync(round);
     await this.shoeRepository.saveAsync(shoe);
+    await this.dealerRepository.saveAsync(dealer);
   }
 
   /**
@@ -168,8 +182,9 @@ export class RoundApplicationService {
     command: RoundGetUpCardCommand,
   ): Promise<RoundGetUpCardResult> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
+    const dealer = await this.dealerRepository.findAsync(round.dealerId);
 
-    return new RoundGetUpCardResult(round.getUpCard());
+    return new RoundGetUpCardResult(dealer.getUpCard());
   }
 
   /**
@@ -180,15 +195,20 @@ export class RoundApplicationService {
   public async completeAsync(command: RoundCompleteCommand): Promise<void> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
     const shoe = await this.shoeRepository.findAsync(round.shoeId);
+    const dealer = await this.dealerRepository.findAsync(round.dealerId);
 
-    while (round.shouldDealerHit()) {
-      round.dealCardToDealer(shoe.peek());
+    while (dealer.shouldHit()) {
+      dealer.addCardToHand(shoe.peek());
       shoe.draw();
     }
 
-    if (!round.getDealersHand().isResolved()) {
-      round.standDealearsHand();
+    if (!dealer.getHand().isResolved()) {
+      dealer.stand();
     }
+
+    // TODO トランザクション処理
+    await this.shoeRepository.saveAsync(shoe);
+    await this.dealerRepository.saveAsync(dealer);
   }
 
   /**
@@ -201,8 +221,9 @@ export class RoundApplicationService {
     command: RoundGetDealersHandCommand,
   ): Promise<RoundGetDealersHandResult> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
+    const dealer = await this.dealerRepository.findAsync(round.dealerId);
 
-    const dealersHand = round.getDealersHand();
+    const dealersHand = dealer.getHand();
 
     return new RoundGetDealersHandResult(
       dealersHand
@@ -223,10 +244,11 @@ export class RoundApplicationService {
     command: RoundGetResultCommand,
   ): Promise<RoundGetResultResult> {
     const round = await this.roundRepository.findAsync(new RoundId(command.id));
+    const dealer = await this.dealerRepository.findAsync(round.dealerId);
 
     const roundResult = this.roundService.calculateResult(
       round.getPlayersHand(),
-      round.getDealersHand(),
+      dealer.getHand(),
     );
 
     return new RoundGetResultResult(roundResult);

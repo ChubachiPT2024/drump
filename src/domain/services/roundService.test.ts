@@ -5,7 +5,8 @@ import { Suit } from "../models/suits/suit";
 import { RoundResult } from "../models/roundResults/roundResult";
 import { RoundService } from "./roundService";
 import { RoundPlayer } from "../models/roundPlayers/roundPlayer";
-import { RoundDealer } from "../models/roundDealers/roundDealer";
+import { Dealer } from "../models/dealers/dealer";
+import { DealerId } from "../models/dealers/dealerId";
 
 describe("calculate result", () => {
   test.each([
@@ -158,15 +159,15 @@ describe("calculate result", () => {
     for (const playersCard of playersCards) {
       roundPlayer.addCardToHand(playersCard);
     }
-    const roundDealer = RoundDealer.create();
+    const dealer = Dealer.create(new DealerId("dealerId"));
     for (const dealearsCard of dealersCards) {
-      roundDealer.addCardToHand(dealearsCard);
+      dealer.addCardToHand(dealearsCard);
     }
 
     // Act
     const result = roundService.calculateResult(
       roundPlayer.getHand(),
-      roundDealer.getHand(),
+      dealer.getHand(),
     );
 
     // Assert
