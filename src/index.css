@@ -1,9 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 
 html,
 body,
@@ -87,4 +86,9 @@ body,
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.Polka {
+  background-image: radial-gradient(#01562d 1px, #004b27 1px);
+  background-size: 5px 5px;
 }
