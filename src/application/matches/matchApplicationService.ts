@@ -1,7 +1,6 @@
 import { MatchFactory } from "@/domain/models/matches/matchFactory";
 import { MatchRepository } from "@/domain/models/matches/matchRepository";
 import { MatchCreateCommand } from "./Create/matchCreateCommand";
-import { ShoeId } from "@/domain/models/shoes/shoeId";
 import { MatchCreateResult } from "./Create/matchCreateResult";
 import { MatchAddRoundCommand } from "./AddRound/matchAddRoundCommand";
 import { MatchId } from "@/domain/models/matches/matchId";
@@ -34,10 +33,7 @@ export class MatchApplicationService {
   public async createAsync(
     command: MatchCreateCommand,
   ): Promise<MatchCreateResult> {
-    const match = this.matchFactory.create(
-      new ShoeId(command.shodId),
-      new UserId(command.userId),
-    );
+    const match = this.matchFactory.create(new UserId(command.userId));
 
     await this.matchRepository.saveAsync(match);
 

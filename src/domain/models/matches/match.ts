@@ -1,6 +1,6 @@
 import { Player } from "../players/player";
 import { RoundId } from "../rounds/roundId";
-import { ShoeId } from "../shoes/shoeId";
+import { Shoe } from "../shoes/shoe";
 import { MatchId } from "./matchId";
 import { MatchNotification } from "./matchNotification";
 
@@ -9,16 +9,21 @@ import { MatchNotification } from "./matchNotification";
  */
 export class Match {
   /**
+   * デッキ数
+   */
+  private static readonly NUMBER_OF_DECKS = 6;
+
+  /**
    * コンストラクタ
    *
    * @param id ID
-   * @param shoeId シュー ID
+   * @param shoe シュー
    * @param player プレイヤー
    * @param rounds ラウンド ID リスト
    */
   private constructor(
     public readonly id: MatchId,
-    public readonly shoeId: ShoeId,
+    private readonly shoe: Shoe,
     private readonly player: Player,
     private roundIds: RoundId[],
   ) {}
@@ -27,12 +32,16 @@ export class Match {
    * インスタンスを生成する
    *
    * @param id ID
-   * @param shoeId シュー ID
    * @param player プレイヤー
    * @returns インスタンス
    */
-  public static create(id: MatchId, shoeId: ShoeId, player: Player) {
-    return new Match(id, shoeId, player, []);
+  public static create(id: MatchId, player: Player) {
+    return new Match(
+      id,
+      Shoe.createFromDecks(this.NUMBER_OF_DECKS).suffle(),
+      player,
+      [],
+    );
   }
 
   /**

@@ -5,7 +5,6 @@ import { MatchApplicationService } from "./matchApplicationService";
 import { MatchCreateCommand } from "./Create/matchCreateCommand";
 import { MatchId } from "@/domain/models/matches/matchId";
 import { Match } from "@/domain/models/matches/match";
-import { ShoeId } from "@/domain/models/shoes/shoeId";
 import { MatchAddRoundCommand } from "./AddRound/matchAddRoundCommand";
 import { Round } from "@/domain/models/rounds/round";
 import { RoundId } from "@/domain/models/rounds/roundId";
@@ -23,7 +22,7 @@ describe("create", () => {
     const service = new MatchApplicationService(matchFactory, matchRepository);
 
     const result = await service.createAsync(
-      new MatchCreateCommand("shoeId", "playerId"),
+      new MatchCreateCommand("playerId"),
     );
 
     const match = await matchRepository.findAsync(new MatchId(result.id));
@@ -39,14 +38,12 @@ describe("add round", () => {
     const matchRepository = new InMemoryMatchRepository();
     const match = Match.create(
       new MatchId("matchId"),
-      new ShoeId("shoeId"),
       Player.create(new PlayerId("playerId"), new UserId("userId")),
     );
     await matchRepository.saveAsync(match);
     const service = new MatchApplicationService(matchFactory, matchRepository);
     const round = new Round(
       new RoundId("roundId"),
-      match.shoeId,
       new DealerId("dealerId"),
       new PlayerId("playerId"),
     );

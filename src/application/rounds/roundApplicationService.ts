@@ -2,10 +2,8 @@ import { RoundFactory } from "@/domain/models/rounds/roundFactory";
 import { RoundRepository } from "@/domain/models/rounds/roundRepository";
 import { RoundCreateCommand } from "./Create/roundCreateCommand";
 import { RoundCreateResult } from "./Create/roundCreateResult";
-import { ShoeId } from "@/domain/models/shoes/shoeId";
 import { RoundStartCommand } from "./Start/roundStartCommand";
 import { RoundId } from "@/domain/models/rounds/roundId";
-import { ShoeRepository } from "@/domain/models/shoes/shoeRepository";
 import { RoundHitCommand } from "./Hit/roundHitCommand";
 import { RoundCannotHitError } from "./Hit/roundCannotHitError";
 import { RoundStandCommand } from "./Stand/roundStandCommand";
@@ -33,7 +31,6 @@ export class RoundApplicationService {
    * @param roundFactory ラウンドファクトリ
    * @param dealerFactory ディーラーファクトリ
    * @param roundRepository ラウンドリポジトリ
-   * @param shoeRepository シューリポジトリ
    * @param dealerRepository ディーラーリポジトリ
    * @param playerRepository プレイヤーリポジトリ
    * @param roundService ラウンドサービス
@@ -42,7 +39,6 @@ export class RoundApplicationService {
     private readonly roundFactory: RoundFactory,
     private readonly dealerFactory: DealerFactory,
     private readonly roundRepository: RoundRepository,
-    private readonly shoeRepository: ShoeRepository,
     private readonly dealerRepository: DealerRepository,
     private readonly playerRepository: PlayerRepository,
     private readonly roundService: RoundService,
@@ -62,7 +58,6 @@ export class RoundApplicationService {
     await this.dealerRepository.saveAsync(dealer);
 
     const round = this.roundFactory.create(
-      new ShoeId(command.shoeId),
       dealer.id,
       new PlayerId(command.playerId),
     );
@@ -76,51 +71,47 @@ export class RoundApplicationService {
    *
    * @param command ラウンド開始コマンド
    */
-  public async startAsync(command: RoundStartCommand): Promise<void> {
-    const round = await this.roundRepository.findAsync(new RoundId(command.id));
-    const shoe = await this.shoeRepository.findAsync(round.shoeId);
-    const dealer = await this.dealerRepository.findAsync(round.dealerId);
-    const player = await this.playerRepository.findAsync(round.playerId);
+  // public async startAsync(command: RoundStartCommand): Promise<void> {
+  //   const round = await this.roundRepository.findAsync(new RoundId(command.id));
+  //   const dealer = await this.dealerRepository.findAsync(round.dealerId);
+  //   const player = await this.playerRepository.findAsync(round.playerId);
 
-    // TODO ラウンドがまだ開始していないことの検証
+  //   // TODO ラウンドがまだ開始していないことの検証
 
-    for (let i = 0; i < 2; i++) {
-      dealer.addCardToHand(shoe.peek());
-      shoe.draw();
-    }
+  //   for (let i = 0; i < 2; i++) {
+  //     dealer.addCardToHand(shoe.peek());
+  //     shoe.draw();
+  //   }
 
-    for (let i = 0; i < 2; i++) {
-      player.addCardToHand(shoe.peek());
-      shoe.draw();
-    }
+  //   for (let i = 0; i < 2; i++) {
+  //     player.addCardToHand(shoe.peek());
+  //     shoe.draw();
+  //   }
 
-    // TODO トランザクション処理
-    await this.shoeRepository.saveAsync(shoe);
-    await this.dealerRepository.saveAsync(dealer);
-    await this.playerRepository.saveAsync(player);
-  }
+  //   // TODO トランザクション処理
+  //   await this.dealerRepository.saveAsync(dealer);
+  //   await this.playerRepository.saveAsync(player);
+  // }
 
   /**
    * ヒットする
    *
    * @param command ヒットコマンド
    */
-  public async hitAsync(command: RoundHitCommand): Promise<void> {
-    const round = await this.roundRepository.findAsync(new RoundId(command.id));
-    const shoe = await this.shoeRepository.findAsync(round.shoeId);
-    const player = await this.playerRepository.findAsync(round.playerId);
+  // public async hitAsync(command: RoundHitCommand): Promise<void> {
+  //   const round = await this.roundRepository.findAsync(new RoundId(command.id));
+  //   const player = await this.playerRepository.findAsync(round.playerId);
 
-    if (!player.getHand().canHit()) {
-      throw new RoundCannotHitError();
-    }
+  //   if (!player.getHand().canHit()) {
+  //     throw new RoundCannotHitError();
+  //   }
 
-    player.addCardToHand(shoe.peek());
-    shoe.draw();
+  //   player.addCardToHand(shoe.peek());
+  //   shoe.draw();
 
-    // TODO トランザクション処理
-    await this.shoeRepository.saveAsync(shoe);
-    await this.playerRepository.saveAsync(player);
-  }
+  //   // TODO トランザクション処理
+  //   await this.playerRepository.saveAsync(player);
+  // }
 
   /**
    * スタンドする
@@ -156,24 +147,22 @@ export class RoundApplicationService {
    *
    * @param command ラウンド完了コマンド
    */
-  public async completeAsync(command: RoundCompleteCommand): Promise<void> {
-    const round = await this.roundRepository.findAsync(new RoundId(command.id));
-    const shoe = await this.shoeRepository.findAsync(round.shoeId);
-    const dealer = await this.dealerRepository.findAsync(round.dealerId);
+  // public async completeAsync(command: RoundCompleteCommand): Promise<void> {
+  //   const round = await this.roundRepository.findAsync(new RoundId(command.id));
+  //   const dealer = await this.dealerRepository.findAsync(round.dealerId);
 
-    while (dealer.shouldHit()) {
-      dealer.addCardToHand(shoe.peek());
-      shoe.draw();
-    }
+  //   while (dealer.shouldHit()) {
+  //     dealer.addCardToHand(shoe.peek());
+  //     shoe.draw();
+  //   }
 
-    if (!dealer.getHand().isResolved()) {
-      dealer.stand();
-    }
+  //   if (!dealer.getHand().isResolved()) {
+  //     dealer.stand();
+  //   }
 
-    // TODO トランザクション処理
-    await this.shoeRepository.saveAsync(shoe);
-    await this.dealerRepository.saveAsync(dealer);
-  }
+  //   // TODO トランザクション処理
+  //   await this.dealerRepository.saveAsync(dealer);
+  // }
 
   /**
    * ディーラーのハンドを取得する

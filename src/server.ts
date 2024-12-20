@@ -1,10 +1,5 @@
 import express, { json } from "express";
 import ViteExpress from "vite-express";
-import { InMemoryShoeFactory } from "./infrastructure/inMemory/shoes/inMemoryShoeFactory";
-import { InMemoryShoeRepository } from "./infrastructure/inMemory/shoes/inMemoryShoeRepository";
-import { CardsService } from "./domain/services/cardsService";
-import { ShoeApplicationService } from "./application/shoes/shoeApplicationService";
-import { ShoeRouterFactory } from "./router/shoes/shoeRouterFactory";
 import { InMemoryMatchFactory } from "./infrastructure/inMemory/matches/inMemoryMatchFactory";
 import { InMemoryMatchRepository } from "./infrastructure/inMemory/matches/inMemoryMatchRepository";
 import { MatchApplicationService } from "./application/matches/matchApplicationService";
@@ -22,16 +17,6 @@ import { PlayerApplicationService } from "./application/players/playerApplicatio
 import { PlayerRouterFactory } from "./router/players/playerRouterFactory";
 
 // TODO DI フレームワークの検討
-const shoeFactory = new InMemoryShoeFactory();
-const shoeRepository = new InMemoryShoeRepository();
-const cardsService = new CardsService();
-const shoeApplicationService = new ShoeApplicationService(
-  shoeFactory,
-  shoeRepository,
-  cardsService,
-);
-const shoeRouterFactory = new ShoeRouterFactory(shoeApplicationService);
-
 const dealerFactory = new InMemoryDealerFactory();
 const dealerRepository = new InMemoryDealerRepository();
 
@@ -58,7 +43,6 @@ const roundApplicationService = new RoundApplicationService(
   roundFactory,
   dealerFactory,
   roundRepository,
-  shoeRepository,
   dealerRepository,
   playerRepository,
   roundService,
@@ -71,7 +55,6 @@ const app = express();
 // 参考: https://expressjs.com/ja/guide/using-middleware.html#middleware.built-in
 app.use(json());
 
-app.use("/api/shoes", shoeRouterFactory.create());
 app.use("/api/matches", matchRouterFactory.create());
 app.use("/api/rounds", roundRouterFactory.create());
 app.use("/api/players", playerRouterFactory.create());

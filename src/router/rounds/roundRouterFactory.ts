@@ -33,7 +33,6 @@ export class RoundRouterFactory {
     router.post("/", async (req, res, next) => {
       try {
         const command = new RoundCreateCommand(
-          req.body.shoeId,
           req.body.playerId,
         );
         const result = await this.roundApplicationService.createAsync(command);
@@ -44,16 +43,16 @@ export class RoundRouterFactory {
       }
     });
 
-    router.post("/:id/start", async (req, res, next) => {
-      try {
-        const command = new RoundStartCommand(req.params.id);
-        await this.roundApplicationService.startAsync(command);
+    // router.post("/:id/start", async (req, res, next) => {
+    //   try {
+    //     const command = new RoundStartCommand(req.params.id);
+    //     await this.roundApplicationService.startAsync(command);
 
-        res.status(204).send();
-      } catch (err) {
-        next(err);
-      }
-    });
+    //     res.status(204).send();
+    //   } catch (err) {
+    //     next(err);
+    //   }
+    // });
 
     router.get("/:id/up-card", async (req, res, next) => {
       try {
@@ -67,16 +66,16 @@ export class RoundRouterFactory {
       }
     });
 
-    router.post("/:id/hit", async (req, res, next) => {
-      try {
-        const command = new RoundHitCommand(req.params.id);
-        await this.roundApplicationService.hitAsync(command);
+    // router.post("/:id/hit", async (req, res, next) => {
+    //   try {
+    //     const command = new RoundHitCommand(req.params.id);
+    //     await this.roundApplicationService.hitAsync(command);
 
-        res.status(204).send();
-      } catch (err) {
-        next(err);
-      }
-    });
+    //     res.status(204).send();
+    //   } catch (err) {
+    //     next(err);
+    //   }
+    // });
 
     router.post("/:id/stand", async (req, res, next) => {
       try {
@@ -89,16 +88,16 @@ export class RoundRouterFactory {
       }
     });
 
-    router.post("/:id/complete", async (req, res, next) => {
-      try {
-        const command = new RoundCompleteCommand(req.params.id);
-        await this.roundApplicationService.completeAsync(command);
+    // router.post("/:id/complete", async (req, res, next) => {
+    //   try {
+    //     const command = new RoundCompleteCommand(req.params.id);
+    //     await this.roundApplicationService.completeAsync(command);
 
-        res.status(204).send();
-      } catch (err) {
-        next(err);
-      }
-    });
+    //     res.status(204).send();
+    //   } catch (err) {
+    //     next(err);
+    //   }
+    // });
 
     router.get("/:id/dealers-hand", async (req, res, next) => {
       try {

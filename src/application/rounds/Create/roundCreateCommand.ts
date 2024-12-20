@@ -5,11 +5,7 @@ export class RoundCreateCommand {
   /**
    * コンストラクタ
    *
-   * @param shoeId シュー ID
    * @param playerId プレイヤー ID
    */
-  public constructor(
-    public readonly shoeId: string,
-    public readonly playerId: string,
-  ) {}
+  public constructor(public readonly playerId: string) {}
 }

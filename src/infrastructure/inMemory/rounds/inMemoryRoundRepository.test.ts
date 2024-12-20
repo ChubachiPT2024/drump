@@ -1,7 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { InMemoryRoundRepository } from "./inMemoryRoundRepository";
 import { Round } from "@/domain/models/rounds/round";
-import { ShoeId } from "@/domain/models/shoes/shoeId";
 import { RoundId } from "@/domain/models/rounds/roundId";
 import { DealerId } from "@/domain/models/dealers/dealerId";
 import { PlayerId } from "@/domain/models/players/playerId";
@@ -11,7 +10,6 @@ describe("save", () => {
     const repository = new InMemoryRoundRepository();
     const expected = new Round(
       new RoundId("roundId"),
-      new ShoeId("shoeId"),
       new DealerId("dealerId"),
       new PlayerId("playerId"),
     );

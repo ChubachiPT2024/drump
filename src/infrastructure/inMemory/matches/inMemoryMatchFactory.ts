@@ -2,7 +2,7 @@ import { Match } from "@/domain/models/matches/match";
 import { MatchFactory } from "@/domain/models/matches/matchFactory";
 import { MatchId } from "@/domain/models/matches/matchId";
 import { PlayerFactory } from "@/domain/models/players/playerFactory";
-import { ShoeId } from "@/domain/models/shoes/shoeId";
+import { Shoe } from "@/domain/models/shoes/shoe";
 import { UserId } from "@/domain/models/users/userId";
 
 /**
@@ -19,14 +19,12 @@ export class InMemoryMatchFactory implements MatchFactory {
   /**
    * 試合を生成する
    *
-   * @param shoeId シュー ID
    * @param userId ユーザ ID
    * @returns 試合
    */
-  public create(shoeId: ShoeId, userId: UserId): Match {
+  public create(userId: UserId): Match {
     return Match.create(
       new MatchId(crypto.randomUUID()),
-      shoeId,
       this.playerFactory.create(userId),
     );
   }
