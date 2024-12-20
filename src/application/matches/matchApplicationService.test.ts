@@ -11,10 +11,14 @@ import { Round } from "@/domain/models/rounds/round";
 import { RoundId } from "@/domain/models/rounds/roundId";
 import { DealerId } from "@/domain/models/dealers/dealerId";
 import { PlayerId } from "@/domain/models/players/playerId";
+import { InMemoryPlayerFactory } from "@/infrastructure/inMemory/players/inMemoryPlayerFactory";
+import { Player } from "@/domain/models/players/player";
+import { UserId } from "@/domain/models/users/userId";
 
 describe("create", () => {
   test("Can create a match", async () => {
-    const matchFactory = new InMemoryMatchFactory();
+    const playerFactory = new InMemoryPlayerFactory();
+    const matchFactory = new InMemoryMatchFactory(playerFactory);
     const matchRepository = new InMemoryMatchRepository();
     const service = new MatchApplicationService(matchFactory, matchRepository);
 
@@ -30,12 +34,13 @@ describe("create", () => {
 describe("add round", () => {
   test("Can add a round", async () => {
     // Arrange
-    const matchFactory = new InMemoryMatchFactory();
+    const playerFactory = new InMemoryPlayerFactory();
+    const matchFactory = new InMemoryMatchFactory(playerFactory);
     const matchRepository = new InMemoryMatchRepository();
     const match = Match.create(
       new MatchId("matchId"),
       new ShoeId("shoeId"),
-      new PlayerId("playerId"),
+      Player.create(new PlayerId("playerId"), new UserId("userId")),
     );
     await matchRepository.saveAsync(match);
     const service = new MatchApplicationService(matchFactory, matchRepository);

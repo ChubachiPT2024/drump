@@ -32,14 +32,6 @@ const shoeApplicationService = new ShoeApplicationService(
 );
 const shoeRouterFactory = new ShoeRouterFactory(shoeApplicationService);
 
-const matchFactory = new InMemoryMatchFactory();
-const matchRepository = new InMemoryMatchRepository();
-const matchApplicationService = new MatchApplicationService(
-  matchFactory,
-  matchRepository,
-);
-const matchRouterFactory = new MatchRouterFactory(matchApplicationService);
-
 const dealerFactory = new InMemoryDealerFactory();
 const dealerRepository = new InMemoryDealerRepository();
 
@@ -50,6 +42,14 @@ const playerApplicationService = new PlayerApplicationService(
   playerRepository,
 );
 const playerRouterFactory = new PlayerRouterFactory(playerApplicationService);
+
+const matchFactory = new InMemoryMatchFactory(playerFactory);
+const matchRepository = new InMemoryMatchRepository();
+const matchApplicationService = new MatchApplicationService(
+  matchFactory,
+  matchRepository,
+);
+const matchRouterFactory = new MatchRouterFactory(matchApplicationService);
 
 const roundFactory = new InMemoryRoundFactory();
 const roundRepository = new InMemoryRoundRepository();

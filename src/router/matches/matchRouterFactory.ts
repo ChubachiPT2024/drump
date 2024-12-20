@@ -1,5 +1,6 @@
 import { MatchAddRoundCommand } from "@/application/matches/AddRound/matchAddRoundCommand";
 import { MatchCreateCommand } from "@/application/matches/Create/matchCreateCommand";
+import { MatchGetSummaryCommand } from "@/application/matches/GetSummary/matchGetSummaryCommand";
 import { MatchApplicationService } from "@/application/matches/matchApplicationService";
 import { Router } from "express";
 
@@ -47,6 +48,18 @@ export class MatchRouterFactory {
         await this.matchApplicationService.addRoundAsync(command);
 
         res.status(204).send();
+      } catch (err) {
+        next(err);
+      }
+    });
+
+    router.get("/:id/summary", async (req, res, next) => {
+      try {
+        const command = new MatchGetSummaryCommand(req.params.id);
+        const result =
+          await this.matchApplicationService.getSummaryAsync(command);
+
+        res.status(200).json(result);
       } catch (err) {
         next(err);
       }

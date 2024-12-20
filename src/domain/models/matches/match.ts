@@ -1,7 +1,8 @@
-import { PlayerId } from "../players/playerId";
+import { Player } from "../players/player";
 import { RoundId } from "../rounds/roundId";
 import { ShoeId } from "../shoes/shoeId";
 import { MatchId } from "./matchId";
+import { MatchNotification } from "./matchNotification";
 
 /**
  * 試合
@@ -12,13 +13,13 @@ export class Match {
    *
    * @param id ID
    * @param shoeId シュー ID
-   * @param playerId プレイヤー ID
+   * @param player プレイヤー
    * @param rounds ラウンド ID リスト
    */
   private constructor(
     public readonly id: MatchId,
     public readonly shoeId: ShoeId,
-    public readonly playerId: PlayerId,
+    private readonly player: Player,
     private roundIds: RoundId[],
   ) {}
 
@@ -27,11 +28,11 @@ export class Match {
    *
    * @param id ID
    * @param shoeId シュー ID
-   * @param playerId プレイヤー ID
+   * @param player プレイヤー
    * @returns インスタンス
    */
-  public static create(id: MatchId, shoeId: ShoeId, playerId: PlayerId) {
-    return new Match(id, shoeId, playerId, []);
+  public static create(id: MatchId, shoeId: ShoeId, player: Player) {
+    return new Match(id, shoeId, player, []);
   }
 
   /**
@@ -50,5 +51,15 @@ export class Match {
    */
   public getRoundIds(): RoundId[] {
     return [...this.roundIds];
+  }
+
+  /**
+   * 通知する
+   *
+   * @param notification 通知
+   */
+  public notify(notification: MatchNotification): void {
+    notification.notifyId(this.id);
+    notification.notifyPlayer(this.player);
   }
 }

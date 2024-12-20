@@ -4,6 +4,7 @@ import { Hand } from "../hands/hand";
 import { HandSignal } from "../handSignals/handSignal";
 import { UserId } from "../users/userId";
 import { PlayerId } from "./playerId";
+import { PlayerNotification } from "./playerNotification";
 
 /**
  * プレイヤー
@@ -98,5 +99,15 @@ export class Player {
    */
   public stand(): void {
     this.hand = this.hand.stand();
+  }
+
+  /**
+   * 通知する
+   *
+   * @param notification 通知
+   */
+  public notify(notification: PlayerNotification) {
+    notification.notifyId(this.id);
+    notification.notifyHand(this.hand);
   }
 }

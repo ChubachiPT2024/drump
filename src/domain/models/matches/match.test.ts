@@ -4,13 +4,15 @@ import { MatchId } from "./matchId";
 import { ShoeId } from "../shoes/shoeId";
 import { RoundId } from "../rounds/roundId";
 import { PlayerId } from "../players/playerId";
+import { Player } from "../players/player";
+import { UserId } from "../users/userId";
 
 describe("add round", () => {
   test("Can add a round.", () => {
     const match = Match.create(
       new MatchId("matchId"),
       new ShoeId("shoeId"),
-      new PlayerId("playerId"),
+      Player.create(new PlayerId("playerId"), new UserId("userId")),
     );
     const roundId = new RoundId("roundId");
 

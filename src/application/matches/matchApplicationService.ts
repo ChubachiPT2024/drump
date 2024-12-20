@@ -6,7 +6,9 @@ import { MatchCreateResult } from "./Create/matchCreateResult";
 import { MatchAddRoundCommand } from "./AddRound/matchAddRoundCommand";
 import { MatchId } from "@/domain/models/matches/matchId";
 import { RoundId } from "@/domain/models/rounds/roundId";
-import { PlayerId } from "@/domain/models/players/playerId";
+import { UserId } from "@/domain/models/users/userId";
+import { MatchGetSummaryCommand } from "./GetSummary/matchGetSummaryCommand";
+import { MatchGetSummaryResult } from "./GetSummary/matchGetSummaryResult";
 
 /**
  * 試合アプリケーションサービス
@@ -34,7 +36,7 @@ export class MatchApplicationService {
   ): Promise<MatchCreateResult> {
     const match = this.matchFactory.create(
       new ShoeId(command.shodId),
-      new PlayerId(command.playerId),
+      new UserId(command.userId),
     );
 
     await this.matchRepository.saveAsync(match);
@@ -50,5 +52,22 @@ export class MatchApplicationService {
   public async addRoundAsync(command: MatchAddRoundCommand): Promise<void> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
     match.addRound(new RoundId(command.roundId));
+  }
+
+  /**
+   * サマリを取得する
+   *
+   * @param command サマリ取得コマンド
+   * @returns サマリ取得結果
+   */
+  public async getSummaryAsync(
+    command: MatchGetSummaryCommand,
+  ): Promise<MatchGetSummaryResult> {
+    const match = await this.matchRepository.findAsync(new MatchId(command.id));
+
+    const result = new MatchGetSummaryResult();
+    match.notify(result);
+
+    return result;
   }
 }

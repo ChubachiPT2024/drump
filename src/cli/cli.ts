@@ -54,13 +54,6 @@ const shoeApplicationService = new ShoeApplicationService(
   cardsService,
 );
 
-const matchFactory = new InMemoryMatchFactory();
-const matchRepository = new InMemoryMatchRepository();
-const matchApplicationService = new MatchApplicationService(
-  matchFactory,
-  matchRepository,
-);
-
 const dealerFactory = new InMemoryDealerFactory();
 const dealerRepository = new InMemoryDealerRepository();
 
@@ -69,6 +62,13 @@ const playerRepository = new InMemoryPlayerRepository();
 const playerApplicationService = new PlayerApplicationService(
   playerFactory,
   playerRepository,
+);
+
+const matchFactory = new InMemoryMatchFactory(playerFactory);
+const matchRepository = new InMemoryMatchRepository();
+const matchApplicationService = new MatchApplicationService(
+  matchFactory,
+  matchRepository,
 );
 
 const roundFactory = new InMemoryRoundFactory();

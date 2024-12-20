@@ -1,5 +1,5 @@
-import { PlayerId } from "../players/playerId";
 import { ShoeId } from "../shoes/shoeId";
+import { UserId } from "../users/userId";
 import { Match } from "./match";
 
 /**
@@ -10,7 +10,7 @@ export interface MatchFactory {
    * 試合を生成する
    *
    * @param shoeId シュー ID
-   * @param playerId プレイヤー ID
+   * @param userId ユーザ ID
    */
-  create(shoeId: ShoeId, playerId: PlayerId): Match;
+  create(shoeId: ShoeId, userId: UserId): Match;
 }

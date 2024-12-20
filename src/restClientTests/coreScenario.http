@@ -20,8 +20,12 @@ content-type: application/json
 
 {
     "shoeId": "{{shoeCreate.response.body.$.id}}",
-    "playerId": "{{playerCreate.response.body.$.id}}"
+    "userId": "userId"
 }
+
+###
+# @name matchGetSummary
+Get {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/summary Http/1.1
 
 ###
 # @name roundCreate
@@ -30,7 +34,7 @@ content-type: application/json
 
 {
     "shoeId": "{{shoeCreate.response.body.$.id}}",
-    "playerId": "{{playerCreate.response.body.$.id}}"
+    "playerId": "{{matchGetSummary.response.body.$.player.id}}"
 }
 
 ###

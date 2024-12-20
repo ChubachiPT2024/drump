@@ -4,6 +4,8 @@ import { Match } from "@/domain/models/matches/match";
 import { MatchId } from "@/domain/models/matches/matchId";
 import { ShoeId } from "@/domain/models/shoes/shoeId";
 import { PlayerId } from "@/domain/models/players/playerId";
+import { Player } from "@/domain/models/players/player";
+import { UserId } from "@/domain/models/users/userId";
 
 describe("save", () => {
   test("Can save a match.", async () => {
@@ -11,7 +13,7 @@ describe("save", () => {
     const expected = Match.create(
       new MatchId("matchId"),
       new ShoeId("shoeId"),
-      new PlayerId("playerId"),
+      Player.create(new PlayerId("playerId"), new UserId("userId")),
     );
 
     await repository.saveAsync(expected);
