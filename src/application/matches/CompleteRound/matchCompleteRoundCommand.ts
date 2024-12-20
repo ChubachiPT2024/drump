@@ -1,7 +1,7 @@
 /**
  * ラウンド完了コマンド
  */
-export class RoundCompleteCommand {
+export class MatchCompleteRoundCommand {
   /**
    * コンストラクタ
    *

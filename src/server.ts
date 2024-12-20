@@ -4,50 +4,24 @@ import { InMemoryMatchFactory } from "./infrastructure/inMemory/matches/inMemory
 import { InMemoryMatchRepository } from "./infrastructure/inMemory/matches/inMemoryMatchRepository";
 import { MatchApplicationService } from "./application/matches/matchApplicationService";
 import { MatchRouterFactory } from "./router/matches/matchRouterFactory";
-import { InMemoryRoundFactory } from "./infrastructure/inMemory/rounds/inMemoryRoundFactory";
-import { InMemoryRoundRepository } from "./infrastructure/inMemory/rounds/inMemoryRoundRepository";
-import { RoundApplicationService } from "./application/rounds/roundApplicationService";
-import { RoundRouterFactory } from "./router/rounds/roundRouterFactory";
 import { RoundService } from "./domain/services/roundService";
 import { InMemoryDealerFactory } from "./infrastructure/inMemory/dealears/inMemoryDealearFactory";
-import { InMemoryDealerRepository } from "./infrastructure/inMemory/dealears/inMemoryDealerRepository";
 import { InMemoryPlayerFactory } from "./infrastructure/inMemory/players/inMemoryPlayerFactory";
-import { InMemoryPlayerRepository } from "./infrastructure/inMemory/players/inMemoryPlayerRepository";
-import { PlayerApplicationService } from "./application/players/playerApplicationService";
-import { PlayerRouterFactory } from "./router/players/playerRouterFactory";
 
 // TODO DI フレームワークの検討
 const dealerFactory = new InMemoryDealerFactory();
-const dealerRepository = new InMemoryDealerRepository();
 
 const playerFactory = new InMemoryPlayerFactory();
-const playerRepository = new InMemoryPlayerRepository();
-const playerApplicationService = new PlayerApplicationService(
-  playerFactory,
-  playerRepository,
-);
-const playerRouterFactory = new PlayerRouterFactory(playerApplicationService);
 
-const matchFactory = new InMemoryMatchFactory(playerFactory);
+const matchFactory = new InMemoryMatchFactory(dealerFactory, playerFactory);
 const matchRepository = new InMemoryMatchRepository();
+const roundService = new RoundService();
 const matchApplicationService = new MatchApplicationService(
   matchFactory,
   matchRepository,
-);
-const matchRouterFactory = new MatchRouterFactory(matchApplicationService);
-
-const roundFactory = new InMemoryRoundFactory();
-const roundRepository = new InMemoryRoundRepository();
-const roundService = new RoundService();
-const roundApplicationService = new RoundApplicationService(
-  roundFactory,
-  dealerFactory,
-  roundRepository,
-  dealerRepository,
-  playerRepository,
   roundService,
 );
-const roundRouterFactory = new RoundRouterFactory(roundApplicationService);
+const matchRouterFactory = new MatchRouterFactory(matchApplicationService);
 
 const app = express();
 
@@ -56,7 +30,5 @@ const app = express();
 app.use(json());
 
 app.use("/api/matches", matchRouterFactory.create());
-app.use("/api/rounds", roundRouterFactory.create());
-app.use("/api/players", playerRouterFactory.create());
 
 ViteExpress.listen(app, 3000, () => console.log("Server is listening..."));

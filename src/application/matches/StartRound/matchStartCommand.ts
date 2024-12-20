@@ -1,7 +1,7 @@
 /**
  * ラウンド開始コマンド
  */
-export class RoundStartCommand {
+export class MatchStartRoundCommand {
   /**
    * コンストラクタ
    *

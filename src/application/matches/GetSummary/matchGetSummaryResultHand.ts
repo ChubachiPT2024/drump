@@ -2,9 +2,9 @@ import { Hand } from "@/domain/models/hands/hand";
 import { MatchGetSummaryResultCard } from "./matchGetSummaryResultCard";
 
 /**
- * 試合サマリ取得結果のプレイヤーのハンド
+ * 試合サマリ取得結果のハンド
  */
-export class MatchGetSummaryResultPlayerHand {
+export class MatchGetSummaryResultHand {
   /**
    * コンストラクタ
    *
@@ -24,8 +24,8 @@ export class MatchGetSummaryResultPlayerHand {
    * @param hand ハンド
    * @returns インスタンス
    */
-  public static create(hand: Hand): MatchGetSummaryResultPlayerHand {
-    return new MatchGetSummaryResultPlayerHand(
+  public static create(hand: Hand): MatchGetSummaryResultHand {
+    return new MatchGetSummaryResultHand(
       hand.getCards(),
       hand.calculateTotal(),
       hand.isResolved(),

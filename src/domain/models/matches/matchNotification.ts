@@ -1,3 +1,4 @@
+import { Dealer } from "../dealers/dealer";
 import { Player } from "../players/player";
 import { MatchId } from "./matchId";
 
@@ -11,6 +12,13 @@ export interface MatchNotification {
    * @param id ID
    */
   notifyId(id: MatchId): void;
+
+  /**
+   * ディーラーを通知する
+   *
+   * @param dealer ディーラー
+   */
+  notifyDealer(dealer: Dealer): void;
 
   /**
    * プレイヤーを通知する

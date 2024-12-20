@@ -3,7 +3,7 @@ import { RoundResult } from "@/domain/models/roundResults/roundResult";
 /**
  * ラウンドの結果取得結果
  */
-export class RoundGetResultResult {
+export class MatchGetRoundResultResult {
   /**
    * コンストラクタ
    *

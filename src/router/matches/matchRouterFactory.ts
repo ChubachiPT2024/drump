@@ -1,4 +1,3 @@
-import { MatchAddRoundCommand } from "@/application/matches/AddRound/matchAddRoundCommand";
 import { MatchCreateCommand } from "@/application/matches/Create/matchCreateCommand";
 import { MatchGetSummaryCommand } from "@/application/matches/GetSummary/matchGetSummaryCommand";
 import { MatchApplicationService } from "@/application/matches/matchApplicationService";
@@ -27,26 +26,10 @@ export class MatchRouterFactory {
 
     router.post("/", async (req, res, next) => {
       try {
-        const command = new MatchCreateCommand(
-          req.body.playerId,
-        );
+        const command = new MatchCreateCommand(req.body.playerId);
         const result = await this.matchApplicationService.createAsync(command);
 
         res.status(201).json(result);
-      } catch (err) {
-        next(err);
-      }
-    });
-
-    router.post("/:id/add-round", async (req, res, next) => {
-      try {
-        const command = new MatchAddRoundCommand(
-          req.params.id,
-          req.body.roundId,
-        );
-        await this.matchApplicationService.addRoundAsync(command);
-
-        res.status(204).send();
       } catch (err) {
         next(err);
       }

@@ -1,7 +1,7 @@
 /**
  * スタンドコマンド
  */
-export class RoundStandCommand {
+export class MatchStandCommand {
   /**
    * コンストラクタ
    *

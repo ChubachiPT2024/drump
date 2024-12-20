@@ -1,7 +1,8 @@
 import { PlayerNotification } from "@/domain/models/players/playerNotification";
-import { MatchGetSummaryResultPlayerHand } from "./matchGetSummaryResultPlayerHand";
 import { Hand } from "@/domain/models/hands/hand";
 import { PlayerId } from "@/domain/models/players/playerId";
+import { MatchGetSummaryResultHand } from "./matchGetSummaryResultHand";
+import { HandSignal } from "@/domain/models/handSignals/handSignal";
 
 /**
  * 試合サマリ取得結果のプレイヤー
@@ -15,7 +16,12 @@ export class MatchGetSummaryResultPlayer implements PlayerNotification {
   /**
    * ハンド
    */
-  public hand?: MatchGetSummaryResultPlayerHand;
+  public hand?: MatchGetSummaryResultHand;
+
+  /**
+   * ハンドシグナルの選択肢
+   */
+  public handSignalOptions: HandSignal[] = [];
 
   /**
    * ID を通知する
@@ -32,6 +38,15 @@ export class MatchGetSummaryResultPlayer implements PlayerNotification {
    * @param hand ハンド
    */
   public notifyHand(hand: Hand): void {
-    this.hand = MatchGetSummaryResultPlayerHand.create(hand);
+    this.hand = MatchGetSummaryResultHand.create(hand);
+  }
+
+  /**
+   * ハンドシグナルの選択肢を通知する
+   *
+   * @param handSignalOptions ハンドシグナルの選択肢
+   */
+  public notifyHandSignalOptions(handSignalOptions: HandSignal[]): void {
+    this.handSignalOptions = handSignalOptions;
   }
 }

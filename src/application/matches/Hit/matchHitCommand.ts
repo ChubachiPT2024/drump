@@ -1,7 +1,7 @@
 /**
- * アップカード取得コマンド
+ * ヒットコマンド
  */
-export class RoundGetUpCardCommand {
+export class MatchHitCommand {
   /**
    * コンストラクタ
    *

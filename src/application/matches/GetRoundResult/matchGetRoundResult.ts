@@ -1,7 +1,7 @@
 /**
- * ラウンド生成結果
+ * ラウンドの結果取得コマンド
  */
-export class RoundCreateResult {
+export class MatchGetRoundResultCommand {
   /**
    * コンストラクタ
    *

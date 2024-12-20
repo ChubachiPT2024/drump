@@ -109,5 +109,6 @@ export class Player {
   public notify(notification: PlayerNotification) {
     notification.notifyId(this.id);
     notification.notifyHand(this.hand);
+    notification.notifyHandSignalOptions(this.getHandSignalOptions());
   }
 }

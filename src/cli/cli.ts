@@ -1,32 +1,20 @@
-import { MatchAddRoundCommand } from "@/application/matches/AddRound/matchAddRoundCommand";
 import { MatchApplicationService } from "@/application/matches/matchApplicationService";
 import { MatchCreateCommand } from "@/application/matches/Create/matchCreateCommand";
-import { RoundApplicationService } from "@/application/rounds/roundApplicationService";
-import { RoundCreateCommand } from "@/application/rounds/Create/roundCreateCommand";
-import { RoundStartCommand } from "@/application/rounds/Start/roundStartCommand";
 import { InMemoryMatchFactory } from "@/infrastructure/inMemory/matches/inMemoryMatchFactory";
 import { InMemoryMatchRepository } from "@/infrastructure/inMemory/matches/inMemoryMatchRepository";
-import { InMemoryRoundFactory } from "@/infrastructure/inMemory/rounds/inMemoryRoundFactory";
-import { InMemoryRoundRepository } from "@/infrastructure/inMemory/rounds/inMemoryRoundRepository";
 import { createInterface } from "node:readline/promises";
 import { HandSignal } from "@/domain/models/handSignals/handSignal";
-import { RoundHitCommand } from "@/application/rounds/Hit/roundHitCommand";
-import { RoundStandCommand } from "@/application/rounds/Stand/roundStandCommand";
-import { RoundGetUpCardCommand } from "@/application/rounds/GetUpCard/roundGetUpCardCommand";
-import { RoundCompleteCommand } from "@/application/rounds/Complete/roundCompleteCommand";
-import { RoundGetDealersHandCommand } from "@/application/rounds/GetDealersHand/roundGetDealersHandCommand";
-import { RoundGetResultCommand } from "@/application/rounds/GetResult/roundGetResultCommand";
 import { exit } from "node:process";
 import { Suit } from "@/domain/models/suits/suit";
 import { RoundService } from "@/domain/services/roundService";
 import { InMemoryDealerFactory } from "@/infrastructure/inMemory/dealears/inMemoryDealearFactory";
-import { InMemoryDealerRepository } from "@/infrastructure/inMemory/dealears/inMemoryDealerRepository";
 import { InMemoryPlayerFactory } from "@/infrastructure/inMemory/players/inMemoryPlayerFactory";
-import { InMemoryPlayerRepository } from "@/infrastructure/inMemory/players/inMemoryPlayerRepository";
-import { PlayerApplicationService } from "@/application/players/playerApplicationService";
-import { PlayerCreateCommand } from "@/application/players/Create/playerCreateCommand";
-import { PlayerGetHandCommand } from "@/application/players/GetHand/playerGetHandCommand";
-import { PlayerGetHandSignalOptionsCommand } from "@/application/players/GetHandSignalOptions/playerGetHandSignalOptionsCommand";
+import { MatchStartRoundCommand } from "@/application/matches/StartRound/matchStartCommand";
+import { MatchGetSummaryCommand } from "@/application/matches/GetSummary/matchGetSummaryCommand";
+import { MatchHitCommand } from "@/application/matches/Hit/matchHitCommand";
+import { MatchStandCommand } from "@/application/matches/Stand/matchStandCommand";
+import { MatchCompleteRoundCommand } from "@/application/matches/CompleteRound/matchCompleteRoundCommand";
+import { MatchGetRoundResultCommand } from "@/application/matches/GetRoundResult/matchGetRoundResult";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
@@ -42,137 +30,108 @@ const rl = createInterface({
 });
 
 const dealerFactory = new InMemoryDealerFactory();
-const dealerRepository = new InMemoryDealerRepository();
-
 const playerFactory = new InMemoryPlayerFactory();
-const playerRepository = new InMemoryPlayerRepository();
-const playerApplicationService = new PlayerApplicationService(
-  playerFactory,
-  playerRepository,
-);
-
-const matchFactory = new InMemoryMatchFactory(playerFactory);
+const matchFactory = new InMemoryMatchFactory(dealerFactory, playerFactory);
 const matchRepository = new InMemoryMatchRepository();
+const roundService = new RoundService();
 const matchApplicationService = new MatchApplicationService(
   matchFactory,
   matchRepository,
-);
-
-const roundFactory = new InMemoryRoundFactory();
-const roundRepository = new InMemoryRoundRepository();
-const roundService = new RoundService();
-const roundApplicationService = new RoundApplicationService(
-  roundFactory,
-  dealerFactory,
-  roundRepository,
-  dealerRepository,
-  playerRepository,
   roundService,
 );
 
-// プレイヤーの作成
-const playerCreateResult = await playerApplicationService.createAsync(
-  new PlayerCreateCommand("userId"),
-);
-const playerId = playerCreateResult.id;
-
 // 試合の作成
 const matchCreateResult = await matchApplicationService.createAsync(
-  new MatchCreateCommand(playerId),
+  new MatchCreateCommand("userId"),
 );
 const matchId = matchCreateResult.id;
 
-// ラウンドの作成
-const roundCreateResult = await roundApplicationService.createAsync(
-  new RoundCreateCommand(playerId),
-);
-const roundId = roundCreateResult.id;
-
-// 試合へのラウンド追加
-await matchApplicationService.addRoundAsync(
-  new MatchAddRoundCommand(matchId, roundId),
-);
-
 // ラウンドの開始
-// await roundApplicationService.startAsync(new RoundStartCommand(roundId));
+await matchApplicationService.startRoundAsync(
+  new MatchStartRoundCommand(matchId),
+);
 
-// console.log("[Round start]");
-// console.log();
+console.log("[Round start]");
+console.log();
 
-// // アップカード表示
-// const upCard = await roundApplicationService.getUpCardAsync(
-//   new RoundGetUpCardCommand(roundId),
-// );
-// console.log("[Dealer's hand]");
-// console.log(`Up card: ${suitStrings.get(upCard.suit)}${upCard.rank}`);
-// console.log("Hole Card: ?");
-// console.log();
+// アップカード表示
+const upCard = (
+  await matchApplicationService.getSummaryAsync(
+    new MatchGetSummaryCommand(matchId),
+  )
+).dealer.upCard;
+console.log("[Dealer's hand]");
+console.log(`Up card: ${suitStrings.get(upCard!.suit)}${upCard!.rank}`);
+console.log("Hole Card: ?");
+console.log();
 
-// while (true) {
-//   // プレイヤーのハンド表示
-//   const playersHand = await playerApplicationService.getHandAsync(
-//     new PlayerGetHandCommand(playerId),
-//   );
+while (true) {
+  // プレイヤーのハンド表示
+  const matchSummary = await matchApplicationService.getSummaryAsync(
+    new MatchGetSummaryCommand(matchId),
+  );
 
-//   console.log("[Player's hand]");
-//   console.log(
-//     `Cards: ${playersHand.cards.map((card) => `${suitStrings.get(card.suit)}${card.rank}`).join(" ")}`,
-//   );
-//   console.log(`Total: ${playersHand.total}`);
-//   console.log();
+  const playersHand = matchSummary.player.hand!;
+  console.log("[Player's hand]");
+  console.log(
+    `Cards: ${playersHand.cards.map((card) => `${suitStrings.get(card.suit)}${card.rank}`).join(" ")}`,
+  );
+  console.log(`Total: ${playersHand.total}`);
+  console.log();
 
-//   if (playersHand.isResolved) {
-//     break;
-//   }
+  if (playersHand.isResolved) {
+    break;
+  }
 
-//   // ハンドシグナルの選択肢表示
-//   const playerGetHandSignalOptionsResult =
-//     await playerApplicationService.getHandSignalOptionsAsync(
-//       new PlayerGetHandSignalOptionsCommand(playerId),
-//     );
-//   const handSignals = playerGetHandSignalOptionsResult.handSignals;
+  // ハンドシグナルの選択肢表示
+  const handSignals = matchSummary.player.handSignalOptions;
 
-//   console.log("[Hand signal options]");
-//   for (const [i, handSignal] of handSignals.entries()) {
-//     console.log(`${i}: ${handSignal}`);
-//   }
-//   console.log();
+  console.log("[Hand signal options]");
+  for (const [i, handSignal] of handSignals.entries()) {
+    console.log(`${i}: ${handSignal}`);
+  }
+  console.log();
 
-//   // ハンドシグナルの選択
-//   const selectedHandSignal = await rl.question("Select hand signal: ");
-//   console.log();
+  // ハンドシグナルの選択
+  const selectedHandSignal = await rl.question("Select hand signal: ");
+  console.log();
 
-//   // ハンドシグナルを出す
-//   switch (handSignals[Number(selectedHandSignal)]) {
-//     case HandSignal.Hit:
-//       await roundApplicationService.hitAsync(new RoundHitCommand(roundId));
-//       break;
+  // ハンドシグナルを出す
+  switch (handSignals[Number(selectedHandSignal)]) {
+    case HandSignal.Hit:
+      await matchApplicationService.hitAsync(new MatchHitCommand(matchId));
+      break;
 
-//     case HandSignal.Stand:
-//       await roundApplicationService.standAsync(new RoundStandCommand(roundId));
-//       break;
-//   }
-// }
+    case HandSignal.Stand:
+      await matchApplicationService.standAsync(new MatchStandCommand(matchId));
+      break;
+  }
+}
 
-// // ラウンドを完了する
-// await roundApplicationService.completeAsync(new RoundCompleteCommand(roundId));
+// ラウンドを完了する
+await matchApplicationService.completeRoundAsync(
+  new MatchCompleteRoundCommand(matchId),
+);
 
-// // ディーラーのハンドを表示する
-// const dealersHand = await roundApplicationService.getDealersHandAsync(
-//   new RoundGetDealersHandCommand(roundId),
-// );
-// console.log("[Dealer's hand]");
-// console.log(
-//   `Cards: ${dealersHand.cards.map((card) => `${suitStrings.get(card.suit)}${card.rank}`).join(" ")}`,
-// );
-// console.log(`Total: ${dealersHand.total}`);
-// console.log();
+// ディーラーのハンドを表示する
+const dealersHand = (
+  await matchApplicationService.getSummaryAsync(
+    new MatchGetSummaryCommand(matchId),
+  )
+).dealer.hand!;
 
-// // ラウンドの結果を表示する
-// const roundResult = await roundApplicationService.getResultAsync(
-//   new RoundGetResultCommand(roundId),
-// );
-// console.log("[Round result]");
-// console.log(roundResult.result);
+console.log("[Dealer's hand]");
+console.log(
+  `Cards: ${dealersHand.cards.map((card) => `${suitStrings.get(card.suit)}${card.rank}`).join(" ")}`,
+);
+console.log(`Total: ${dealersHand.total}`);
+console.log();
+
+// ラウンドの結果を表示する
+const roundResult = await matchApplicationService.getRoundResultAsync(
+  new MatchGetRoundResultCommand(matchId),
+);
+console.log("[Round result]");
+console.log(roundResult.result);
 
 exit();

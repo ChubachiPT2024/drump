@@ -1,5 +1,6 @@
+import { Dealer } from "../dealers/dealer";
+import { Hand } from "../hands/hand";
 import { Player } from "../players/player";
-import { RoundId } from "../rounds/roundId";
 import { Shoe } from "../shoes/shoe";
 import { MatchId } from "./matchId";
 import { MatchNotification } from "./matchNotification";
@@ -18,48 +19,98 @@ export class Match {
    *
    * @param id ID
    * @param shoe シュー
+   * @param dealer ディーラー
    * @param player プレイヤー
-   * @param rounds ラウンド ID リスト
    */
   private constructor(
     public readonly id: MatchId,
-    private readonly shoe: Shoe,
+    private shoe: Shoe,
+    private readonly dealer: Dealer,
     private readonly player: Player,
-    private roundIds: RoundId[],
   ) {}
 
   /**
    * インスタンスを生成する
    *
    * @param id ID
+   * @param dealer ディーラー
    * @param player プレイヤー
    * @returns インスタンス
    */
-  public static create(id: MatchId, player: Player) {
+  public static create(id: MatchId, dealer: Dealer, player: Player) {
     return new Match(
       id,
       Shoe.createFromDecks(this.NUMBER_OF_DECKS).suffle(),
+      dealer,
       player,
-      [],
     );
   }
 
   /**
-   * ラウンドを追加する
-   *
-   * @param roundId
+   * ディーラーにカードを配る
    */
-  public addRound(roundId: RoundId): void {
-    this.roundIds = [...this.roundIds, roundId];
+  public dealCardToDealer(): void {
+    this.dealer.addCardToHand(this.shoe.peek());
+
+    // TODO シューをエンティティにするかどうか
+    this.shoe = this.shoe.draw();
   }
 
   /**
-   * ラウンド ID リストを取得する
-   *
-   * @returns ラウンド ID リスト
+   * プレイヤーにカードを配る
    */
-  public getRoundIds(): RoundId[] {
-    return [...this.roundIds];
+  public dealCardToPlayer(): void {
+    this.player.addCardToHand(this.shoe.peek());
+
+    // TODO シューをエンティティにするかどうか
+    this.shoe = this.shoe.draw();
+  }
+
+  /**
+   * ヒットできるかどうかを取得する
+   *
+   * @returns ヒットできるかどうか
+   */
+  public canHit(): boolean {
+    return this.player.getHand().canHit();
+  }
+
+  /**
+   * スタンドする
+   */
+  public stand(): void {
+    return this.player.stand();
+  }
+
+  /**
+   * ディーラーのハンドを解決する
+   */
+  public resolveDealersHand(): void {
+    while (this.dealer.shouldHit()) {
+      this.dealCardToDealer();
+    }
+
+    if (!this.dealer.getHand().isResolved()) {
+      this.dealer.stand();
+    }
+  }
+
+  /**
+   * プレイヤーのハンドを取得する
+   *
+   * @returns プレイヤーのハンド
+   */
+  public getPlayersHand(): Hand {
+    return this.player.getHand();
+  }
+
+  /**
+   * ディーラーのハンドを取得する
+   *
+   * @returns ディーラーのハンド
+   */
+  public getDealersHand(): Hand {
+    return this.dealer.getHand();
   }
 
   /**
@@ -69,6 +120,7 @@ export class Match {
    */
   public notify(notification: MatchNotification): void {
     notification.notifyId(this.id);
+    notification.notifyDealer(this.dealer);
     notification.notifyPlayer(this.player);
   }
 }

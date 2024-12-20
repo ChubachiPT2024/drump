@@ -1,8 +1,8 @@
+import { DealerFactory } from "@/domain/models/dealers/dealerFactory";
 import { Match } from "@/domain/models/matches/match";
 import { MatchFactory } from "@/domain/models/matches/matchFactory";
 import { MatchId } from "@/domain/models/matches/matchId";
 import { PlayerFactory } from "@/domain/models/players/playerFactory";
-import { Shoe } from "@/domain/models/shoes/shoe";
 import { UserId } from "@/domain/models/users/userId";
 
 /**
@@ -14,7 +14,10 @@ export class InMemoryMatchFactory implements MatchFactory {
    *
    * @param playerFactory プレイヤーファクトリ
    */
-  public constructor(private readonly playerFactory: PlayerFactory) {}
+  public constructor(
+    private readonly dealerFactory: DealerFactory,
+    private readonly playerFactory: PlayerFactory,
+  ) {}
 
   /**
    * 試合を生成する
@@ -25,6 +28,7 @@ export class InMemoryMatchFactory implements MatchFactory {
   public create(userId: UserId): Match {
     return Match.create(
       new MatchId(crypto.randomUUID()),
+      this.dealerFactory.create(),
       this.playerFactory.create(userId),
     );
   }

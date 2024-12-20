@@ -1,4 +1,4 @@
 /**
  * ヒットできない場合のエラー
  */
-export class RoundCannotHitError extends Error {}
+export class MatchCannotHitError extends Error {}
