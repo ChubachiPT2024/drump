@@ -8,19 +8,13 @@ export const Card = ({
   owner,
   suit,
   rank,
-  onAnimationComplete,
 }: {
   isOpen: boolean;
   owner: "dealer" | "player";
   suit: Pick<CardType, "suit">["suit"] | "reverse";
   rank: Pick<CardType, "rank">["rank"] | "reverse";
-  onAnimationComplete: () => void;
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-
-  useEffect(() => {
-    setIsFlipped(isOpen);
-  }, [isOpen]);
 
   return (
     <motion.div
@@ -38,7 +32,6 @@ export const Card = ({
         if (isOpen) {
           setIsFlipped(true);
         }
-        onAnimationComplete();
       }}
       className="flex space-x-4"
     >

@@ -12,16 +12,13 @@ export const MatchPage = () => {
   // TODO: move to .env
   const apiUrl = "http://localhost:3000/api";
 
-  const [canHitByPlayer, setCanHitByPlayer] = useState(true);
-  const [dealerCardsToShow, setDealerCardsToShow] = useState(1);
-  const [playerCardsToShow, setPlayerCardsToShow] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [dealerCards, setDealerCards] = useState<CardType[] | undefined>(
     undefined
   );
-  const [playerHandCards, setPlayerHandCards] = useState<
-    PlayerHand | undefined
-  >(undefined);
+  const [playerHand, setPlayerHand] = useState<PlayerHand | undefined>(
+    undefined
+  );
 
   const handleStand = () => {
     console.log("stand");
@@ -93,14 +90,10 @@ export const MatchPage = () => {
         await postAddRoundApi(matchId, roundId);
         await postRoundStartApi(roundId);
         const upCard = await getUpCardApi(roundId);
-        const playerCards = await getPlayersHandApi(roundId);
-        console.log(playerCards);
+        const playerHand = await getPlayersHandApi(roundId);
 
-        if (upCard && playerCards) {
-          setDealerCards([upCard]);
-          setPlayerHandCards(playerCards);
-        }
-
+        setDealerCards([upCard]);
+        setPlayerHand(playerHand);
         setIsLoading(false);
       }
     };
@@ -113,60 +106,45 @@ export const MatchPage = () => {
       <div className="dealer flex">
         {dealerCards &&
           dealerCards.map((card, index) => {
-            if (index < dealerCardsToShow) {
-              return (
-                <Card
-                  key={card.suit + card.rank}
-                  isOpen={index === 0}
-                  owner="dealer"
-                  suit={card.suit}
-                  rank={card.rank}
-                  onAnimationComplete={() => {
-                    setDealerCardsToShow((prev) => prev + 1);
-                  }}
-                />
-              );
-            }
-
-            return null;
+            return (
+              <Card
+                key={card.suit + card.rank}
+                isOpen={index === 0}
+                owner="dealer"
+                suit={card.suit}
+                rank={card.rank}
+              />
+            );
           })}
-        {playerHandCards && !playerHandCards.isResolved && (
+        {playerHand && !playerHand.isResolved && (
           <Card
             key="reverse"
             isOpen={false}
             owner="dealer"
             suit={"reverse"}
             rank={"reverse"}
-            onAnimationComplete={() => {}}
           />
         )}
       </div>
       <div className="player flex">
-        {playerHandCards &&
-          playerHandCards.cards.map((card, index) => {
-            if (index < playerCardsToShow) {
-              return (
-                <Card
-                  key={card.suit + card.rank}
-                  isOpen={true}
-                  owner="player"
-                  suit={card.suit}
-                  rank={card.rank}
-                  onAnimationComplete={() => {
-                    setPlayerCardsToShow((prev) => prev + 1);
-                  }}
-                />
-              );
-            }
-
-            return null;
+        {playerHand &&
+          playerHand.cards.map((card) => {
+            return (
+              <Card
+                key={card.suit + card.rank}
+                isOpen={true}
+                owner="player"
+                suit={card.suit}
+                rank={card.rank}
+              />
+            );
           })}
       </div>
       <div className="absolute bottom-0 left-0 w-full flex justify-center pb-4">
         <Button onClick={handleStand} className="mx-2">
           STAND
         </Button>
-        <Button onClick={handleHit} className="mx-2" disabled={!canHitByPlayer}>
+        <Button onClick={handleHit} className="mx-2">
           HIT
         </Button>
       </div>
