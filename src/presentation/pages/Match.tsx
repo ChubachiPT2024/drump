@@ -99,7 +99,7 @@ export const MatchPage = () => {
     };
 
     fetchRoundId();
-  }, [isLoading]);
+  }, []);
 
   return (
     <div className="relative min-h-screen">
