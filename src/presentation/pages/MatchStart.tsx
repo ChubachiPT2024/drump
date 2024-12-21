@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom";
 
 export const MatchStartPage = () => {
   const navigate = useNavigate();
-  // TODO:URLを環境変数から取得する
-  const apiUrl = "http://localhost:3000/api/shoes";
+  // TODO: move to .env
+  const apiUrl = "http://localhost:3000/api";
 
   const postShoeApi = async (): Promise<string> => {
     return axios
       .post(
-        apiUrl,
+        `${apiUrl}/shoes`,
         {},
         {
           headers: {
@@ -30,7 +30,29 @@ export const MatchStartPage = () => {
   const postMatchApi = async (shoeId: string): Promise<string> => {
     return axios
       .post(
-        apiUrl,
+        `${apiUrl}/matches`,
+        {
+          shoeId: shoeId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        return res.data.id;
+      })
+      .catch((err) => {
+        console.error(err);
+        return Promise.reject(err);
+      });
+  };
+
+  const postRoundApi = async (shoeId: string): Promise<string> => {
+    return axios
+      .post(
+        apiUrl + "/rounds",
         {
           shoeId: shoeId,
         },
@@ -52,8 +74,9 @@ export const MatchStartPage = () => {
   const handleClick = async () => {
     const shoeId = await postShoeApi();
     const matchId = await postMatchApi(shoeId);
+    const roundId = await postRoundApi(shoeId);
 
-    navigate(`/match/${matchId}`);
+    navigate(`/match/${matchId}`, { state: { roundId: roundId } });
   };
 
   return (

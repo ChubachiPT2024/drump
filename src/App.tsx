@@ -9,7 +9,7 @@ export function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<TitlePage />} />
-          <Route path="/match" element={<MatchPage />} />
+          <Route path="/match/:matchId" element={<MatchPage />} />
           <Route path="/match-start" element={<MatchStartPage />} />
         </Routes>
       </BrowserRouter>

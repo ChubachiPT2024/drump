@@ -2,16 +2,17 @@ import { useState, useEffect } from "react";
 import ReactCardFlip from "react-card-flip";
 import { motion } from "framer-motion";
 
-//TODO: type cardで渡す,ownerをLiteral Union Typesで指定
 export const Card = ({
   isOpen,
   owner,
-  value,
+  suit,
+  rank,
   onAnimationComplete,
 }: {
   isOpen: boolean;
-  owner: string;
-  value: number;
+  owner: "dealer" | "player";
+  suit: string;
+  rank: number;
   onAnimationComplete: () => void;
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -42,11 +43,10 @@ export const Card = ({
     >
       <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
         <div className="mt-5 mr-2 h-40 w-24">
-          <img src="./trump/back.png" alt="card-back" />
+          <img src="/trump/back.png" alt="card-back" />
         </div>
-        {/* TODO: カードの画像のパスを指定する */}
         <div className="mt-5 mr-2 h-40 w-24">
-          <h2 className="text-center">{value}</h2>
+          <img src={`/trump/${suit}${rank}.png`} alt="" />
         </div>
       </ReactCardFlip>
     </motion.div>
