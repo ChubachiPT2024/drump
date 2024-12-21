@@ -4,18 +4,8 @@ import { Card } from "../components/Card";
 import { BetModal } from "../components/match/bet-modal";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-
-interface CardType {
-  id: number;
-  isOpen: boolean;
-  suit: "spade" | "heart" | "diamond" | "club";
-  rank: number;
-}
-interface PlayerHand {
-  cards: CardType[];
-  isResolved: boolean;
-  total: number;
-}
+import { Card as CardType } from "../types/card";
+import { PlayerHand } from "../types/playerHand";
 
 export const MatchPage = () => {
   const location = useLocation();
@@ -26,10 +16,12 @@ export const MatchPage = () => {
   const [dealerCardsToShow, setDealerCardsToShow] = useState(1);
   const [playerCardsToShow, setPlayerCardsToShow] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [upCards, setUpCards] = useState<CardType[] | []>([]);
-  const [playerHandCards, setPlayerHandCards] = useState<PlayerHand | null>(
-    null
+  const [dealerCards, setDealerCards] = useState<CardType[] | undefined>(
+    undefined
   );
+  const [playerHandCards, setPlayerHandCards] = useState<
+    PlayerHand | undefined
+  >(undefined);
 
   const handleStand = () => {
     console.log("stand");
@@ -102,8 +94,12 @@ export const MatchPage = () => {
         await postRoundStartApi(roundId);
         const upCard = await getUpCardApi(roundId);
         const playerCards = await getPlayersHandApi(roundId);
-        setUpCards([upCard]);
-        setPlayerHandCards(playerCards);
+        console.log(playerCards);
+
+        if (upCard && playerCards) {
+          setDealerCards([upCard]);
+          setPlayerHandCards(playerCards);
+        }
 
         setIsLoading(false);
       }
@@ -115,24 +111,35 @@ export const MatchPage = () => {
   return (
     <div className="relative min-h-screen">
       <div className="dealer flex">
-        {upCards.map((card, index) => {
-          if (index < dealerCardsToShow) {
-            return (
-              <Card
-                key={card.suit + card.rank}
-                isOpen={card.isOpen}
-                owner="dealer"
-                suit={card.suit}
-                rank={card.rank}
-                onAnimationComplete={() => {
-                  setDealerCardsToShow((prev) => prev + 1);
-                }}
-              />
-            );
-          }
+        {dealerCards &&
+          dealerCards.map((card, index) => {
+            if (index < dealerCardsToShow) {
+              return (
+                <Card
+                  key={card.suit + card.rank}
+                  isOpen={index === 0}
+                  owner="dealer"
+                  suit={card.suit}
+                  rank={card.rank}
+                  onAnimationComplete={() => {
+                    setDealerCardsToShow((prev) => prev + 1);
+                  }}
+                />
+              );
+            }
 
-          return null;
-        })}
+            return null;
+          })}
+        {playerHandCards && !playerHandCards.isResolved && (
+          <Card
+            key="reverse"
+            isOpen={false}
+            owner="dealer"
+            suit={"reverse"}
+            rank={"reverse"}
+            onAnimationComplete={() => {}}
+          />
+        )}
       </div>
       <div className="player flex">
         {playerHandCards &&
@@ -141,7 +148,7 @@ export const MatchPage = () => {
               return (
                 <Card
                   key={card.suit + card.rank}
-                  isOpen={card.isOpen}
+                  isOpen={true}
                   owner="player"
                   suit={card.suit}
                   rank={card.rank}

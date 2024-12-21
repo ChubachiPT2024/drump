@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import ReactCardFlip from "react-card-flip";
 import { motion } from "framer-motion";
+import { Card as CardType } from "../types/card";
 
 export const Card = ({
   isOpen,
@@ -11,8 +12,8 @@ export const Card = ({
 }: {
   isOpen: boolean;
   owner: "dealer" | "player";
-  suit: string;
-  rank: number;
+  suit: Pick<CardType, "suit">["suit"] | "reverse";
+  rank: Pick<CardType, "rank">["rank"] | "reverse";
   onAnimationComplete: () => void;
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
