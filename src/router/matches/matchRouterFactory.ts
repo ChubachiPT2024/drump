@@ -1,3 +1,4 @@
+import { MatchBetCommand } from "@/application/matches/Bet/matchBetCommand";
 import { MatchCompleteRoundCommand } from "@/application/matches/CompleteRound/matchCompleteRoundCommand";
 import { MatchCreateCommand } from "@/application/matches/Create/matchCreateCommand";
 import { MatchGetRoundResultCommand } from "@/application/matches/GetRoundResult/matchGetRoundResult";
@@ -56,6 +57,17 @@ export class MatchRouterFactory {
       try {
         const command = new MatchStartRoundCommand(req.params.id);
         await this.matchApplicationService.startRoundAsync(command);
+
+        res.status(204).send();
+      } catch (err) {
+        next(err);
+      }
+    });
+
+    router.post("/:id/bet", async (req, res, next) => {
+      try {
+        const command = new MatchBetCommand(req.params.id, req.body.amount);
+        await this.matchApplicationService.betAsync(command);
 
         res.status(204).send();
       } catch (err) {
