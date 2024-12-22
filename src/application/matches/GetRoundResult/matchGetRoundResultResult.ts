@@ -1,4 +1,4 @@
-import { RoundResult } from "@/domain/models/roundResults/roundResult";
+import { RoundResult } from "@/domain/models/roundResultCalculators/roundResult";
 
 /**
  * ラウンドの結果取得結果

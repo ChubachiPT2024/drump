@@ -48,4 +48,14 @@ export class ChipAmount {
 
     return new ChipAmount(this.value - other.value);
   }
+
+  /**
+   * このチップ量にレートを掛けた新しいチップ量を生成する
+   *
+   * @param rate レート
+   * @returns このチップ量にレートを掛けた新しいチップ量
+   */
+  public multiply(rate: number): ChipAmount {
+    return new ChipAmount(rate * this.value);
+  }
 }

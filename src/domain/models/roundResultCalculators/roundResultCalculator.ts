@@ -1,18 +1,18 @@
-import { Hand } from "../models/hands/hand";
-import { RoundResult } from "../models/roundResults/roundResult";
+import { Hand } from "../hands/hand";
+import { RoundResult } from "./roundResult";
 
 /**
- * ラウンドサービス
+ * ラウンド結果計算機
  */
-export class RoundService {
+export class RoundResultCalculator {
   /**
-   * ラウンドの結果を計算する
+   * 結果を計算する
    *
    * @param playersHand プレイヤーのハンド
    * @param dealersHand ディーラーのハンド
    * @returns ラウンドの結果
    */
-  public calculateResult(playersHand: Hand, dealersHand: Hand): RoundResult {
+  public calculate(playersHand: Hand, dealersHand: Hand): RoundResult {
     // プレイヤーがバスト
     if (playersHand.isBust()) {
       return RoundResult.Loss;

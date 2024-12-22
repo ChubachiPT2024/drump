@@ -2,6 +2,8 @@ import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Dealer } from "../dealers/dealer";
 import { Hand } from "../hands/hand";
 import { Player } from "../players/player";
+import { RoundResult } from "../roundResultCalculators/roundResult";
+import { RoundResultCalculator } from "../roundResultCalculators/roundResultCalculator";
 import { Shoe } from "../shoes/shoe";
 import { MatchId } from "./matchId";
 import { MatchNotification } from "./matchNotification";
@@ -22,12 +24,14 @@ export class Match {
    * @param shoe シュー
    * @param dealer ディーラー
    * @param player プレイヤー
+   * @param roundResultCalculator ラウンド結果計算機
    */
   private constructor(
     public readonly id: MatchId,
     private shoe: Shoe,
     private readonly dealer: Dealer,
     private readonly player: Player,
+    private readonly roundResultCalculator: RoundResultCalculator,
   ) {}
 
   /**
@@ -44,6 +48,7 @@ export class Match {
       Shoe.createFromDecks(this.NUMBER_OF_DECKS).suffle(),
       dealer,
       player,
+      new RoundResultCalculator(),
     );
   }
 
@@ -121,6 +126,46 @@ export class Match {
    */
   public getDealersHand(): Hand {
     return this.dealer.getHand();
+  }
+
+  /**
+   * ラウンドを完了する
+   */
+  public completeRound(): void {
+    switch (this.calculateRoundResult()) {
+      case RoundResult.Win:
+        this.player.collectPayoff(this.calculatePayoff());
+        this.player.collectBet();
+        break;
+      case RoundResult.Push:
+        this.player.collectBet();
+        break;
+      case RoundResult.Loss:
+        this.player.loseBet();
+        break;
+    }
+  }
+
+  /**
+   * ラウンドの結果を計算する
+   *
+   * @returns ラウンドの結果
+   */
+  public calculateRoundResult(): RoundResult {
+    return this.roundResultCalculator.calculate(
+      this.player.getHand(),
+      this.dealer.getHand(),
+    );
+  }
+
+  /**
+   * ペイオフを計算する
+   *
+   * @returns ペイオフ
+   */
+  private calculatePayoff(): ChipAmount {
+    const rate = this.player.getHand().isBlackJack() ? 1.5 : 1;
+    return this.player.getBetAmount().multiply(rate);
   }
 
   /**

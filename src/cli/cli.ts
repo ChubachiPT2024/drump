@@ -6,7 +6,6 @@ import { createInterface } from "node:readline/promises";
 import { HandSignal } from "@/domain/models/handSignals/handSignal";
 import { exit } from "node:process";
 import { Suit } from "@/domain/models/suits/suit";
-import { RoundService } from "@/domain/services/roundService";
 import { InMemoryDealerFactory } from "@/infrastructure/inMemory/dealears/inMemoryDealearFactory";
 import { InMemoryPlayerFactory } from "@/infrastructure/inMemory/players/inMemoryPlayerFactory";
 import { MatchStartRoundCommand } from "@/application/matches/StartRound/matchStartCommand";
@@ -34,11 +33,9 @@ const dealerFactory = new InMemoryDealerFactory();
 const playerFactory = new InMemoryPlayerFactory();
 const matchFactory = new InMemoryMatchFactory(dealerFactory, playerFactory);
 const matchRepository = new InMemoryMatchRepository();
-const roundService = new RoundService();
 const matchApplicationService = new MatchApplicationService(
   matchFactory,
   matchRepository,
-  roundService,
 );
 
 // 試合の作成

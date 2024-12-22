@@ -1,13 +1,13 @@
 import { describe, expect, test } from "vitest";
-import { Card } from "../models/cards/card";
-import { Rank } from "../models/ranks/rank";
-import { Suit } from "../models/suits/suit";
-import { RoundResult } from "../models/roundResults/roundResult";
-import { RoundService } from "./roundService";
-import { Player } from "../models/players/player";
-import { Dealer } from "../models/dealers/dealer";
-import { DealerId } from "../models/dealers/dealerId";
-import { PlayerId } from "../models/players/playerId";
+import { Card } from "../cards/card";
+import { Rank } from "../ranks/rank";
+import { Suit } from "../suits/suit";
+import { RoundResult } from "./roundResult";
+import { Player } from "../players/player";
+import { Dealer } from "../dealers/dealer";
+import { DealerId } from "../dealers/dealerId";
+import { PlayerId } from "../players/playerId";
+import { RoundResultCalculator } from "./roundResultCalculator";
 
 describe("calculate result", () => {
   test.each([
@@ -155,7 +155,7 @@ describe("calculate result", () => {
     expected: RoundResult;
   }[])("The result of a round.", ({ playersCards, dealersCards, expected }) => {
     // Arrange
-    const roundService = new RoundService();
+    const roundResultCalculator = new RoundResultCalculator();
     const player = Player.create(
       new PlayerId("playerId"),
       new DealerId("dealerId"),
@@ -169,7 +169,7 @@ describe("calculate result", () => {
     }
 
     // Act
-    const result = roundService.calculateResult(
+    const result = roundResultCalculator.calculate(
       player.getHand(),
       dealer.getHand(),
     );

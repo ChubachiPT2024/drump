@@ -13,7 +13,6 @@ import { MatchCannotHitError } from "./Hit/matchCannotHitError";
 import { MatchCompleteRoundCommand } from "./CompleteRound/matchCompleteRoundCommand";
 import { MatchGetRoundResultCommand } from "./GetRoundResult/matchGetRoundResult";
 import { MatchGetRoundResultResult } from "./GetRoundResult/matchGetRoundResultResult";
-import { RoundService } from "@/domain/services/roundService";
 import { MatchBetCommand } from "./Bet/matchBetCommand";
 import { ChipAmount } from "@/domain/models/chipAmounts/chipAmount";
 
@@ -26,12 +25,10 @@ export class MatchApplicationService {
    *
    * @param matchFactory 試合ファクトリ
    * @param matchRepository 試合リポジトリ
-   * @param roundService ラウンドサービス
    */
   public constructor(
     private readonly matchFactory: MatchFactory,
     private readonly matchRepository: MatchRepository,
-    private readonly roundService: RoundService,
   ) {}
 
   /**
@@ -142,6 +139,7 @@ export class MatchApplicationService {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
 
     match.resolveDealersHand();
+    match.completeRound();
 
     await this.matchRepository.saveAsync(match);
   }
@@ -157,11 +155,6 @@ export class MatchApplicationService {
   ): Promise<MatchGetRoundResultResult> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
 
-    const roundResult = this.roundService.calculateResult(
-      match.getPlayersHand(),
-      match.getDealersHand(),
-    );
-
-    return new MatchGetRoundResultResult(roundResult);
+    return new MatchGetRoundResultResult(match.calculateRoundResult());
   }
 }

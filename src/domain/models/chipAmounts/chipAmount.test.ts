@@ -63,3 +63,14 @@ describe("minus", () => {
     }
   });
 });
+
+describe("multiply", () => {
+  test("It returns a new chip amount with multiplied value.", () => {
+    const chipAmount = new ChipAmount(2);
+    const rate = 1.5;
+
+    const multipliedChipAmount = chipAmount.multiply(rate);
+
+    expect(multipliedChipAmount.value).toBe(3);
+  });
+});
