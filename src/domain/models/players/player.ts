@@ -3,6 +3,7 @@ import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Hand } from "../hands/hand";
 import { HandSignal } from "../handSignals/handSignal";
 import { UserId } from "../users/userId";
+import { PlayerCreditShortageError } from "./playerCreditShortageError";
 import { PlayerId } from "./playerId";
 import { PlayerNotification } from "./playerNotification";
 
@@ -81,6 +82,38 @@ export class Player {
    */
   public stand(): void {
     this.hand = this.hand.stand();
+  }
+
+  /**
+   * クレジットを取得する
+   *
+   * @returns クレジット
+   */
+  public getCredit(): ChipAmount {
+    return this.credit;
+  }
+
+  /**
+   * ベット額を取得する
+   *
+   * @returns ベット額
+   */
+  public getBetAmount(): ChipAmount {
+    return this.betAmount;
+  }
+
+  /**
+   * ベットする
+   *
+   * @param amount 額
+   */
+  public bet(amount: ChipAmount): void {
+    if (!this.credit.canMinus(amount)) {
+      throw new PlayerCreditShortageError();
+    }
+
+    this.credit = this.credit.minus(amount);
+    this.betAmount = this.betAmount.plus(amount);
   }
 
   /**
