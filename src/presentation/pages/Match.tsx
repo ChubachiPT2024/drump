@@ -111,7 +111,7 @@ export const MatchPage = () => {
               <Card
                 key={card.suit + card.rank}
                 isOpen={index === 0}
-                owner="dealer"
+                animate={{ x: "40vw", y: "0vh" }}
                 suit={card.suit}
                 rank={card.rank}
               />
@@ -121,7 +121,7 @@ export const MatchPage = () => {
           <Card
             key="reverse"
             isOpen={false}
-            owner="dealer"
+            animate={{ x: "40vw", y: "0vh" }}
             suit={"reverse"}
             rank={"reverse"}
           />
@@ -134,7 +134,10 @@ export const MatchPage = () => {
               <Card
                 key={card.suit + card.rank}
                 isOpen={true}
-                owner="player"
+                animate={{
+                  x: "40vw",
+                  y: "25vh",
+                }}
                 suit={card.suit}
                 rank={card.rank}
               />

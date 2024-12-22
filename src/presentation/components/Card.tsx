@@ -5,12 +5,15 @@ import { Card as CardType } from "../types/card";
 
 export const Card = ({
   isOpen,
-  owner,
+  animate,
   suit,
   rank,
 }: {
   isOpen: boolean;
-  owner: "dealer" | "player";
+  animate: {
+    x: string;
+    y: string;
+  };
   suit: Pick<CardType, "suit">["suit"] | "reverse";
   rank: Pick<CardType, "rank">["rank"] | "reverse";
 }) => {
@@ -19,10 +22,7 @@ export const Card = ({
   return (
     <motion.div
       initial={{ x: "100vw", y: "25vh" }}
-      animate={{
-        x: "40vw",
-        y: owner == "dealer" ? "0%" : "25vh",
-      }}
+      animate={animate}
       transition={{
         type: "linear",
         stiffness: 150,
