@@ -16,14 +16,14 @@ export class Player {
    * @param id ID
    * @param userId ユーザ ID
    * @param credit クレジット
-   * @param bet ベット
+   * @param betAmount ベット額
    * @param hand ハンド
    */
   private constructor(
     public readonly id: PlayerId,
     public readonly userId: UserId,
     private credit: ChipAmount,
-    private bet: ChipAmount,
+    private betAmount: ChipAmount,
     private hand: Hand,
   ) {}
 
@@ -43,24 +43,6 @@ export class Player {
       new ChipAmount(0),
       Hand.create(),
     );
-  }
-
-  /**
-   * クレジットを取得する
-   *
-   * @returns クレジット
-   */
-  public getCredit(): ChipAmount {
-    return this.credit;
-  }
-
-  /**
-   * ベットを取得する
-   *
-   * @returns ベット
-   */
-  public getBet(): ChipAmount {
-    return this.bet;
   }
 
   /**
@@ -110,5 +92,7 @@ export class Player {
     notification.notifyId(this.id);
     notification.notifyHand(this.hand);
     notification.notifyHandSignalOptions(this.getHandSignalOptions());
+    notification.notifyCredit(this.credit);
+    notification.notifyBetAmount(this.betAmount);
   }
 }

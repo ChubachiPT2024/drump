@@ -1,3 +1,4 @@
+import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Hand } from "../hands/hand";
 import { HandSignal } from "../handSignals/handSignal";
 import { PlayerId } from "./playerId";
@@ -26,4 +27,18 @@ export interface PlayerNotification {
    * @param handSignalOptions ハンドシグナルの選択肢
    */
   notifyHandSignalOptions(handSignalOptions: HandSignal[]): void;
+
+  /**
+   * クレジットを通知する
+   *
+   * @param credit クレジット
+   */
+  notifyCredit(credit: ChipAmount): void;
+
+  /**
+   * ベット額を通知する
+   *
+   * @param betAmount ベット額
+   */
+  notifyBetAmount(betAmount: ChipAmount): void;
 }

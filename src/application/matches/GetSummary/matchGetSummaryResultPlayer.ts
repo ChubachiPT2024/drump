@@ -3,6 +3,7 @@ import { Hand } from "@/domain/models/hands/hand";
 import { PlayerId } from "@/domain/models/players/playerId";
 import { MatchGetSummaryResultHand } from "./matchGetSummaryResultHand";
 import { HandSignal } from "@/domain/models/handSignals/handSignal";
+import { ChipAmount } from "@/domain/models/chipAmounts/chipAmount";
 
 /**
  * 試合サマリ取得結果のプレイヤー
@@ -22,6 +23,16 @@ export class MatchGetSummaryResultPlayer implements PlayerNotification {
    * ハンドシグナルの選択肢
    */
   public handSignalOptions: HandSignal[] = [];
+
+  /**
+   * クレジット
+   */
+  public credit?: number;
+
+  /**
+   * ベット額
+   */
+  public betAmount?: number;
 
   /**
    * ID を通知する
@@ -48,5 +59,23 @@ export class MatchGetSummaryResultPlayer implements PlayerNotification {
    */
   public notifyHandSignalOptions(handSignalOptions: HandSignal[]): void {
     this.handSignalOptions = handSignalOptions;
+  }
+
+  /**
+   * クレジットを通知する
+   *
+   * @param credit クレジット
+   */
+  public notifyCredit(credit: ChipAmount): void {
+    this.credit = credit.value;
+  }
+
+  /**
+   * ベット額を通知する
+   *
+   * @param betAmount ベット額
+   */
+  public notifyBetAmount(betAmount: ChipAmount): void {
+    this.betAmount = betAmount.value;
   }
 }
