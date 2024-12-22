@@ -129,9 +129,9 @@ export class Match {
   }
 
   /**
-   * ラウンドを完了する
+   * ラウンドの清算処理を実行する
    */
-  public completeRound(): void {
+  public settleRound(): void {
     switch (this.calculateRoundResult()) {
       case RoundResult.Win:
         this.player.collectPayoff(this.calculatePayoff());
