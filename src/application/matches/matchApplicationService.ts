@@ -14,6 +14,8 @@ import { MatchCompleteRoundCommand } from "./CompleteRound/matchCompleteRoundCom
 import { MatchGetRoundResultCommand } from "./GetRoundResult/matchGetRoundResult";
 import { MatchGetRoundResultResult } from "./GetRoundResult/matchGetRoundResultResult";
 import { RoundService } from "@/domain/services/roundService";
+import { MatchBetCommand } from "./Bet/matchBetCommand";
+import { ChipAmount } from "@/domain/models/chipAmounts/chipAmount";
 
 /**
  * 試合アプリケーションサービス
@@ -82,6 +84,19 @@ export class MatchApplicationService {
     for (let i = 0; i < 2; i++) {
       match.dealCardToPlayer();
     }
+
+    await this.matchRepository.saveAsync(match);
+  }
+
+  /**
+   * ベットする
+   *
+   * @param command ベットコマンド
+   */
+  public async betAsync(command: MatchBetCommand): Promise<void> {
+    const match = await this.matchRepository.findAsync(new MatchId(command.id));
+
+    match.bet(new ChipAmount(command.amount));
 
     await this.matchRepository.saveAsync(match);
   }

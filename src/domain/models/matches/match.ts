@@ -1,3 +1,4 @@
+import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Dealer } from "../dealers/dealer";
 import { Hand } from "../hands/hand";
 import { Player } from "../players/player";
@@ -44,6 +45,15 @@ export class Match {
       dealer,
       player,
     );
+  }
+
+  /**
+   * ベットする
+   *
+   * @param amount 額
+   */
+  public bet(amount: ChipAmount): void {
+    this.player.bet(amount);
   }
 
   /**
