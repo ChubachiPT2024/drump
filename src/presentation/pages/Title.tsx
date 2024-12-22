@@ -14,7 +14,7 @@ export const TitlePage = () => {
         <div className="space-y-4 md:space-y-8">
           <TitleButton
             to="match-start"
-            text="スタート"
+            text="Play"
             icon={ArrowRight}
             buttonSize="md:w-48"
             direction="flex-row-reverse"
