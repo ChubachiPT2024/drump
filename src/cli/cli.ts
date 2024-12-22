@@ -15,6 +15,7 @@ import { MatchHitCommand } from "@/application/matches/Hit/matchHitCommand";
 import { MatchStandCommand } from "@/application/matches/Stand/matchStandCommand";
 import { MatchCompleteRoundCommand } from "@/application/matches/CompleteRound/matchCompleteRoundCommand";
 import { MatchGetRoundResultCommand } from "@/application/matches/GetRoundResult/matchGetRoundResult";
+import { MatchBetCommand } from "@/application/matches/Bet/matchBetCommand";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
@@ -54,12 +55,20 @@ await matchApplicationService.startRoundAsync(
 console.log("[Round start]");
 console.log();
 
+// クレジットの表示とベット
+const matchStartResultSummary = await matchApplicationService.getSummaryAsync(
+  new MatchGetSummaryCommand(matchId),
+);
+console.log("[Bet]");
+console.log(`Credit: ${matchStartResultSummary.player.credit}`);
+const betAmount = await rl.question("Bet: ");
+console.log();
+await matchApplicationService.betAsync(
+  new MatchBetCommand(matchId, Number(betAmount)),
+);
+
 // アップカード表示
-const upCard = (
-  await matchApplicationService.getSummaryAsync(
-    new MatchGetSummaryCommand(matchId),
-  )
-).dealer.upCard;
+const upCard = matchStartResultSummary.dealer.upCard;
 console.log("[Dealer's hand]");
 console.log(`Up card: ${suitStrings.get(upCard!.suit)}${upCard!.rank}`);
 console.log("Hole Card: ?");
