@@ -1,6 +1,5 @@
 import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Dealer } from "../dealers/dealer";
-import { Hand } from "../hands/hand";
 import { Player } from "../players/player";
 import { RoundResult } from "../roundResultCalculators/roundResult";
 import { RoundResultCalculator } from "../roundResultCalculators/roundResultCalculator";
@@ -109,24 +108,6 @@ export class Match {
     if (!this.dealer.getHand().isResolved()) {
       this.dealer.stand();
     }
-  }
-
-  /**
-   * プレイヤーのハンドを取得する
-   *
-   * @returns プレイヤーのハンド
-   */
-  public getPlayersHand(): Hand {
-    return this.player.getHand();
-  }
-
-  /**
-   * ディーラーのハンドを取得する
-   *
-   * @returns ディーラーのハンド
-   */
-  public getDealersHand(): Hand {
-    return this.dealer.getHand();
   }
 
   // TODO テストを書けていないので修正の余地あり
