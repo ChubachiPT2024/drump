@@ -3,12 +3,14 @@ import { Button } from "../shadcnUI/components/ui/button";
 import { Card } from "../components/Card";
 import { BetModal } from "../components/match/bet-modal";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Card as CardType } from "../types/card";
 import { PlayerHand } from "../types/playerHand";
 
 export const MatchPage = () => {
   const location = useLocation();
+  const { matchId } = useParams<{ matchId: string }>();
+
   // TODO: move to .env
   const apiUrl = "http://localhost:3000/api";
 
@@ -83,7 +85,6 @@ export const MatchPage = () => {
     }
 
     const fetchRoundId = async () => {
-      const matchId = location.pathname.split("/")[2];
       const roundId = location.state.roundId;
 
       if (roundId && matchId) {
