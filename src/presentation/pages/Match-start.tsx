@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { CirclePlus } from "lucide-react";
 
 import { PlayerCard } from "../components/match-start/player-card";
 
 import { Button } from "../shadcnUI/components/ui/button";
 import { ScrollArea } from "../shadcnUI/components/ui/scroll-area";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../shadcnUI/components/ui/tooltip";
 
 import { cn } from "../shadcnUI/lib/utils";
 
@@ -73,14 +80,29 @@ export const MatchStartPage = () => {
             </div>
           </Link>
           <div>
-            <Button
-              size="sm"
-              variant="successOutline"
-              className="uppercase rounded-full"
-              asChild
-            >
-              <Link to="/users">Add to Player List</Link>
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="sm"
+                    variant="successOutline"
+                    className="uppercase rounded-full"
+                    asChild
+                  >
+                    <Link to="/users">
+                      <span className="hidden md:block">
+                        Add to Player List
+                      </span>
+
+                      <CirclePlus className="block md:hidden" size={24} />
+                    </Link>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <span className="text-base">Add to Player List</span>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
 
