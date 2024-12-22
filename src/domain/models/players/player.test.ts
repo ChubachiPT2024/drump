@@ -93,3 +93,50 @@ describe("bet", () => {
     }
   });
 });
+
+describe("collect payoff", () => {
+  test("It adds an amount of chips to the credit.", () => {
+    const player = Player.create(
+      new PlayerId("playerId"),
+      new UserId("UserId"),
+    );
+    const beforeCredit = player.getCredit();
+    const amount = new ChipAmount(1);
+
+    player.collectPayoff(amount);
+
+    expect(player.getCredit().value).toBe(beforeCredit.plus(amount).value);
+  });
+});
+
+describe("collect bet", () => {
+  test("It collects the betting chips and adds them to the credit.", () => {
+    const player = Player.create(
+      new PlayerId("playerId"),
+      new UserId("UserId"),
+    );
+    const betAmount = new ChipAmount(1);
+    player.bet(betAmount);
+    const beforeCredit = player.getCredit();
+
+    player.collectBet();
+
+    expect(player.getCredit().value).toBe(beforeCredit.plus(betAmount).value);
+    expect(player.getBetAmount().value).toBe(0);
+  });
+});
+
+describe("lose bet", () => {
+  test("It loses the betting chips.", () => {
+    const player = Player.create(
+      new PlayerId("playerId"),
+      new UserId("UserId"),
+    );
+    const betAmount = new ChipAmount(1);
+    player.bet(betAmount);
+
+    player.loseBet();
+
+    expect(player.getBetAmount().value).toBe(0);
+  });
+});

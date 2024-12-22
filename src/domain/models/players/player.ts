@@ -117,6 +117,30 @@ export class Player {
   }
 
   /**
+   * ペイオフを回収する
+   *
+   * @param amount 額
+   */
+  public collectPayoff(amount: ChipAmount): void {
+    this.credit = this.credit.plus(amount);
+  }
+
+  /**
+   * ベットしたチップを回収する
+   */
+  public collectBet(): void {
+    this.credit = this.credit.plus(this.betAmount);
+    this.betAmount = new ChipAmount(0);
+  }
+
+  /**
+   * ベットしたチップを失う
+   */
+  public loseBet(): void {
+    this.betAmount = new ChipAmount(0);
+  }
+
+  /**
    * 通知する
    *
    * @param notification 通知
