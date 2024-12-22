@@ -120,11 +120,11 @@ await matchApplicationService.completeRoundAsync(
 );
 
 // ディーラーのハンドを表示する
-const dealersHand = (
+const matchCompleteResultSummary =
   await matchApplicationService.getSummaryAsync(
     new MatchGetSummaryCommand(matchId),
-  )
-).dealer.hand!;
+  );
+const dealersHand = matchCompleteResultSummary.dealer.hand!;
 
 console.log("[Dealer's hand]");
 console.log(
@@ -138,6 +138,7 @@ const roundResult = await matchApplicationService.getRoundResultAsync(
   new MatchGetRoundResultCommand(matchId),
 );
 console.log("[Round result]");
-console.log(roundResult.result);
+console.log(`Outcome: ${roundResult.result}`);
+console.log(`Credit: ${matchCompleteResultSummary.player.credit}`);
 
 exit();
