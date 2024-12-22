@@ -1,12 +1,12 @@
-import { MatchBetCommand } from "@/application/matches/Bet/matchBetCommand";
-import { MatchCompleteRoundCommand } from "@/application/matches/CompleteRound/matchCompleteRoundCommand";
-import { MatchCreateCommand } from "@/application/matches/Create/matchCreateCommand";
-import { MatchGetRoundResultCommand } from "@/application/matches/GetRoundResult/matchGetRoundResult";
-import { MatchGetSummaryCommand } from "@/application/matches/GetSummary/matchGetSummaryCommand";
-import { MatchHitCommand } from "@/application/matches/Hit/matchHitCommand";
+import { MatchBetCommand } from "@/application/matches/bet/matchBetCommand";
+import { MatchCompleteRoundCommand } from "@/application/matches/completeRound/matchCompleteRoundCommand";
+import { MatchCreateCommand } from "@/application/matches/create/matchCreateCommand";
+import { MatchGetRoundResultCommand } from "@/application/matches/getRoundResult/matchGetRoundResult";
+import { MatchGetSummaryCommand } from "@/application/matches/getSummary/matchGetSummaryCommand";
+import { MatchHitCommand } from "@/application/matches/hit/matchHitCommand";
 import { MatchApplicationService } from "@/application/matches/matchApplicationService";
-import { MatchStandCommand } from "@/application/matches/Stand/matchStandCommand";
-import { MatchStartRoundCommand } from "@/application/matches/StartRound/matchStartCommand";
+import { MatchStandCommand } from "@/application/matches/stand/matchStandCommand";
+import { MatchStartRoundCommand } from "@/application/matches/startRound/matchStartCommand";
 import { Router } from "express";
 
 /**

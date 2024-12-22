@@ -1,5 +1,5 @@
 import { MatchApplicationService } from "@/application/matches/matchApplicationService";
-import { MatchCreateCommand } from "@/application/matches/Create/matchCreateCommand";
+import { MatchCreateCommand } from "@/application/matches/create/matchCreateCommand";
 import { InMemoryMatchFactory } from "@/infrastructure/inMemory/matches/inMemoryMatchFactory";
 import { InMemoryMatchRepository } from "@/infrastructure/inMemory/matches/inMemoryMatchRepository";
 import { createInterface } from "node:readline/promises";
@@ -8,13 +8,13 @@ import { exit } from "node:process";
 import { Suit } from "@/domain/models/suits/suit";
 import { InMemoryDealerFactory } from "@/infrastructure/inMemory/dealears/inMemoryDealearFactory";
 import { InMemoryPlayerFactory } from "@/infrastructure/inMemory/players/inMemoryPlayerFactory";
-import { MatchStartRoundCommand } from "@/application/matches/StartRound/matchStartCommand";
-import { MatchGetSummaryCommand } from "@/application/matches/GetSummary/matchGetSummaryCommand";
-import { MatchHitCommand } from "@/application/matches/Hit/matchHitCommand";
-import { MatchStandCommand } from "@/application/matches/Stand/matchStandCommand";
-import { MatchCompleteRoundCommand } from "@/application/matches/CompleteRound/matchCompleteRoundCommand";
-import { MatchGetRoundResultCommand } from "@/application/matches/GetRoundResult/matchGetRoundResult";
-import { MatchBetCommand } from "@/application/matches/Bet/matchBetCommand";
+import { MatchStartRoundCommand } from "@/application/matches/startRound/matchStartCommand";
+import { MatchGetSummaryCommand } from "@/application/matches/getSummary/matchGetSummaryCommand";
+import { MatchHitCommand } from "@/application/matches/hit/matchHitCommand";
+import { MatchStandCommand } from "@/application/matches/stand/matchStandCommand";
+import { MatchCompleteRoundCommand } from "@/application/matches/completeRound/matchCompleteRoundCommand";
+import { MatchGetRoundResultCommand } from "@/application/matches/getRoundResult/matchGetRoundResult";
+import { MatchBetCommand } from "@/application/matches/bet/matchBetCommand";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],

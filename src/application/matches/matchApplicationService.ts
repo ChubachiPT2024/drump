@@ -1,19 +1,19 @@
 import { MatchFactory } from "@/domain/models/matches/matchFactory";
 import { MatchRepository } from "@/domain/models/matches/matchRepository";
-import { MatchCreateCommand } from "./Create/matchCreateCommand";
-import { MatchCreateResult } from "./Create/matchCreateResult";
+import { MatchCreateCommand } from "./create/matchCreateCommand";
+import { MatchCreateResult } from "./create/matchCreateResult";
 import { MatchId } from "@/domain/models/matches/matchId";
 import { UserId } from "@/domain/models/users/userId";
-import { MatchGetSummaryCommand } from "./GetSummary/matchGetSummaryCommand";
-import { MatchGetSummaryResult } from "./GetSummary/matchGetSummaryResult";
-import { MatchStartRoundCommand } from "./StartRound/matchStartCommand";
-import { MatchHitCommand } from "./Hit/matchHitCommand";
-import { MatchStandCommand } from "./Stand/matchStandCommand";
-import { MatchCannotHitError } from "./Hit/matchCannotHitError";
-import { MatchCompleteRoundCommand } from "./CompleteRound/matchCompleteRoundCommand";
-import { MatchGetRoundResultCommand } from "./GetRoundResult/matchGetRoundResult";
-import { MatchGetRoundResultResult } from "./GetRoundResult/matchGetRoundResultResult";
-import { MatchBetCommand } from "./Bet/matchBetCommand";
+import { MatchGetSummaryCommand } from "./getSummary/matchGetSummaryCommand";
+import { MatchGetSummaryResult } from "./getSummary/matchGetSummaryResult";
+import { MatchStartRoundCommand } from "./startRound/matchStartCommand";
+import { MatchHitCommand } from "./hit/matchHitCommand";
+import { MatchStandCommand } from "./stand/matchStandCommand";
+import { MatchCannotHitError } from "./hit/matchCannotHitError";
+import { MatchCompleteRoundCommand } from "./completeRound/matchCompleteRoundCommand";
+import { MatchGetRoundResultCommand } from "./getRoundResult/matchGetRoundResult";
+import { MatchGetRoundResultResult } from "./getRoundResult/matchGetRoundResultResult";
+import { MatchBetCommand } from "./bet/matchBetCommand";
 import { ChipAmount } from "@/domain/models/chipAmounts/chipAmount";
 
 /**
