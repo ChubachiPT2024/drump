@@ -97,6 +97,7 @@ export class Match {
     return this.player.stand();
   }
 
+  // TODO テストを書けていないので修正の余地あり
   /**
    * ディーラーのハンドを解決する
    */
@@ -128,6 +129,7 @@ export class Match {
     return this.dealer.getHand();
   }
 
+  // TODO テストを書けていないので修正の余地あり
   /**
    * ラウンドの清算処理を実行する
    */
