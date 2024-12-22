@@ -20,28 +20,28 @@ export const MatchStartPage = () => {
 
   // TODO: ドメインに合わせて、プレイヤーの型を参照する
   const [selectedPlayers, setSelectedPlayers] = useState([
-    { id: 1, name: "Chris Johnson", image: "https://via.placeholder.com/80" },
-    { id: 2, name: "Laura Smith", image: "https://via.placeholder.com/80" },
+    { id: 1, name: "Chris Johnson" },
+    { id: 2, name: "Laura Smith" },
   ]);
 
   // TODO: ドメインに合わせて、プレイヤーの型を参照する
   const [registeredPlayers, setRegisteredPlayers] = useState([
-    { id: 3, name: "若松 隼也", image: "https://via.placeholder.com/80" },
-    { id: 4, name: "さき", image: "https://via.placeholder.com/80" },
-    { id: 5, name: "はなこ", image: "https://via.placeholder.com/80" },
-    { id: 6, name: "桜", image: "https://via.placeholder.com/80" },
-    { id: 7, name: "Charlie Brown", image: "https://via.placeholder.com/80" },
-    { id: 8, name: "David Johnson", image: "https://via.placeholder.com/80" },
-    { id: 9, name: "Eve Smith", image: "https://via.placeholder.com/80" },
-    { id: 10, name: "Frank Brown", image: "https://via.placeholder.com/80" },
-    { id: 11, name: "Grace Johnson", image: "https://via.placeholder.com/80" },
-    { id: 12, name: "Harry Smith", image: "https://via.placeholder.com/80" },
-    { id: 13, name: "Ivy Brown", image: "https://via.placeholder.com/80" },
-    { id: 14, name: "Jack Johnson", image: "https://via.placeholder.com/80" },
-    { id: 15, name: "Kelly Smith", image: "https://via.placeholder.com/80" },
-    { id: 16, name: "Larry Brown", image: "https://via.placeholder.com/80" },
-    { id: 17, name: "Mary Johnson", image: "https://via.placeholder.com/80" },
-    { id: 18, name: "Nancy Smith", image: "https://via.placeholder.com/80" },
+    { id: 3, name: "若松 隼也" },
+    { id: 4, name: "さき" },
+    { id: 5, name: "はなこ" },
+    { id: 6, name: "桜" },
+    { id: 7, name: "Charlie Brown" },
+    { id: 8, name: "David Johnson" },
+    { id: 9, name: "Eve Smith" },
+    { id: 10, name: "Frank Brown" },
+    { id: 11, name: "Grace Johnson" },
+    { id: 12, name: "Harry Smith" },
+    { id: 13, name: "Ivy Brown" },
+    { id: 14, name: "Jack Johnson" },
+    { id: 15, name: "Kelly Smith" },
+    { id: 16, name: "Larry Brown" },
+    { id: 17, name: "Mary Johnson" },
+    { id: 18, name: "Nancy Smith" },
   ]);
 
   // TODO: ドメインに合わせて、プレイヤーの型を参照する
