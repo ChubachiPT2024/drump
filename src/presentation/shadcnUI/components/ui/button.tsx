@@ -32,7 +32,7 @@ const buttonVariants = cva(
         superOutline:
           "bg-gradient-to-b from-neutral-50 via-neutral-200 to-neutral-300 text-indigo-600 hover:from-indigo-400 hover:via-indigo-600 hover:to-indigo-800 border-neutral-400 hover:border-indigo-900 hover:text-white border-b-4 border-x-2 active:border-b-0",
         locked:
-          "bg-neutral-200 text-stone-300 text-primary-foreground hover:bg-neutral-300 border-neutral-400 border-b-4",
+          "bg-neutral-200 text-black hover:bg-neutral-300 border-neutral-400 border-b-4",
       },
       size: {
         default: "h-11 px-4 py-2",

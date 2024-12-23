@@ -88,7 +88,12 @@ body,
   }
 }
 
-.Polka {
+.GreenDot {
   background-image: radial-gradient(#01562d 1px, #004b27 1px);
+  background-size: 5px 5px;
+}
+
+.WhiteDot {
+  background-image: radial-gradient(#d3d1d188 1px, #f6f6f6 1px);
   background-size: 5px 5px;
 }

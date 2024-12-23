@@ -22,7 +22,7 @@ export const BetModal = () => {
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="space-y-2 Polka border-2 border-yellow-500 shadow-sm shadow-yellow-500">
+        <DialogContent className="space-y-2 GreenDot border-2 border-yellow-500 shadow-sm shadow-yellow-500">
           <DialogHeader>
             <DialogTitle className="">Place Your Bet!</DialogTitle>
             <DialogDescription className="text-black">
