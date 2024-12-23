@@ -1,7 +1,7 @@
-import { Card } from "./card";
+import { MatchGetPlayerHandApiResponseCard } from "./matchGetPlayerHandApiResponseCard";
 
 export interface PlayerHand {
-  cards: Card[];
+  cards: MatchGetPlayerHandApiResponseCard[];
   isResolved: boolean;
   total: number;
 }

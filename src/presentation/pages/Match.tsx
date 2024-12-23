@@ -4,7 +4,7 @@ import { Card } from "../components/Card";
 import { BetModal } from "../components/match/bet-modal";
 import axios from "axios";
 import { useLocation, useParams } from "react-router-dom";
-import { Card as CardType } from "../types/card";
+import { MatchGetPlayerHandApiResponseCard } from "../types/matchGetPlayerHandApiResponseCard";
 import { PlayerHand } from "../types/playerHand";
 
 export const MatchPage = () => {
@@ -15,9 +15,9 @@ export const MatchPage = () => {
   const apiUrl = "http://localhost:3000/api";
 
   const [isLoading, setIsLoading] = useState(true);
-  const [dealerCards, setDealerCards] = useState<CardType[] | undefined>(
-    undefined
-  );
+  const [dealerCards, setDealerCards] = useState<
+    MatchGetPlayerHandApiResponseCard[] | undefined
+  >(undefined);
   const [playerHand, setPlayerHand] = useState<PlayerHand | undefined>(
     undefined
   );
@@ -57,7 +57,9 @@ export const MatchPage = () => {
     }
   };
 
-  const getUpCardApi = async (roundId: string): Promise<CardType> => {
+  const getUpCardApi = async (
+    roundId: string
+  ): Promise<MatchGetPlayerHandApiResponseCard> => {
     try {
       const res = await axios.get(`${apiUrl}/rounds/${roundId}/up-card`);
 

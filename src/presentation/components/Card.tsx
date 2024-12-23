@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ReactCardFlip from "react-card-flip";
 import { motion } from "framer-motion";
-import { Card as CardType } from "../types/card";
+import { MatchGetPlayerHandApiResponseCard } from "../types/matchGetPlayerHandApiResponseCard";
 
 export const Card = ({
   isOpen,
@@ -14,8 +14,8 @@ export const Card = ({
     x: string;
     y: string;
   };
-  suit: Pick<CardType, "suit">["suit"] | "reverse";
-  rank: Pick<CardType, "rank">["rank"] | "reverse";
+  suit: Pick<MatchGetPlayerHandApiResponseCard, "suit">["suit"] | "reverse";
+  rank: Pick<MatchGetPlayerHandApiResponseCard, "rank">["rank"] | "reverse";
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
