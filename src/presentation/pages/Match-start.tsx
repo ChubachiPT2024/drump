@@ -15,6 +15,7 @@ import {
 } from "../shadcnUI/components/ui/tooltip";
 
 import { cn } from "../shadcnUI/lib/utils";
+import { Logo } from "../components/share/logo";
 
 export const MatchStartPage = () => {
   const navigate = useNavigate();
@@ -143,7 +144,7 @@ export const MatchStartPage = () => {
         <div className="w-full flex justify-between border-b-2 mx-auto py-2">
           <Link className="hover:text-transparent" to="/">
             <div className="flex items-center">
-              <img src="/Drump.png" alt="Drump Logo" className="size-8 " />
+              <Logo size="size-8" />
               <h1 className="text-2xl font-['Dela_Gothic_One'] [-webkit-text-stroke:1px_#fff462] pb-1">
                 Black Jack
               </h1>
