@@ -30,6 +30,27 @@ export const MatchPage = () => {
     undefined
   );
 
+  // TODO: ドメイン層からプレイヤー情報を取得する
+  // ハンドではなく、スートとランクにするかも、ほかプレイヤーの情報は変更の可能性あり
+  const [players, setPlayers] = useState([
+    { id: 2, name: "Player 2", hand: 18, isCurrent: true },
+    { id: 1, name: "Player 1", hand: 10, isCurrent: false },
+    { id: 5, name: "Player 5", hand: 14, isCurrent: false },
+    { id: 3, name: "Player 3", hand: 12, isCurrent: false },
+    { id: 4, name: "Player 4", hand: 8, isCurrent: false },
+    { id: 6, name: "Player 6", hand: 16, isCurrent: false },
+    { id: 7, name: "Player 7", hand: 20, isCurrent: false },
+  ]);
+
+  const currentPlayerIndex = players.findIndex((player) => player.isCurrent);
+
+  // プレイヤー間の高さ調整用固定値
+  // TODO: 画面幅に応じて高さを調整する
+  const otherPlayersSpacingHeight =
+    players.length > 1
+      ? 40 * players.length // 基本高さをプレイヤー数に応じてスケーリング
+      : 150; // プレイヤーが1人の場合のデフォルト高さ
+
   const handleStand = () => {
     console.log("stand");
   };
@@ -113,19 +134,6 @@ export const MatchPage = () => {
     };
   }, []);
 
-  // TODO: ドメイン層からプレイヤー情報を取得する
-  // ハンドではなく、スートとランクにするかも、ほかプレイヤーの情報は変更の可能性あり
-  const [players, setPlayers] = useState([
-    { id: 1, name: "Player 1", hand: 10, isCurrent: false },
-    { id: 5, name: "Player 5", hand: 14, isCurrent: false },
-    { id: 2, name: "Player 2", hand: 18, isCurrent: true },
-    { id: 3, name: "Player 3", hand: 12, isCurrent: false },
-    { id: 4, name: "Player 4", hand: 8, isCurrent: false },
-    { id: 6, name: "Player 6", hand: 16, isCurrent: false },
-  ]);
-
-  const currentPlayerIndex = players.findIndex((player) => player.isCurrent);
-
   return (
     <div className="relative min-h-screen bg-green-600 flex flex-col items-center">
       <div id="header" className="absolute top-4 left-4 text-center space-y-2">
@@ -208,22 +216,24 @@ export const MatchPage = () => {
             const positionClass =
               currentPlayerIndex < index ? "left-4" : "right-4";
 
-            const h = players.length * 40;
             const topOffset =
               currentPlayerIndex < index
                 ? (index - currentPlayerIndex) *
-                    (h / (players.length - currentPlayerIndex - 1)) +
+                    (otherPlayersSpacingHeight /
+                      (players.length - currentPlayerIndex - 1)) +
                   150
-                : (currentPlayerIndex - index) * (h / currentPlayerIndex) + 150;
+                : (currentPlayerIndex - index) *
+                    (otherPlayersSpacingHeight / currentPlayerIndex) +
+                  150;
 
             return (
               <div
                 key={player.id}
                 style={{ top: `${topOffset}px` }}
-                className={`absolute ${positionClass} bg-white rounded-md p-2 shadow-md w-[90px]`}
+                className={`absolute ${positionClass} bg-white rounded-md p-1 space-x-1 shadow-md w-[70px]`}
               >
-                <p className="font-bold">{player.name}</p>
-                <p>Hand: {player.hand}</p>
+                <p className="font-bold text-xs">{player.name}</p>
+                <p className="text-xs">Hand: {player.hand}</p>
               </div>
             );
           }
