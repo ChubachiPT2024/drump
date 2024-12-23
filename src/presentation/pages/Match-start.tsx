@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { CirclePlus } from "lucide-react";
 
 import { PlayerCard } from "../components/match-start/player-card";
@@ -17,6 +18,9 @@ import { cn } from "../shadcnUI/lib/utils";
 
 export const MatchStartPage = () => {
   const navigate = useNavigate();
+
+  // TODO: move to .env
+  const apiUrl = "http://localhost:3000/api";
 
   // TODO: ドメインに合わせて、プレイヤーの型を参照する
   const [selectedPlayers, setSelectedPlayers] = useState([
@@ -56,11 +60,77 @@ export const MatchStartPage = () => {
     setSelectedPlayers(selectedPlayers.filter((p) => p.id !== player.id));
   };
 
-  // TODO: マッチを開始して、選択されたプレイヤーをbackendに送信し、マッチIDを取得する関数を実装
+  const postShoeApi = async (): Promise<string> => {
+    return axios
+      .post(
+        `${apiUrl}/shoes`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        return res.data.id;
+      })
+      .catch((err) => {
+        console.error(err);
+        return Promise.reject(err);
+      });
+  };
+
+  const postMatchApi = async (shoeId: string): Promise<string> => {
+    return axios
+      .post(
+        `${apiUrl}/matches`,
+        {
+          shoeId: shoeId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        return res.data.id;
+      })
+      .catch((err) => {
+        console.error(err);
+        return Promise.reject(err);
+      });
+  };
+
+  const postRoundApi = async (shoeId: string): Promise<string> => {
+    return axios
+      .post(
+        apiUrl + "/rounds",
+        {
+          shoeId: shoeId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        return res.data.id;
+      })
+      .catch((err) => {
+        console.error(err);
+        return Promise.reject(err);
+      });
+  };
+
   // TODO: プレイヤーが設定されていなければ、ボタンを無効にする
-  const handleStartMatch = () => {
-    // TODO: /match/:idに変更する
-    navigate("/match");
+  const handleStartMatch = async () => {
+    const shoeId = await postShoeApi();
+    const matchId = await postMatchApi(shoeId);
+    const roundId = await postRoundApi(shoeId);
+
+    navigate(`/match/${matchId}`, { state: { roundId: roundId } });
   };
 
   useEffect(() => {
