@@ -100,8 +100,9 @@ export const MatchPage = () => {
         setIsLoading(false);
       }
     };
-
-    fetchRoundId();
+    return () => {
+      fetchRoundId();
+    };
   }, []);
 
   return (
