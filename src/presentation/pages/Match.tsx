@@ -6,6 +6,7 @@ import axios from "axios";
 import { useLocation, useParams } from "react-router-dom";
 import { MatchGetPlayerHandApiResponseCard } from "../types/matchGetPlayerHandApiResponseCard";
 import { PlayerHand } from "../types/playerHand";
+import { RoundGetHandSignalOptionsApi } from "../types/roundGetHandSignalOptionsApi";
 
 export const MatchPage = () => {
   const location = useLocation();
@@ -21,13 +22,33 @@ export const MatchPage = () => {
   const [playerHand, setPlayerHand] = useState<PlayerHand | undefined>(
     undefined
   );
+  const [handSignalOptions, setHandSignalOptions] = useState<
+    Pick<RoundGetHandSignalOptionsApi, "handSignals">["handSignals"] | undefined
+  >(undefined);
+  const roundId = location.state.roundId;
 
-  const handleStand = () => {
-    console.log("stand");
+  const handleStand = async (roundId: string) => {
+    await postStandApi(roundId);
+    const updatedPlayerHand = await getPlayersHandApi(roundId);
+    setPlayerHand(updatedPlayerHand);
   };
 
-  const handleHit = () => {
-    console.log("hit");
+  const handleHit = async (roundId: string) => {
+    await postHitApi(roundId);
+    const updatedPlayerHand = await getPlayersHandApi(roundId);
+    setPlayerHand(updatedPlayerHand);
+  };
+
+  const postRoundCompleteApi = async (roundId: string): Promise<void> => {
+    try {
+      await axios.post(
+        `${apiUrl}/rounds/${roundId}/complete`,
+        {},
+        { headers: { "Content-Type": "application/json" } }
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const postAddRoundApi = async (
@@ -81,22 +102,57 @@ export const MatchPage = () => {
     }
   };
 
+  const getHandSignalOptionsApi = async (
+    roundId: string
+  ): Promise<RoundGetHandSignalOptionsApi> => {
+    try {
+      const res = await axios.get(
+        `${apiUrl}/rounds/${roundId}/hand-signal-options`
+      );
+
+      return res.data;
+    } catch (err) {
+      console.error(err);
+      return Promise.reject();
+    }
+  };
+
+  const postStandApi = async (roundId: string): Promise<void> => {
+    try {
+      await axios.post(`${apiUrl}/rounds/${roundId}/stand`, {
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const postHitApi = async (roundId: string): Promise<void> => {
+    try {
+      await axios.post(`${apiUrl}/rounds/${roundId}/hit`, {
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     if (!isLoading) {
       return;
     }
 
     const fetchRoundId = async () => {
-      const roundId = location.state.roundId;
-
       if (roundId && matchId) {
         await postAddRoundApi(matchId, roundId);
         await postRoundStartApi(roundId);
         const upCard = await getUpCardApi(roundId);
         const playerHand = await getPlayersHandApi(roundId);
+        const handSignalOptions = await getHandSignalOptionsApi(roundId);
 
         setDealerCards([upCard]);
         setPlayerHand(playerHand);
+        setHandSignalOptions(handSignalOptions.handSignals);
         setIsLoading(false);
       }
     };
@@ -104,6 +160,21 @@ export const MatchPage = () => {
       fetchRoundId();
     };
   }, []);
+
+  useEffect(() => {
+    if (playerHand && playerHand.isResolved) {
+      const fetchDealerHand = async () => {
+        try {
+          postRoundCompleteApi(roundId);
+          console.log("Round completed");
+        } catch (error) {
+          console.error("Error fetching dealer's hand:", error);
+        }
+      };
+
+      fetchDealerHand();
+    }
+  }, [playerHand]);
 
   return (
     <div className="relative min-h-screen">
@@ -148,10 +219,24 @@ export const MatchPage = () => {
           })}
       </div>
       <div className="absolute bottom-0 left-0 w-full flex justify-center pb-4">
-        <Button onClick={handleStand} className="mx-2">
+        <Button
+          onClick={() => handleStand(roundId)}
+          className="mx-2"
+          disabled={
+            handSignalOptions &&
+            !handSignalOptions.find((signal) => signal === "stand")
+          }
+        >
           STAND
         </Button>
-        <Button onClick={handleHit} className="mx-2">
+        <Button
+          onClick={() => handleHit(roundId)}
+          className="mx-2"
+          disabled={
+            handSignalOptions &&
+            !handSignalOptions.find((signal) => signal === "hit")
+          }
+        >
           HIT
         </Button>
       </div>
