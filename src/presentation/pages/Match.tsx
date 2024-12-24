@@ -165,7 +165,7 @@ export const MatchPage = () => {
     if (playerHand && playerHand.isResolved) {
       const fetchDealerHand = async () => {
         try {
-          postRoundCompleteApi(roundId);
+          await postRoundCompleteApi(roundId);
           console.log("Round completed");
         } catch (error) {
           console.error("Error fetching dealer's hand:", error);
