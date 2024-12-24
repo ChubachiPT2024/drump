@@ -1,9 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { TitlePage } from "./presentation/pages/Title";
 import { MatchPage } from "./presentation/pages/Match";
-
 import { MatchStartPage } from "./presentation/pages/Match-start";
-
 
 export function App() {
   return (
