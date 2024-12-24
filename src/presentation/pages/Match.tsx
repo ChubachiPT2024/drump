@@ -137,6 +137,17 @@ export const MatchPage = () => {
     }
   };
 
+  const getDealersHand = async (roundId: string): Promise<PlayerHand> => {
+    try {
+      const res = await axios.get(`${apiUrl}/rounds/${roundId}/dealers-hand`);
+
+      return res.data;
+    } catch (err) {
+      console.error(err);
+      return Promise.reject();
+    }
+  };
+
   useEffect(() => {
     if (!isLoading) {
       return;
@@ -166,6 +177,8 @@ export const MatchPage = () => {
       const fetchDealerHand = async () => {
         try {
           await postRoundCompleteApi(roundId);
+          const dealerHand = await getDealersHand(roundId);
+          setDealerCards(dealerHand.cards);
           console.log("Round completed");
         } catch (error) {
           console.error("Error fetching dealer's hand:", error);
@@ -180,11 +193,11 @@ export const MatchPage = () => {
     <div className="relative min-h-screen">
       <div className="dealer flex">
         {dealerCards &&
-          dealerCards.map((card, index) => {
+          dealerCards.map((card) => {
             return (
               <Card
                 key={card.suit + card.rank}
-                isOpen={index === 0}
+                isOpen={true}
                 animate={{ x: "40vw", y: "0vh" }}
                 suit={card.suit}
                 rank={card.rank}
