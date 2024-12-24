@@ -11,17 +11,20 @@ import { Logo } from "../components/share/logo";
 
 import { MatchGetPlayerHandApiResponseCard } from "../types/matchGetPlayerHandApiResponseCard";
 import { PlayerHand } from "../types/playerHand";
+import { HandSignalOptions } from "../types/handSignalOptions";
 
 export const MatchPage = () => {
   const location = useLocation();
+  const roundId = location.state.roundId;
   const { matchId } = useParams<{ matchId: string }>();
 
   // TODO: 現在のプレイヤーの名前を毎回代入する形に変更する
   const avatarConfig = genConfig("Player 2");
-
   // TODO: move to .env
   const apiUrl = "http://localhost:3000/api";
-
+  const [handSignals, setHandSignals] = useState<
+    Pick<HandSignalOptions, "handSignals">["handSignals"] | undefined
+  >(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [dealerCards, setDealerCards] = useState<
     MatchGetPlayerHandApiResponseCard[] | undefined
@@ -51,12 +54,62 @@ export const MatchPage = () => {
       ? 40 * players.length // 基本高さをプレイヤー数に応じてスケーリング
       : 150; // プレイヤーが1人の場合のデフォルト高さ
 
-  const handleStand = () => {
-    console.log("stand");
+  const getHandSignalOptionsApi = async (
+    roundId: string
+  ): Promise<HandSignalOptions> => {
+    try {
+      const res = await axios.get(
+        `${apiUrl}/rounds/${roundId}/hand-signal-options`
+      );
+
+      return res.data;
+    } catch (err) {
+      console.error(err);
+      return Promise.reject();
+    }
   };
 
-  const handleHit = () => {
-    console.log("hit");
+  const postStandApi = async (roundId: string): Promise<void> => {
+    try {
+      await axios.post(`${apiUrl}/rounds/${roundId}/stand`, {
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const postHitApi = async (roundId: string): Promise<void> => {
+    try {
+      await axios.post(`${apiUrl}/rounds/${roundId}/hit`, {
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getDealersHandApi = async (roundId: string): Promise<PlayerHand> => {
+    try {
+      const res = await axios.get(`${apiUrl}/rounds/${roundId}/dealers-hand`);
+
+      return res.data;
+    } catch (err) {
+      console.error(err);
+      return Promise.reject();
+    }
+  };
+
+  const postRoundCompleteApi = async (roundId: string): Promise<void> => {
+    try {
+      await axios.post(
+        `${apiUrl}/rounds/${roundId}/complete`,
+        {},
+        { headers: { "Content-Type": "application/json" } }
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const postAddRoundApi = async (
@@ -110,6 +163,18 @@ export const MatchPage = () => {
     }
   };
 
+  const handleHit = async (roundId: string) => {
+    await postHitApi(roundId);
+    const updatedPlayerHand = await getPlayersHandApi(roundId);
+    setPlayerHand(updatedPlayerHand);
+  };
+
+  const handleStand = async (roundId: string) => {
+    await postStandApi(roundId);
+    const updatedPlayerHand = await getPlayersHandApi(roundId);
+    setPlayerHand(updatedPlayerHand);
+  };
+
   useEffect(() => {
     if (!isLoading) {
       return;
@@ -123,9 +188,11 @@ export const MatchPage = () => {
         await postRoundStartApi(roundId);
         const upCard = await getUpCardApi(roundId);
         const playerHand = await getPlayersHandApi(roundId);
+        const handSignalOptions = await getHandSignalOptionsApi(roundId);
 
         setDealerCards([upCard]);
         setPlayerHand(playerHand);
+        setHandSignals(handSignalOptions.handSignals);
         setIsLoading(false);
       }
     };
@@ -133,6 +200,23 @@ export const MatchPage = () => {
       fetchRoundId();
     };
   }, []);
+
+  useEffect(() => {
+    if (playerHand && playerHand.isResolved) {
+      const fetchDealerHand = async () => {
+        try {
+          await postRoundCompleteApi(roundId);
+          const dealerHand = await getDealersHandApi(roundId);
+          setDealerCards(dealerHand.cards);
+          console.log("Round completed");
+        } catch (error) {
+          console.error("Error fetching dealer's hand:", error);
+        }
+      };
+
+      fetchDealerHand();
+    }
+  }, [playerHand]);
 
   return (
     <div className="relative min-h-screen bg-green-600 flex flex-col items-center">
@@ -156,11 +240,11 @@ export const MatchPage = () => {
           </div>
           <div className="flex">
             {dealerCards &&
-              dealerCards.map((card, index) => {
+              dealerCards.map((card) => {
                 return (
                   <Card
                     key={card.suit + card.rank}
-                    isOpen={index === 0}
+                    isOpen={true}
                     animate={{ x: "40vw", y: "0vh" }}
                     suit={card.suit}
                     rank={card.rank}
@@ -246,7 +330,10 @@ export const MatchPage = () => {
           text="STAND"
           icon={Hand}
           variant="danger"
-          action={handleStand}
+          action={() => handleStand(roundId)}
+          disabled={
+            handSignals && !handSignals.find((signal) => signal === "stand")
+          }
         />
         {/* TODO: SPLIT機能を追加 */}
         <HandSignalButton
@@ -266,7 +353,10 @@ export const MatchPage = () => {
           text="HIT"
           icon={CopyPlus}
           variant="success"
-          action={handleHit}
+          action={() => handleHit(roundId)}
+          disabled={
+            handSignals && !handSignals.find((signal) => signal === "hit")
+          }
         />
       </div>
 
