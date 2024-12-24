@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ReactCardFlip from "react-card-flip";
 import { motion } from "framer-motion";
-import { MatchGetPlayerHandApiResponseCard } from "../types/matchGetPlayerHandApiResponseCard";
+import { MatchGetPlayerHandApiResponseCard } from "../../types/matchGetPlayerHandApiResponseCard";
 
 export const Card = ({
   isOpen,
