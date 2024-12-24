@@ -22,7 +22,7 @@ export const MatchPage = () => {
   const [playerHand, setPlayerHand] = useState<PlayerHand | undefined>(
     undefined
   );
-  const [handSignalOptions, setHandSignalOptions] = useState<
+  const [handSignals, setHandSignals] = useState<
     Pick<RoundGetHandSignalOptionsApi, "handSignals">["handSignals"] | undefined
   >(undefined);
   const roundId = location.state.roundId;
@@ -152,7 +152,7 @@ export const MatchPage = () => {
 
         setDealerCards([upCard]);
         setPlayerHand(playerHand);
-        setHandSignalOptions(handSignalOptions.handSignals);
+        setHandSignals(handSignalOptions.handSignals);
         setIsLoading(false);
       }
     };
@@ -223,8 +223,7 @@ export const MatchPage = () => {
           onClick={() => handleStand(roundId)}
           className="mx-2"
           disabled={
-            handSignalOptions &&
-            !handSignalOptions.find((signal) => signal === "stand")
+            handSignals && !handSignals.find((signal) => signal === "stand")
           }
         >
           STAND
@@ -233,8 +232,7 @@ export const MatchPage = () => {
           onClick={() => handleHit(roundId)}
           className="mx-2"
           disabled={
-            handSignalOptions &&
-            !handSignalOptions.find((signal) => signal === "hit")
+            handSignals && !handSignals.find((signal) => signal === "hit")
           }
         >
           HIT
