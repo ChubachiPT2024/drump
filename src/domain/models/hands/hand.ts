@@ -11,10 +11,19 @@ export class Hand {
    * @param cards カード
    * @param isStand スタンドしているかどうか
    */
-  public constructor(
+  private constructor(
     private readonly cards: Card[],
     private readonly isStand: boolean,
   ) {}
+
+  /**
+   * インスタンスを生成する
+   *
+   * @returns インスタンス
+   */
+  public static create(): Hand {
+    return new Hand([], false);
+  }
 
   /**
    * カードを追加する
