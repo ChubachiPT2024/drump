@@ -225,7 +225,7 @@ export const MatchPage = () => {
         <div className="flex">
           <div className="mr-2">
             <div className="hidden md:block items-center bg-neutral-950/10 rounded-md">
-              <Logo size="size-32" />
+              <Logo size={32} />
             </div>
 
             <div className="bg-white rounded-full px-2 border-yellow-500 border-2 ">

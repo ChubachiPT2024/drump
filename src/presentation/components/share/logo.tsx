@@ -1,7 +1,7 @@
 import { cn } from "@/presentation/shadcnUI/lib/utils";
 
 interface LogoProps {
-  size: string;
+  size: number;
 }
 
 export const Logo = ({ size }: LogoProps) => {
@@ -10,7 +10,7 @@ export const Logo = ({ size }: LogoProps) => {
       <img
         src="/Drump.png"
         alt="Drump Logo"
-        className={cn("object-contain", size)}
+        className={cn("object-contain", `size-${size}`)}
       />
     </>
   );

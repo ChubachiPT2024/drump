@@ -8,7 +8,7 @@ export const TitlePage = () => {
   return (
     <main className="min-h-screen">
       <div className="hidden absolute top-4 left-4 md:block items-center">
-        <Logo size="w-32" />
+        <Logo size={32} />
       </div>
 
       <div className="min-h-full flex flex-col items-center justify-center text-center gap-y-4 flex-1 px-6 pt-16 pb-10">
