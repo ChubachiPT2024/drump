@@ -148,7 +148,7 @@ export class Match {
    */
   private calculatePayoff(): ChipAmount {
     const rate = this.player.getHand().isBlackJack() ? 1.5 : 1;
-    return this.player.getBetAmount().multiply(rate);
+    return this.player.getBetAmount().multiplyAndCeil(rate);
   }
 
   /**
