@@ -144,7 +144,7 @@ export const MatchStartPage = () => {
         <div className="w-full flex justify-between border-b-2 mx-auto py-2">
           <Link className="hover:text-transparent" to="/">
             <div className="flex items-center">
-              <Logo size="size-8" />
+              <Logo size={8} />
               <h1 className="text-2xl font-['Dela_Gothic_One'] [-webkit-text-stroke:1px_#fff462] pb-1">
                 Black Jack
               </h1>

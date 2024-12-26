@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { Hand, CopyPlus, Layers2, Subscript } from "lucide-react";
+import { Hand, CopyPlus, Layers2, Subscript, CircleHelp } from "lucide-react";
 import Avatar, { genConfig } from "react-nice-avatar";
 import axios from "axios";
 
@@ -12,6 +12,7 @@ import { Logo } from "../components/share/logo";
 import { MatchGetPlayerHandApiResponseCard } from "../types/matchGetPlayerHandApiResponseCard";
 import { PlayerHand } from "../types/playerHand";
 import { HandSignalOptions } from "../types/handSignalOptions";
+import { HelpButton } from "../components/match/help-button";
 
 export const MatchPage = () => {
   const location = useLocation();
@@ -221,11 +222,17 @@ export const MatchPage = () => {
   return (
     <div className="relative min-h-screen bg-green-600 flex flex-col items-center">
       <div id="header" className="absolute top-4 left-4 text-center space-y-2">
-        <div className="hidden md:block items-center bg-neutral-950/10 rounded-md">
-          <Logo size="size-32" />
-        </div>
-        <div className="bg-white rounded-full px-2 border-yellow-500 border-2">
-          <p className="text-base text-black font-semibold">Round 1</p>
+        <div className="flex">
+          <div className="mr-2">
+            <div className="hidden md:block items-center bg-neutral-950/10 rounded-md">
+              <Logo size={32} />
+            </div>
+
+            <div className="bg-white rounded-full px-2 border-yellow-500 border-2 ">
+              <p className="text-base text-black font-semibold">Round 1</p>
+            </div>
+          </div>
+          <HelpButton icon={CircleHelp} size={8} />
         </div>
       </div>
 
