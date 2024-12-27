@@ -64,13 +64,22 @@ describe("minus", () => {
   });
 });
 
-describe("multiply", () => {
+describe("multiplyAndCeil", () => {
   test("It returns a new chip amount with multiplied value.", () => {
     const chipAmount = new ChipAmount(2);
     const rate = 1.5;
 
-    const multipliedChipAmount = chipAmount.multiply(rate);
+    const multipliedChipAmount = chipAmount.multiplyAndCeil(rate);
 
     expect(multipliedChipAmount.value).toBe(3);
+  });
+
+  test("It returns the rounded up chip amount.", () => {
+    const chipAmount = new ChipAmount(1);
+    const rate = 1.5;
+
+    const multipliedChipAmount = chipAmount.multiplyAndCeil(rate);
+
+    expect(multipliedChipAmount.value).toBe(2);
   });
 });

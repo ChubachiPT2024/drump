@@ -1,4 +1,5 @@
 import { ChipAmountNegativeError } from "./chipAmountNegativeError";
+import { ChipAmountNonIntegerError } from "./chipAmountNonIntegerError";
 
 /**
  * チップ量
@@ -12,6 +13,9 @@ export class ChipAmount {
   public constructor(public readonly value: number) {
     if (this.value < 0) {
       throw new ChipAmountNegativeError();
+    }
+    if (!Number.isInteger(this.value)) {
+      throw new ChipAmountNonIntegerError();
     }
   }
 
@@ -50,12 +54,12 @@ export class ChipAmount {
   }
 
   /**
-   * このチップ量にレートを掛けた新しいチップ量を生成する
+   * このチップ量にレートを掛けて切り上げた新しいチップ量を生成する
    *
    * @param rate レート
    * @returns このチップ量にレートを掛けた新しいチップ量
    */
-  public multiply(rate: number): ChipAmount {
-    return new ChipAmount(rate * this.value);
+  public multiplyAndCeil(rate: number): ChipAmount {
+    return new ChipAmount(Math.ceil(rate * this.value));
   }
 }
