@@ -1,6 +1,6 @@
-import { RoundResult } from "@/domain/models/roundResultCalculators/roundResult";
 import { MatchGetRoundResultResultHand } from "./matchGetRoundResultResultHand";
 import { RoundHistory } from "@/domain/models/roundHistories/roundHistory";
+import { MatchGetRoundResultResultPlayer } from "./matchGetRoundResultResultPlayer";
 
 /**
  * ラウンドの結果取得結果
@@ -9,12 +9,12 @@ export class MatchGetRoundResultResult {
   /**
    * コンストラクタ
    *
-   * @param ディーラーのハンド
-   * @param result ラウンドの結果
+   * @param dealersHand ディーラーのハンド
+   * @param player プレイヤー
    */
   private constructor(
     public readonly dealersHand: MatchGetRoundResultResultHand,
-    public readonly result: RoundResult,
+    public readonly player: MatchGetRoundResultResultPlayer,
   ) {}
 
   /**
@@ -26,7 +26,7 @@ export class MatchGetRoundResultResult {
   public static create(roundHistory: RoundHistory): MatchGetRoundResultResult {
     return new MatchGetRoundResultResult(
       MatchGetRoundResultResultHand.create(roundHistory.dealersHand),
-      roundHistory.player.result,
+      MatchGetRoundResultResultPlayer.create(roundHistory.player),
     );
   }
 }

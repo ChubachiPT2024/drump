@@ -132,9 +132,8 @@ console.log(
 console.log(`Total: ${dealersHand.total}`);
 console.log();
 
-// TODO 修正
 console.log("[Round result]");
-console.log(`Outcome: ${roundResult.result}`);
-// console.log(`Credit: ${matchCompleteResultSummary.player.credit}`);
+console.log(`Outcome: ${roundResult.player.result}`);
+console.log(`Credit: ${roundResult.player.credit}`);
 
 exit();
