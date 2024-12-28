@@ -15,6 +15,7 @@ import { MatchGetRoundResultCommand } from "./getRoundResult/matchGetRoundResult
 import { MatchGetRoundResultResult } from "./getRoundResult/matchGetRoundResultResult";
 import { MatchBetCommand } from "./bet/matchBetCommand";
 import { ChipAmount } from "@/domain/models/chipAmounts/chipAmount";
+import { MatchApplicationServiceRoundNotCompletedError } from "@/application/matches/matchRoundNotCompletedError";
 
 /**
  * 試合アプリケーションサービス
@@ -146,6 +147,13 @@ export class MatchApplicationService {
   ): Promise<MatchGetRoundResultResult> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
 
-    return new MatchGetRoundResultResult(match.calculateRoundResult());
+    const roundHistory = match
+      .getRoundHistories()
+      .find((x) => x.roundCount.value === match.getRoundCount().value);
+    if (!roundHistory) {
+      throw new MatchApplicationServiceRoundNotCompletedError();
+    }
+
+    return new MatchGetRoundResultResult(roundHistory.player.result);
   }
 }

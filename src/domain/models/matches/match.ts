@@ -176,7 +176,7 @@ export class Match {
    *
    * @returns ラウンドの結果
    */
-  public calculateRoundResult(): RoundResult {
+  private calculateRoundResult(): RoundResult {
     return this.roundResultCalculator.calculate(
       this.player.getHand(),
       this.dealer.getHand(),
@@ -191,6 +191,24 @@ export class Match {
   private calculatePayoff(): ChipAmount {
     const rate = this.player.getHand().isBlackJack() ? 1.5 : 1;
     return this.player.getBetAmount().multiplyAndCeil(rate);
+  }
+
+  /**
+   * ラウンド数を取得する
+   *
+   * @returns ラウンド数
+   */
+  public getRoundCount(): RoundCount {
+    return this.roundCount;
+  }
+
+  /**
+   * ラウンド履歴を取得する
+   *
+   * @returns ラウンド履歴
+   */
+  public getRoundHistories(): RoundHistory[] {
+    return [...this.roundHistories];
   }
 
   /**
