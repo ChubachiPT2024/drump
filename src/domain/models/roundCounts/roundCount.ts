@@ -7,7 +7,7 @@ export class RoundCount {
   /**
    * 最大ラウンド数
    */
-  private static readonly MAX_ROUND_COUNT = 10;
+  public static readonly MAX_ROUND_COUNT = 10;
 
   /**
    * ラウンド数 0

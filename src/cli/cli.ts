@@ -15,6 +15,7 @@ import { MatchStandCommand } from "@/application/matches/stand/matchStandCommand
 import { MatchCompleteRoundCommand } from "@/application/matches/completeRound/matchCompleteRoundCommand";
 import { MatchGetRoundResultCommand } from "@/application/matches/getRoundResult/matchGetRoundResultCommand";
 import { MatchBetCommand } from "@/application/matches/bet/matchBetCommand";
+import { MatchGetResultCommand } from "@/application/matches/getRound/matchGetResultCommand";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
@@ -139,5 +140,15 @@ for (let i = 0; i < 10; i++) {
   console.log(`Credit: ${roundResult.player.credit}`);
   console.log();
 }
+
+// 試合結果を表示する
+const matchResult = await matchApplicationService.getResultAsync(
+  new MatchGetResultCommand(matchId),
+);
+console.log("[Match result]");
+for (const [i, v] of matchResult.player.creditHistories.entries()) {
+  console.log(`Round ${i}: ${v}`);
+}
+console.log(`Final: ${matchResult.player.finalCredit}`);
 
 exit();

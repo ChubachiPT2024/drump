@@ -1,6 +1,7 @@
 import { MatchBetCommand } from "@/application/matches/bet/matchBetCommand";
 import { MatchCompleteRoundCommand } from "@/application/matches/completeRound/matchCompleteRoundCommand";
 import { MatchCreateCommand } from "@/application/matches/create/matchCreateCommand";
+import { MatchGetResultCommand } from "@/application/matches/getRound/matchGetResultCommand";
 import { MatchGetRoundResultCommand } from "@/application/matches/getRoundResult/matchGetRoundResultCommand";
 import { MatchGetSummaryCommand } from "@/application/matches/getSummary/matchGetSummaryCommand";
 import { MatchHitCommand } from "@/application/matches/hit/matchHitCommand";
@@ -113,6 +114,18 @@ export class MatchRouterFactory {
         const command = new MatchGetRoundResultCommand(req.params.id);
         const result =
           await this.matchApplicationService.getRoundResultAsync(command);
+
+        res.status(200).json(result);
+      } catch (err) {
+        next(err);
+      }
+    });
+
+    router.get("/:id/result", async (req, res, next) => {
+      try {
+        const command = new MatchGetResultCommand(req.params.id);
+        const result =
+          await this.matchApplicationService.getResultAsync(command);
 
         res.status(200).json(result);
       } catch (err) {

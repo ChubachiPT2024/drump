@@ -216,6 +216,15 @@ export class Match {
   }
 
   /**
+   * 試合が完了しているかどうかを判定する
+   *
+   * @returns 試合が完了しているかどうかを
+   */
+  public isCompleted(): boolean {
+    return this.roundHistories.length === RoundCount.MAX_ROUND_COUNT;
+  }
+
+  /**
    * 通知する
    *
    * @param notification 通知

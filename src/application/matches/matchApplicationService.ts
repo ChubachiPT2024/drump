@@ -15,7 +15,11 @@ import { MatchGetRoundResultCommand } from "./getRoundResult/matchGetRoundResult
 import { MatchGetRoundResultResult } from "./getRoundResult/matchGetRoundResultResult";
 import { MatchBetCommand } from "./bet/matchBetCommand";
 import { ChipAmount } from "@/domain/models/chipAmounts/chipAmount";
-import { MatchApplicationServiceRoundNotCompletedError } from "@/application/matches/matchRoundNotCompletedError";
+import { MatchGetResultCommand } from "./getRound/matchGetResultCommand";
+import { MatchGetResultResult } from "./getRound/matchGetResultResult";
+import { MatchGetResultResultPlayer } from "./getRound/matchGetResultResultPlayer";
+import { MatchApplicationRoundNotCompletedError } from "./matchApplicationRoundNotCompletedError";
+import { MatchApplicationMatchNotCompletedError } from "./matchApplicationMatchNotCompletedError";
 
 /**
  * 試合アプリケーションサービス
@@ -151,9 +155,34 @@ export class MatchApplicationService {
       .getRoundHistories()
       .find((x) => x.roundCount.value === match.getRoundCount().value);
     if (!roundHistory) {
-      throw new MatchApplicationServiceRoundNotCompletedError();
+      throw new MatchApplicationRoundNotCompletedError();
     }
 
     return MatchGetRoundResultResult.create(roundHistory);
+  }
+
+  /**
+   * 試合結果を取得する
+   *
+   * @param command 試合結果取得コマンド
+   * @returns 試合結果取得結果
+   */
+  public async getResultAsync(
+    command: MatchGetResultCommand,
+  ): Promise<MatchGetResultResult> {
+    const match = await this.matchRepository.findAsync(new MatchId(command.id));
+
+    if (!match.isCompleted()) {
+      throw new MatchApplicationMatchNotCompletedError();
+    }
+
+    const roundHistories = match.getRoundHistories();
+
+    return new MatchGetResultResult(
+      new MatchGetResultResultPlayer(
+        roundHistories.map((x) => x.player.credit.value),
+        roundHistories.at(-1)!.player.credit.value,
+      ),
+    );
   }
 }
