@@ -151,6 +151,9 @@ export class Match {
         ),
       ),
     );
+
+    this.dealer.discard();
+    this.player.discard();
   }
 
   // TODO テストを書けていないので修正の余地あり
