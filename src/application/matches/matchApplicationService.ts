@@ -11,7 +11,7 @@ import { MatchHitCommand } from "./hit/matchHitCommand";
 import { MatchStandCommand } from "./stand/matchStandCommand";
 import { MatchCannotHitError } from "./hit/matchCannotHitError";
 import { MatchCompleteRoundCommand } from "./completeRound/matchCompleteRoundCommand";
-import { MatchGetRoundResultCommand } from "./getRoundResult/matchGetRoundResult";
+import { MatchGetRoundResultCommand } from "./getRoundResult/matchGetRoundResultCommand";
 import { MatchGetRoundResultResult } from "./getRoundResult/matchGetRoundResultResult";
 import { MatchBetCommand } from "./bet/matchBetCommand";
 import { ChipAmount } from "@/domain/models/chipAmounts/chipAmount";
@@ -154,6 +154,6 @@ export class MatchApplicationService {
       throw new MatchApplicationServiceRoundNotCompletedError();
     }
 
-    return new MatchGetRoundResultResult(roundHistory.player.result);
+    return MatchGetRoundResultResult.create(roundHistory);
   }
 }

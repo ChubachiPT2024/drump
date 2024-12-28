@@ -1,7 +1,7 @@
 import { MatchBetCommand } from "@/application/matches/bet/matchBetCommand";
 import { MatchCompleteRoundCommand } from "@/application/matches/completeRound/matchCompleteRoundCommand";
 import { MatchCreateCommand } from "@/application/matches/create/matchCreateCommand";
-import { MatchGetRoundResultCommand } from "@/application/matches/getRoundResult/matchGetRoundResult";
+import { MatchGetRoundResultCommand } from "@/application/matches/getRoundResult/matchGetRoundResultCommand";
 import { MatchGetSummaryCommand } from "@/application/matches/getSummary/matchGetSummaryCommand";
 import { MatchHitCommand } from "@/application/matches/hit/matchHitCommand";
 import { MatchApplicationService } from "@/application/matches/matchApplicationService";

@@ -85,12 +85,5 @@ export class Dealer {
    */
   public notify(notification: DealerNotification): void {
     notification.notifyUpCard(this.getUpCard());
-
-    // TODO 実装方法の検討
-    // 条件を満たす場合のみ通知という意味で問題ない気もするが、
-    // ApplicationService の処理で隠した方が良いような気もする
-    if (this.getHand().isResolved()) {
-      notification.notifyHand(this.getHand());
-    }
   }
 }

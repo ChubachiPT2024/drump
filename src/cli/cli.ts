@@ -13,7 +13,7 @@ import { MatchGetSummaryCommand } from "@/application/matches/getSummary/matchGe
 import { MatchHitCommand } from "@/application/matches/hit/matchHitCommand";
 import { MatchStandCommand } from "@/application/matches/stand/matchStandCommand";
 import { MatchCompleteRoundCommand } from "@/application/matches/completeRound/matchCompleteRoundCommand";
-import { MatchGetRoundResultCommand } from "@/application/matches/getRoundResult/matchGetRoundResult";
+import { MatchGetRoundResultCommand } from "@/application/matches/getRoundResult/matchGetRoundResultCommand";
 import { MatchBetCommand } from "@/application/matches/bet/matchBetCommand";
 
 const suitStrings = new Map<Suit, string>([
@@ -119,12 +119,11 @@ await matchApplicationService.completeRoundAsync(
   new MatchCompleteRoundCommand(matchId),
 );
 
-// ディーラーのハンドを表示する
-const matchCompleteResultSummary =
-  await matchApplicationService.getSummaryAsync(
-    new MatchGetSummaryCommand(matchId),
-  );
-const dealersHand = matchCompleteResultSummary.dealer.hand!;
+// ラウンドの結果を表示する
+const roundResult = await matchApplicationService.getRoundResultAsync(
+  new MatchGetRoundResultCommand(matchId),
+);
+const dealersHand = roundResult.dealersHand;
 
 console.log("[Dealer's hand]");
 console.log(
@@ -133,12 +132,9 @@ console.log(
 console.log(`Total: ${dealersHand.total}`);
 console.log();
 
-// ラウンドの結果を表示する
-const roundResult = await matchApplicationService.getRoundResultAsync(
-  new MatchGetRoundResultCommand(matchId),
-);
+// TODO 修正
 console.log("[Round result]");
 console.log(`Outcome: ${roundResult.result}`);
-console.log(`Credit: ${matchCompleteResultSummary.player.credit}`);
+// console.log(`Credit: ${matchCompleteResultSummary.player.credit}`);
 
 exit();
