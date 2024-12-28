@@ -130,8 +130,7 @@ export class MatchApplicationService {
   ): Promise<void> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
 
-    match.resolveDealersHand();
-    match.settleRound();
+    match.completeRound();
 
     await this.matchRepository.saveAsync(match);
   }
