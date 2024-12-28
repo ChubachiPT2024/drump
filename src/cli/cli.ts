@@ -149,6 +149,7 @@ console.log("[Match result]");
 for (const [i, v] of matchResult.player.creditHistories.entries()) {
   console.log(`Round ${i}: ${v}`);
 }
-console.log(`Final: ${matchResult.player.finalCredit}`);
+console.log(`Final credit: ${matchResult.player.finalCredit}`);
+console.log(`Balance: ${matchResult.player.balance}`);
 
 exit();

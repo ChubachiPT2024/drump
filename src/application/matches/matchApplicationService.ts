@@ -177,11 +177,16 @@ export class MatchApplicationService {
     }
 
     const roundHistories = match.getRoundHistories();
+    const finalCredit = roundHistories.at(-1)!.player.credit.value;
+
+    // TODO Player に定義されるクレジットの初期値を使用する
+    const balance = finalCredit - 50000;
 
     return new MatchGetResultResult(
       new MatchGetResultResultPlayer(
         roundHistories.map((x) => x.player.credit.value),
-        roundHistories.at(-1)!.player.credit.value,
+        finalCredit,
+        balance,
       ),
     );
   }
