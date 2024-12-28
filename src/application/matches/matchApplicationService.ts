@@ -15,9 +15,9 @@ import { MatchGetRoundResultCommand } from "./getRoundResult/matchGetRoundResult
 import { MatchGetRoundResultResult } from "./getRoundResult/matchGetRoundResultResult";
 import { MatchBetCommand } from "./bet/matchBetCommand";
 import { ChipAmount } from "@/domain/models/chipAmounts/chipAmount";
-import { MatchGetResultCommand } from "./getRound/matchGetResultCommand";
-import { MatchGetResultResult } from "./getRound/matchGetResultResult";
-import { MatchGetResultResultPlayer } from "./getRound/matchGetResultResultPlayer";
+import { MatchGetResultCommand } from "./getResult/matchGetResultCommand";
+import { MatchGetResultResult } from "./getResult/matchGetResultResult";
+import { MatchGetResultResultPlayer } from "./getResult/matchGetResultResultPlayer";
 import { MatchApplicationRoundNotCompletedError } from "./matchApplicationRoundNotCompletedError";
 import { MatchApplicationMatchNotCompletedError } from "./matchApplicationMatchNotCompletedError";
 

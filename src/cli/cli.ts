@@ -15,7 +15,7 @@ import { MatchStandCommand } from "@/application/matches/stand/matchStandCommand
 import { MatchCompleteRoundCommand } from "@/application/matches/completeRound/matchCompleteRoundCommand";
 import { MatchGetRoundResultCommand } from "@/application/matches/getRoundResult/matchGetRoundResultCommand";
 import { MatchBetCommand } from "@/application/matches/bet/matchBetCommand";
-import { MatchGetResultCommand } from "@/application/matches/getRound/matchGetResultCommand";
+import { MatchGetResultCommand } from "@/application/matches/getResult/matchGetResultCommand";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
