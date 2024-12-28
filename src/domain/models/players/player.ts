@@ -12,6 +12,11 @@ import { PlayerNotification } from "./playerNotification";
  */
 export class Player {
   /**
+   * クレジットの初期値
+   */
+  private static readonly INITIAL_CREDIT = new ChipAmount(50000);
+
+  /**
    * コンストラクタ
    *
    * @param id ID
@@ -36,11 +41,10 @@ export class Player {
    * @returns インスタンス
    */
   public static create(id: PlayerId, userId: UserId): Player {
-    // TODO クレジットの初期値
     return new Player(
       id,
       userId,
-      new ChipAmount(50000),
+      this.INITIAL_CREDIT,
       new ChipAmount(0),
       Hand.create(),
     );
