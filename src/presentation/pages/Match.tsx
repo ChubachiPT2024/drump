@@ -390,7 +390,7 @@ export const MatchPage = () => {
         </div>
       </div>
 
-      {/* <BetModal /> */}
+      <BetModal />
     </div>
   );
 };
