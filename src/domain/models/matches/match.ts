@@ -1,6 +1,7 @@
 import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Dealer } from "../dealers/dealer";
 import { Player } from "../players/player";
+import { RoundCount } from "../roundCounts/roundCount";
 import { RoundResult } from "../roundResultCalculators/roundResult";
 import { RoundResultCalculator } from "../roundResultCalculators/roundResultCalculator";
 import { Shoe } from "../shoes/shoe";
@@ -23,6 +24,7 @@ export class Match {
    * @param shoe シュー
    * @param dealer ディーラー
    * @param player プレイヤー
+   * @param roundCount ラウンド数
    * @param roundResultCalculator ラウンド結果計算機
    */
   private constructor(
@@ -30,6 +32,7 @@ export class Match {
     private shoe: Shoe,
     private readonly dealer: Dealer,
     private readonly player: Player,
+    private roundCount: RoundCount,
     private readonly roundResultCalculator: RoundResultCalculator,
   ) {}
 
@@ -47,6 +50,7 @@ export class Match {
       Shoe.createFromDecks(this.NUMBER_OF_DECKS).suffle(),
       dealer,
       player,
+      RoundCount.ZERO,
       new RoundResultCalculator(),
     );
   }
@@ -55,7 +59,7 @@ export class Match {
    * ラウンドを開始する
    */
   public startRound(): void {
-    // TODO ラウンドに関する検証と更新
+    this.roundCount = this.roundCount.increment();
 
     for (let i = 0; i < 2; i++) {
       this.dealCardToDealer();
@@ -175,5 +179,6 @@ export class Match {
     notification.notifyId(this.id);
     notification.notifyDealer(this.dealer);
     notification.notifyPlayer(this.player);
+    notification.notifyRoundCount(this.roundCount);
   }
 }

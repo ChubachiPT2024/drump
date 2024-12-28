@@ -48,14 +48,14 @@ const matchId = matchCreateResult.id;
 await matchApplicationService.startRoundAsync(
   new MatchStartRoundCommand(matchId),
 );
-
-console.log("[Round start]");
-console.log();
-
-// クレジットの表示とベット
 const matchStartResultSummary = await matchApplicationService.getSummaryAsync(
   new MatchGetSummaryCommand(matchId),
 );
+
+console.log(`[Round ${matchStartResultSummary.roundCount} start]`);
+console.log();
+
+// クレジットの表示とベット
 console.log("[Bet]");
 console.log(`Credit: ${matchStartResultSummary.player.credit}`);
 const betAmount = await rl.question("Bet: ");
