@@ -144,6 +144,7 @@ export class Match {
     this.roundHistories.push(
       new RoundHistory(
         this.roundCount,
+        this.dealer.getHand(),
         new RoundPlayerHistory(
           this.calculateRoundResult(),
           this.player.getCredit(),
