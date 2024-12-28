@@ -284,7 +284,7 @@ export const MatchPage = () => {
                     key={card.suit + card.rank}
                     isOpen={true}
                     initial={{ x: "50vw", y: "-25vh" }}
-                    animate={{ x: "0", y: "0" }}
+                    animate={{ x: "0vw", y: "0vh" }}
                     suit={card.suit}
                     rank={card.rank}
                   />
