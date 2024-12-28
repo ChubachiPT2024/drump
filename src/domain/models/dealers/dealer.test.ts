@@ -71,3 +71,14 @@ describe("should hit", () => {
     expect(shouldHit).toBe(false);
   });
 });
+
+describe("discard", () => {
+  test("It discards the current hand and get a new empty hand.", () => {
+    const dealer = Dealer.create(new DealerId("dealerId"));
+    dealer.addCardToHand(new Card(Rank.Ace, Suit.Spade));
+
+    dealer.discard();
+
+    expect(dealer.getHand().count()).toBe(0);
+  });
+});
