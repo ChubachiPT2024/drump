@@ -177,7 +177,7 @@ export const MatchStartPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col justify-center items-center min-h-full WhiteDot">
+        <div className="flex flex-col justify-center items-center min-h-screen WhiteDot">
           <div className="w-[70%] mt-2 mb-3 pt-2 p-4 bg-gradient-to-br from-green-400 via-green-500 to-green-400 rounded-xl border-2 border-neutral-300">
             <h2 className="text-xl font-bold text-black">
               Selected Players List
