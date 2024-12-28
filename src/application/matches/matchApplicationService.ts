@@ -72,15 +72,7 @@ export class MatchApplicationService {
   public async startRoundAsync(command: MatchStartRoundCommand): Promise<void> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
 
-    // TODO ラウンドに関する検証と更新
-
-    for (let i = 0; i < 2; i++) {
-      match.dealCardToDealer();
-    }
-
-    for (let i = 0; i < 2; i++) {
-      match.dealCardToPlayer();
-    }
+    match.startRound();
 
     await this.matchRepository.saveAsync(match);
   }

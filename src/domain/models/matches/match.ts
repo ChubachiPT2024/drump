@@ -52,6 +52,21 @@ export class Match {
   }
 
   /**
+   * ラウンドを開始する
+   */
+  public startRound(): void {
+    // TODO ラウンドに関する検証と更新
+
+    for (let i = 0; i < 2; i++) {
+      this.dealCardToDealer();
+    }
+
+    for (let i = 0; i < 2; i++) {
+      this.dealCardToPlayer();
+    }
+  }
+
+  /**
    * ベットする
    *
    * @param amount 額
