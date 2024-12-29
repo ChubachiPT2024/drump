@@ -1,0 +1,23 @@
+@baseUrl = http://localhost:3000/api
+
+###
+# @name userCreate
+Post {{baseUrl}}/users Http/1.1
+content-type: application/json
+
+{
+    "name": "Alice"
+}
+
+###
+# @name userCreate
+Post {{baseUrl}}/users Http/1.1
+content-type: application/json
+
+{
+    "name": "Bob"
+}
+
+###
+# @name userGetAll
+Get {{baseUrl}}/users/all Http/1.1

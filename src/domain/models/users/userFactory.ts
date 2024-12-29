@@ -1,4 +1,5 @@
 import { User } from "./user";
+import { UserName } from "./userName";
 
 /**
  * ユーザファクトリ
@@ -6,6 +7,8 @@ import { User } from "./user";
 export interface UserFactory {
   /**
    * ユーザを生成する
+   *
+   * @param name 名前
    */
-  create(): User;
+  create(name: UserName): User;
 }
