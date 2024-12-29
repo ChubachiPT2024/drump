@@ -162,7 +162,7 @@ export const TitlePage = () => {
                 />
                 <TitleButton
                   to="/users"
-                  text="Add a Player"
+                  text="Register User"
                   icon={Users}
                   variant="successOutline"
                 />
@@ -174,7 +174,7 @@ export const TitlePage = () => {
                 />
                 <TitleButton
                   to="/rules"
-                  text="How to PLay"
+                  text="How to Play"
                   icon={BookOpenText}
                   variant="successOutline"
                 />
