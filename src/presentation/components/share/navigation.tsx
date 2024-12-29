@@ -29,7 +29,7 @@ const routes = [
   },
   {
     to: "/users",
-    label: "Players",
+    label: "Users",
     Icon: Users,
   },
   {
@@ -77,7 +77,7 @@ export const Navigation = () => {
               </p>
             </div>
             <nav className="flex flex-col gap-y-2 pt-6">
-              {pathname !== "/match-start" ? (
+              {pathname !== "/match-start" && (
                 <div className="border-b-2 pb-2 border-slate-300">
                   <Button
                     variant="success"
@@ -89,7 +89,7 @@ export const Navigation = () => {
                     <ArrowRight className="size-8" />
                   </Button>
                 </div>
-              ) : null}
+              )}
               {routes.map((route) => (
                 <Button
                   key={route.to}
@@ -130,7 +130,7 @@ export const Navigation = () => {
             {route.label}
           </Button>
         ))}
-        {pathname !== "/match-start" ? (
+        {pathname !== "/match-start" && (
           <div className="border-l-2 px-6 border-slate-300">
             <Button
               variant="success"
@@ -142,7 +142,7 @@ export const Navigation = () => {
               <ArrowRight className="size-6" />
             </Button>
           </div>
-        ) : null}
+        )}
       </nav>
     </>
   );
