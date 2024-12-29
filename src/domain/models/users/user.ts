@@ -1,4 +1,5 @@
 import { UserId } from "./userId";
+import { UserName } from "./userName";
 
 /**
  * ユーザ
@@ -8,16 +9,10 @@ export class User {
    * コンストラクタ
    *
    * @param id ID
+   * @param name 名前
    */
-  private constructor(public readonly id: UserId) {}
-
-  /**
-   * インスタンスを生成する
-   *
-   * @param id ID
-   * @returns インスタンス
-   */
-  public static create(id: UserId) {
-    return new User(id);
-  }
+  public constructor(
+    public readonly id: UserId,
+    public readonly name: UserName,
+  ) {}
 }
