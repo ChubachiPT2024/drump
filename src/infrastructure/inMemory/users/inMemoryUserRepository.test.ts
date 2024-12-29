@@ -15,3 +15,20 @@ describe("save", () => {
     expect(actual.id).toBe(expected.id);
   });
 });
+
+describe("find all", () => {
+  test("It returns all the users.", async () => {
+    const repository = new InMemoryUserRepository();
+    const expected = [
+      new User(new UserId("1"), new UserName("Alice")),
+      new User(new UserId("2"), new UserName("Bob")),
+    ];
+    for (const user of expected) {
+      await repository.saveAsync(user);
+    }
+
+    const actual = await repository.findAllAsync();
+
+    expect(actual.length).toBe(expected.length);
+  });
+});

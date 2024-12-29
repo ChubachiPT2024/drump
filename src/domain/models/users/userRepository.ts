@@ -19,4 +19,11 @@ export interface UserRepository {
    * @returns ユーザ
    */
   findAsync(id: UserId): Promise<User>;
+
+  /**
+   * ユーザを全件取得する
+   *
+   * @returns ユーザリスト
+   */
+  findAllAsync(): Promise<User[]>;
 }

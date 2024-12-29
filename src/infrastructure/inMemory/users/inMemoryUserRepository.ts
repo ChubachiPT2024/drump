@@ -35,4 +35,13 @@ export class InMemoryUserRepository implements UserRepository {
     }
     return user;
   }
+
+  /**
+   * ユーザを全件取得する
+   *
+   * @returns ユーザリスト
+   */
+  public async findAllAsync(): Promise<User[]> {
+    return [...this.users.values()];
+  }
 }
