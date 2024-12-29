@@ -1,6 +1,9 @@
 import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Dealer } from "../dealers/dealer";
 import { Player } from "../players/player";
+import { RoundCount } from "../roundCounts/roundCount";
+import { RoundHistory } from "../roundHistories/roundHistory";
+import { RoundPlayerHistory } from "../roundHistories/roundPlayerHistory";
 import { RoundResult } from "../roundResultCalculators/roundResult";
 import { RoundResultCalculator } from "../roundResultCalculators/roundResultCalculator";
 import { Shoe } from "../shoes/shoe";
@@ -23,14 +26,18 @@ export class Match {
    * @param shoe シュー
    * @param dealer ディーラー
    * @param player プレイヤー
+   * @param roundCount ラウンド数
    * @param roundResultCalculator ラウンド結果計算機
+   * @param roundHistories ラウンド履歴
    */
   private constructor(
     public readonly id: MatchId,
     private shoe: Shoe,
     private readonly dealer: Dealer,
     private readonly player: Player,
+    private roundCount: RoundCount,
     private readonly roundResultCalculator: RoundResultCalculator,
+    private readonly roundHistories: RoundHistory[],
   ) {}
 
   /**
@@ -47,8 +54,25 @@ export class Match {
       Shoe.createFromDecks(this.NUMBER_OF_DECKS).suffle(),
       dealer,
       player,
+      RoundCount.ZERO,
       new RoundResultCalculator(),
+      [],
     );
+  }
+
+  /**
+   * ラウンドを開始する
+   */
+  public startRound(): void {
+    this.roundCount = this.roundCount.increment();
+
+    for (let i = 0; i < 2; i++) {
+      this.dealCardToDealer();
+    }
+
+    for (let i = 0; i < 2; i++) {
+      this.dealCardToPlayer();
+    }
   }
 
   /**
@@ -110,6 +134,28 @@ export class Match {
     }
   }
 
+  /**
+   * ラウンドを完了する
+   */
+  public completeRound(): void {
+    this.resolveDealersHand();
+    this.settleRound();
+
+    this.roundHistories.push(
+      new RoundHistory(
+        this.roundCount,
+        this.dealer.getHand(),
+        new RoundPlayerHistory(
+          this.calculateRoundResult(),
+          this.player.getCredit(),
+        ),
+      ),
+    );
+
+    this.dealer.discard();
+    this.player.discard();
+  }
+
   // TODO テストを書けていないので修正の余地あり
   /**
    * ラウンドの清算処理を実行する
@@ -134,7 +180,7 @@ export class Match {
    *
    * @returns ラウンドの結果
    */
-  public calculateRoundResult(): RoundResult {
+  private calculateRoundResult(): RoundResult {
     return this.roundResultCalculator.calculate(
       this.player.getHand(),
       this.dealer.getHand(),
@@ -152,6 +198,33 @@ export class Match {
   }
 
   /**
+   * ラウンド数を取得する
+   *
+   * @returns ラウンド数
+   */
+  public getRoundCount(): RoundCount {
+    return this.roundCount;
+  }
+
+  /**
+   * ラウンド履歴を取得する
+   *
+   * @returns ラウンド履歴
+   */
+  public getRoundHistories(): RoundHistory[] {
+    return [...this.roundHistories];
+  }
+
+  /**
+   * 試合が完了しているかどうかを判定する
+   *
+   * @returns 試合が完了しているかどうかを
+   */
+  public isCompleted(): boolean {
+    return this.roundHistories.length === RoundCount.MAX_ROUND_COUNT;
+  }
+
+  /**
    * 通知する
    *
    * @param notification 通知
@@ -160,5 +233,6 @@ export class Match {
     notification.notifyId(this.id);
     notification.notifyDealer(this.dealer);
     notification.notifyPlayer(this.player);
+    notification.notifyRoundCount(this.roundCount);
   }
 }

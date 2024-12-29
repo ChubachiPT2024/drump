@@ -11,10 +11,15 @@ import { MatchHitCommand } from "./hit/matchHitCommand";
 import { MatchStandCommand } from "./stand/matchStandCommand";
 import { MatchCannotHitError } from "./hit/matchCannotHitError";
 import { MatchCompleteRoundCommand } from "./completeRound/matchCompleteRoundCommand";
-import { MatchGetRoundResultCommand } from "./getRoundResult/matchGetRoundResult";
+import { MatchGetRoundResultCommand } from "./getRoundResult/matchGetRoundResultCommand";
 import { MatchGetRoundResultResult } from "./getRoundResult/matchGetRoundResultResult";
 import { MatchBetCommand } from "./bet/matchBetCommand";
 import { ChipAmount } from "@/domain/models/chipAmounts/chipAmount";
+import { MatchGetResultCommand } from "./getResult/matchGetResultCommand";
+import { MatchGetResultResult } from "./getResult/matchGetResultResult";
+import { MatchGetResultResultPlayer } from "./getResult/matchGetResultResultPlayer";
+import { MatchApplicationRoundNotCompletedError } from "./matchApplicationRoundNotCompletedError";
+import { MatchApplicationMatchNotCompletedError } from "./matchApplicationMatchNotCompletedError";
 
 /**
  * 試合アプリケーションサービス
@@ -72,15 +77,7 @@ export class MatchApplicationService {
   public async startRoundAsync(command: MatchStartRoundCommand): Promise<void> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
 
-    // TODO ラウンドに関する検証と更新
-
-    for (let i = 0; i < 2; i++) {
-      match.dealCardToDealer();
-    }
-
-    for (let i = 0; i < 2; i++) {
-      match.dealCardToPlayer();
-    }
+    match.startRound();
 
     await this.matchRepository.saveAsync(match);
   }
@@ -138,8 +135,7 @@ export class MatchApplicationService {
   ): Promise<void> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
 
-    match.resolveDealersHand();
-    match.settleRound();
+    match.completeRound();
 
     await this.matchRepository.saveAsync(match);
   }
@@ -155,6 +151,43 @@ export class MatchApplicationService {
   ): Promise<MatchGetRoundResultResult> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
 
-    return new MatchGetRoundResultResult(match.calculateRoundResult());
+    const roundHistory = match
+      .getRoundHistories()
+      .find((x) => x.roundCount.value === match.getRoundCount().value);
+    if (!roundHistory) {
+      throw new MatchApplicationRoundNotCompletedError();
+    }
+
+    return MatchGetRoundResultResult.create(roundHistory);
+  }
+
+  /**
+   * 試合結果を取得する
+   *
+   * @param command 試合結果取得コマンド
+   * @returns 試合結果取得結果
+   */
+  public async getResultAsync(
+    command: MatchGetResultCommand,
+  ): Promise<MatchGetResultResult> {
+    const match = await this.matchRepository.findAsync(new MatchId(command.id));
+
+    if (!match.isCompleted()) {
+      throw new MatchApplicationMatchNotCompletedError();
+    }
+
+    const roundHistories = match.getRoundHistories();
+    const finalCredit = roundHistories.at(-1)!.player.credit.value;
+
+    // TODO Player に定義されるクレジットの初期値を使用する
+    const balance = finalCredit - 50000;
+
+    return new MatchGetResultResult(
+      new MatchGetResultResultPlayer(
+        roundHistories.map((x) => x.player.credit.value),
+        finalCredit,
+        balance,
+      ),
+    );
   }
 }

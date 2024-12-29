@@ -140,3 +140,17 @@ describe("lose bet", () => {
     expect(player.getBetAmount().value).toBe(0);
   });
 });
+
+describe("discard", () => {
+  test("It discards the current hand and get a new empty hand.", () => {
+    const player = Player.create(
+      new PlayerId("playerId"),
+      new UserId("UserId"),
+    );
+    player.addCardToHand(new Card(Rank.Ace, Suit.Spade));
+
+    player.discard();
+
+    expect(player.getHand().count()).toBe(0);
+  });
+});

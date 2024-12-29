@@ -1,5 +1,6 @@
 import { Dealer } from "../dealers/dealer";
 import { Player } from "../players/player";
+import { RoundCount } from "../roundCounts/roundCount";
 import { MatchId } from "./matchId";
 
 /**
@@ -26,4 +27,11 @@ export interface MatchNotification {
    * @param player
    */
   notifyPlayer(player: Player): void;
+
+  /**
+   * ラウンド数を通知する
+   *
+   * @param roundCount ラウンド数
+   */
+  notifyRoundCount(roundCount: RoundCount): void;
 }

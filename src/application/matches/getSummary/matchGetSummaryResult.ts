@@ -4,6 +4,7 @@ import { MatchId } from "@/domain/models/matches/matchId";
 import { Player } from "@/domain/models/players/player";
 import { MatchGetSummaryResultDealer } from "./matchGetSummaryResultDealer";
 import { Dealer } from "@/domain/models/dealers/dealer";
+import { RoundCount } from "@/domain/models/roundCounts/roundCount";
 
 /**
  * 試合サマリ取得結果
@@ -23,6 +24,11 @@ export class MatchGetSummaryResult implements MatchNotification {
    * プレイヤー
    */
   public readonly player = new MatchGetSummaryResultPlayer();
+
+  /**
+   * ラウンド数
+   */
+  public roundCount?: number;
 
   /**
    * ID を通知する
@@ -49,5 +55,14 @@ export class MatchGetSummaryResult implements MatchNotification {
    */
   public notifyPlayer(player: Player): void {
     player.notify(this.player);
+  }
+
+  /**
+   * ラウンド数を通知する
+   *
+   * @param roundCount ラウンド数
+   */
+  public notifyRoundCount(roundCount: RoundCount): void {
+    this.roundCount = roundCount.value;
   }
 }

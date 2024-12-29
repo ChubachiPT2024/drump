@@ -41,3 +41,7 @@ Post {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/complete-round Http/
 ###
 # @name matchGetRoundResult
 Get {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/round-result Http/1.1
+
+###
+# @name matchGetResult
+Get {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/result Http/1.1

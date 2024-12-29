@@ -145,6 +145,13 @@ export class Player {
   }
 
   /**
+   * ハンドを捨てる
+   */
+  public discard(): void {
+    this.hand = Hand.create();
+  }
+
+  /**
    * 通知する
    *
    * @param notification 通知
