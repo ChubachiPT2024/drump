@@ -5,11 +5,16 @@ import { MatchGetPlayerHandApiResponseCard } from "../../types/matchGetPlayerHan
 
 export const Card = ({
   isOpen,
+  initial,
   animate,
   suit,
   rank,
 }: {
   isOpen: boolean;
+  initial: {
+    x: string;
+    y: string;
+  };
   animate: {
     x: string;
     y: string;
@@ -21,7 +26,7 @@ export const Card = ({
 
   return (
     <motion.div
-      initial={{ x: "100vw", y: "25vh" }}
+      initial={initial}
       animate={animate}
       transition={{
         type: "linear",
@@ -33,14 +38,17 @@ export const Card = ({
           setIsFlipped(true);
         }
       }}
-      className="flex space-x-4"
     >
       <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
-        <div className="mt-5 mr-2 h-40 w-24">
-          <img src="/trump/back.png" alt="card-back" />
+        <div className="h-40 w-24">
+          <img className="rounded-lg" src="/trump/back.png" alt="card-back" />
         </div>
-        <div className="mt-5 mr-2 h-40 w-24">
-          <img src={`/trump/${suit}${rank}.png`} alt="" />
+        <div className="h-40 w-24">
+          <img
+            className="rounded-lg"
+            src={`/trump/${suit}${rank}.png`}
+            alt="trump-card"
+          />
         </div>
       </ReactCardFlip>
     </motion.div>

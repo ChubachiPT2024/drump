@@ -37,10 +37,10 @@ export const MatchPage = () => {
   // TODO: ドメイン層からプレイヤー情報を取得する
   // ハンドではなく、スートとランクにするかも、ほかプレイヤーの情報は変更の可能性あり
   const [players, setPlayers] = useState([
-    { id: 2, name: "Player 2", hand: 18, isCurrent: true },
     { id: 1, name: "Player 1", hand: 10, isCurrent: false },
     { id: 5, name: "Player 5", hand: 14, isCurrent: false },
     { id: 3, name: "Player 3", hand: 12, isCurrent: false },
+    { id: 2, name: "Player 2", hand: 18, isCurrent: true },
     { id: 4, name: "Player 4", hand: 8, isCurrent: false },
     { id: 6, name: "Player 6", hand: 16, isCurrent: false },
     { id: 7, name: "Player 7", hand: 20, isCurrent: false },
@@ -238,21 +238,22 @@ export const MatchPage = () => {
 
       <div
         id="gameTable"
-        className="p-3 flex flex-col justify-between h-[80vh]"
+        className="pt-3 flex flex-col justify-between h-[75vh]"
       >
         <div id="dealer" className="bg-neutral-50/5 rounded-md relative">
           <div className="absolute top-1/2 -right-9 px-3 py-1.5 border-2 font-bold text-white bg-black rounded-xl z-10">
             4
             <div className="absolute top-1/2 -left-2 w-0 h-0 border-y-8 border-y-transparent border-r-8 transform -translate-y-1/2" />
           </div>
-          <div className="flex">
+          <div className="flex space-x-2">
             {dealerCards &&
               dealerCards.map((card) => {
                 return (
                   <Card
                     key={card.suit + card.rank}
                     isOpen={true}
-                    animate={{ x: "40vw", y: "0vh" }}
+                    initial={{ x: "50vw", y: "25vh" }}
+                    animate={{ x: "0vw", y: "0vh" }}
                     suit={card.suit}
                     rank={card.rank}
                   />
@@ -262,7 +263,8 @@ export const MatchPage = () => {
               <Card
                 key="reverse"
                 isOpen={false}
-                animate={{ x: "40vw", y: "0vh" }}
+                initial={{ x: "50vw", y: "25vh" }}
+                animate={{ x: "0vw", y: "0vh" }}
                 suit={"reverse"}
                 rank={"reverse"}
               />
@@ -274,24 +276,22 @@ export const MatchPage = () => {
           id="player"
           className="bg-neutral-50/5 text-center rounded-md relative"
         >
-          <h2 className="bg-gradient-to-b from-slate-300/40 via-slate-100/10 to-slate-50/5 text-white text-xl font-bold rounded-t-md">
+          <h2 className="bg-gradient-to-b from-slate-300/40 via-slate-100/10 to-slate-50/5 text-white text-lg font-bold rounded-t-md">
             Bet: 35
           </h2>
           <div className="absolute top-1/2 -right-9 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl z-10">
             10/20
             <div className="absolute top-1/2 -left-2 w-0 h-0 border-y-8 border-y-transparent border-r-8 transform -translate-y-1/2" />
           </div>
-          <div className="flex">
+          <div className="flex space-x-2">
             {playerHand &&
               playerHand.cards.map((card) => {
                 return (
                   <Card
                     key={card.suit + card.rank}
                     isOpen={true}
-                    animate={{
-                      x: "40vw",
-                      y: "25vh",
-                    }}
+                    initial={{ x: "50vw", y: "-25vh" }}
+                    animate={{ x: "0vw", y: "0vh" }}
                     suit={card.suit}
                     rank={card.rank}
                   />
@@ -301,6 +301,24 @@ export const MatchPage = () => {
         </div>
       </div>
 
+      <div id="shoe" className="hidden md:block absolute top-28 right-4">
+        <div className="relative h-40 w-24">
+          <div className="absolute inset-0 transform translate-x-0 translate-y-0">
+            <img className="rounded-lg" src="/trump/back.png" alt="card-back" />
+          </div>
+          <div className="absolute inset-0 transform translate-x-1 translate-y-1 z-10">
+            <img className="rounded-lg" src="/trump/back.png" alt="card-back" />
+          </div>
+          <div className="absolute inset-0 transform translate-x-2 translate-y-2 z-20">
+            <img className="rounded-lg" src="/trump/back.png" alt="card-back" />
+          </div>
+          <div className="absolute inset-0 transform translate-x-3 translate-y-3 z-30">
+            <img className="rounded-lg" src="/trump/back.png" alt="card-back" />
+          </div>
+        </div>
+      </div>
+
+      {/* TODO: 位置を調整する */}
       <div id="otherPlayerInfo" className="absolute w-full">
         {players.map((player, index) => {
           if (!player.isCurrent) {
@@ -369,10 +387,10 @@ export const MatchPage = () => {
 
       <div
         id="playerInfo"
-        className="bg-white rounded-lg flex justify-around py-2 w-[30%]"
+        className="bg-white rounded-lg flex justify-around py-2 mb-1 w-[30%]"
       >
-        <Avatar className="size-8" {...avatarConfig} />
-        <div className="flex justify-between items-center px-5 gap-x-4 ">
+        <Avatar className="hidden md:block size-8" {...avatarConfig} />
+        <div className="flex justify-between items-center gap-x-4 ">
           {/* TODO: 現在のプレイヤーの情報を取得する */}
           <p className="text-center text-black font-semibold">Player 2</p>
           <p className="text-center text-black font-semibold">Credit: 100</p>
