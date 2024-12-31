@@ -82,19 +82,19 @@ for (let i = 0; i < 10; i++) {
   await matchApplicationService.startRoundAsync(
     new MatchStartRoundCommand(matchId),
   );
-  // TODO matchStartRoundResultSummary にリネーム
-  const matchStartResultSummary = await matchApplicationService.getSummaryAsync(
-    new MatchGetSummaryCommand(matchId),
-  );
+  const matchStartRoundResultSummary =
+    await matchApplicationService.getSummaryAsync(
+      new MatchGetSummaryCommand(matchId),
+    );
 
-  console.log(`[Round ${matchStartResultSummary.roundCount} start]`);
+  console.log(`[Round ${matchStartRoundResultSummary.roundCount} start]`);
 
   // クレジットの表示とベット
   console.log("[Bet]");
   for (const [playerId, name] of playerIdToUserNameMap.entries()) {
     console.log(`[Bet of ${name}]`);
     console.log(
-      `Credit: ${matchStartResultSummary.players!.find((x) => x.id === playerId)!.credit}`,
+      `Credit: ${matchStartRoundResultSummary.players!.find((x) => x.id === playerId)!.credit}`,
     );
     const betAmount = await rl.question("Bet: ");
     console.log();
@@ -104,13 +104,13 @@ for (let i = 0; i < 10; i++) {
   }
 
   // アップカード表示
-  const upCard = matchStartResultSummary.dealer.upCard;
+  const upCard = matchStartRoundResultSummary.dealer.upCard;
   console.log("[Dealer's hand]");
   console.log(`Up card: ${suitStrings.get(upCard!.suit)}${upCard!.rank}`);
   console.log("Hole Card: ?");
   console.log();
 
-  for (const player of matchStartResultSummary.players!) {
+  for (const player of matchStartRoundResultSummary.players!) {
     console.log(`[Turn of ${playerIdToUserNameMap.get(player.id!)}]`);
 
     const playerId = player.id!;
