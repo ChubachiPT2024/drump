@@ -72,7 +72,7 @@ const matchGetPlayersNamesResult =
   await matchApplicationService.getPlayersNamesAsync(
     new MatchGetPlayersNamesCommand(matchId),
   );
-const playerIdToUserNameMap = new Map(
+const playerIdToNameMap = new Map(
   matchGetPlayersNamesResult.players.map((player) => [player.id, player.name]),
 );
 
@@ -91,7 +91,7 @@ for (let i = 0; i < 10; i++) {
 
   // クレジットの表示とベット
   console.log("[Bet]");
-  for (const [playerId, name] of playerIdToUserNameMap.entries()) {
+  for (const [playerId, name] of playerIdToNameMap.entries()) {
     console.log(`[Bet of ${name}]`);
     console.log(
       `Credit: ${matchStartRoundResultSummary.players!.find((x) => x.id === playerId)!.credit}`,
@@ -110,7 +110,7 @@ for (let i = 0; i < 10; i++) {
   console.log("Hole Card: ?");
   console.log();
 
-  for (const [playerId, name] of playerIdToUserNameMap.entries()) {
+  for (const [playerId, name] of playerIdToNameMap.entries()) {
     console.log(`[Turn of ${name}]`);
 
     while (true) {
@@ -184,7 +184,7 @@ for (let i = 0; i < 10; i++) {
 
   console.log("[Round result]");
   for (const player of roundResult.players) {
-    console.log(`[Result of ${playerIdToUserNameMap.get(player.id)}]`);
+    console.log(`[Result of ${playerIdToNameMap.get(player.id)}]`);
     console.log(`Outcome: ${player.result}`);
     console.log(`Credit: ${player.credit}`);
     console.log();
@@ -197,7 +197,7 @@ const matchResult = await matchApplicationService.getResultAsync(
 );
 console.log("[Match result]");
 for (const player of matchResult.players) {
-  console.log(`[Result of ${playerIdToUserNameMap.get(player.id)}]`);
+  console.log(`[Result of ${playerIdToNameMap.get(player.id)}]`);
   for (const [i, v] of player.creditHistories.entries()) {
     console.log(`Round ${i + 1}: ${v}`);
   }
