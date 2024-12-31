@@ -12,8 +12,13 @@ import {
 import { Label } from "@/presentation/shadcnUI/components/ui/label";
 import { Input } from "@/presentation/shadcnUI/components/ui/input";
 
+interface BetModalProps {
+  matchId: string;
+  onClickDeal: (matchId: string, betAmount: number) => void;
+}
+
 // TODO: ベット機能を実現するためにプレイヤーの情報を含んだpropsを追加
-export const BetModal = () => {
+export const BetModal = ({ onClickDeal, matchId }: BetModalProps) => {
   const [betAmount, setBetAmount] = useState<number>(0);
 
   const isOpen = useBetModal((state) => state.isOpen);
@@ -38,9 +43,15 @@ export const BetModal = () => {
             <Input type="number" min="0" max="100" />
           </div>
           <div className="flex justify-around">
-            {/* TODO: ベットの処理を追加 */}
             <div className="border-2 border-yellow-500 rounded-md">
-              <Button className="rounded-sm" size="default" onClick={() => {}}>
+              <Button
+                className="rounded-sm"
+                size="default"
+                onClick={() => {
+                  onClickDeal(matchId, betAmount);
+                  onClose();
+                }}
+              >
                 <span className="text-base md:text-xl">DEAL</span>
               </Button>
             </div>

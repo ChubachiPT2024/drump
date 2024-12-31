@@ -35,10 +35,10 @@ export const MatchStartPage = () => {
     setSelectedUsers(selectedUsers.filter((u: User) => u.id !== user.id));
   };
 
-  const postShoeApi = async (): Promise<string> => {
+  const postMatchStartApi = async (matchId: string): Promise<string> => {
     return axios
       .post(
-        `${apiUrl}/shoes`,
+        `${apiUrl}/matches/${matchId}/start-round`,
         {},
         {
           headers: {
@@ -55,12 +55,12 @@ export const MatchStartPage = () => {
       });
   };
 
-  const postMatchApi = async (shoeId: string): Promise<string> => {
+  const postMatchCreateApi = async (userId: string): Promise<string> => {
     return axios
       .post(
         `${apiUrl}/matches`,
         {
-          shoeId: shoeId,
+          userId: userId,
         },
         {
           headers: {
@@ -77,34 +77,12 @@ export const MatchStartPage = () => {
       });
   };
 
-  const postRoundApi = async (shoeId: string): Promise<string> => {
-    return axios
-      .post(
-        apiUrl + "/rounds",
-        {
-          shoeId: shoeId,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        return res.data.id;
-      })
-      .catch((err) => {
-        console.error(err);
-        return Promise.reject(err);
-      });
-  };
+  // TODO: プレイヤーが設定されていなければ、ボタンを無効にする
+  const handleStartMatch = async (userId: string) => {
+    const matchId = await postMatchCreateApi(userId);
+    await postMatchStartApi(matchId);
 
-  const handleStartMatch = async () => {
-    const shoeId = await postShoeApi();
-    const matchId = await postMatchApi(shoeId);
-    const roundId = await postRoundApi(shoeId);
-
-    navigate(`/match/${matchId}`, { state: { roundId: roundId } });
+    navigate(`/match/${matchId}`);
   };
 
   useEffect(() => {
@@ -155,6 +133,7 @@ export const MatchStartPage = () => {
               )}
             />
             <StartGameButton
+              selectedPlayers={selectedUsers}
               onClick={handleStartMatch}
               disabled={selectedUsers.length === 0}
             />
