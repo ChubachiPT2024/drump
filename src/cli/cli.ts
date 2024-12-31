@@ -141,9 +141,10 @@ for (let i = 0; i < 10; i++) {
   console.log(`Total: ${dealersHand.total}`);
   console.log();
 
+  // TODO 複数プレイヤー対応
   console.log("[Round result]");
-  console.log(`Outcome: ${roundResult.player.result}`);
-  console.log(`Credit: ${roundResult.player.credit}`);
+  console.log(`Outcome: ${roundResult.players[0].result}`);
+  console.log(`Credit: ${roundResult.players[0].credit}`);
   console.log();
 }
 

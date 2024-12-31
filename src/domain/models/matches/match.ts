@@ -1,5 +1,6 @@
 import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Dealer } from "../dealers/dealer";
+import { Hand } from "../hands/hand";
 import { Player } from "../players/player";
 import { PlayerId } from "../players/playerId";
 import { RoundCount } from "../roundCounts/roundCount";
@@ -144,41 +145,51 @@ export class Match {
    */
   public completeRound(): void {
     this.resolveDealersHand();
-    this.settleRound();
 
-    // TODO 複数プレイヤー対応
+    for (const player of this.players) {
+      this.settleRound(player.id);
+    }
+
     this.roundHistories.push(
       new RoundHistory(
         this.roundCount,
         this.dealer.getHand(),
-        new RoundPlayerHistory(
-          this.calculateRoundResult(),
-          this.players[0].getCredit(),
+        this.players.map(
+          (player) =>
+            new RoundPlayerHistory(
+              this.calculateRoundResult(player.id),
+              player.getCredit(),
+            ),
         ),
       ),
     );
 
-    // TODO 複数プレイヤー対応
     this.dealer.discard();
-    this.players[0].discard();
+    for (const player of this.players) {
+      player.discard();
+    }
   }
 
   // TODO テストを書けていないので修正の余地あり
   /**
    * ラウンドの清算処理を実行する
+   *
+   * @param playerId プレイヤー ID
    */
-  public settleRound(): void {
-    // TODO 複数プレイヤー対応
-    switch (this.calculateRoundResult()) {
+  public settleRound(playerId: PlayerId): void {
+    const player = this.getPlayer(playerId);
+    switch (this.calculateRoundResult(playerId)) {
       case RoundResult.Win:
-        this.players[0].collectPayoff(this.calculatePayoff());
-        this.players[0].collectBet();
+        player.collectPayoff(
+          Match.calculatePayoff(player.getHand(), player.getBetAmount()),
+        );
+        player.collectBet();
         break;
       case RoundResult.Push:
-        this.players[0].collectBet();
+        player.collectBet();
         break;
       case RoundResult.Loss:
-        this.players[0].loseBet();
+        player.loseBet();
         break;
     }
   }
@@ -186,25 +197,30 @@ export class Match {
   /**
    * ラウンドの結果を計算する
    *
+   * @param playerId プレイヤー ID
    * @returns ラウンドの結果
    */
-  private calculateRoundResult(): RoundResult {
-    // TODO 複数プレイヤー対応
+  private calculateRoundResult(playerId: PlayerId): RoundResult {
     return this.roundResultCalculator.calculate(
-      this.players[0].getHand(),
+      this.getPlayer(playerId).getHand(),
       this.dealer.getHand(),
     );
   }
 
+  // TODO 別クラスに定義できる可能性あり
   /**
    * ペイオフを計算する
    *
+   * @param hand ハンド
+   * @param betAmount ベット額
    * @returns ペイオフ
    */
-  private calculatePayoff(): ChipAmount {
-    // TODO 複数プレイヤー対応
-    const rate = this.players[0].getHand().isBlackJack() ? 1.5 : 1;
-    return this.players[0].getBetAmount().multiplyAndCeil(rate);
+  private static calculatePayoff(
+    hand: Hand,
+    betAmount: ChipAmount,
+  ): ChipAmount {
+    const rate = hand.isBlackJack() ? 1.5 : 1;
+    return betAmount.multiplyAndCeil(rate);
   }
 
   /**

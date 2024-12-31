@@ -11,11 +11,11 @@ export class RoundHistory {
    *
    * @param roundCount ラウンド数
    * @param dealersHand ディーラーのハンド
-   * @param player プレイヤー
+   * @param players プレイヤー
    */
   public constructor(
     public readonly roundCount: RoundCount,
     public readonly dealersHand: Hand,
-    public readonly player: RoundPlayerHistory,
+    public readonly players: RoundPlayerHistory[],
   ) {}
 }
