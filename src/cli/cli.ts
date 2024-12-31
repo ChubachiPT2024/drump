@@ -16,6 +16,10 @@ import { MatchCompleteRoundCommand } from "@/application/matches/completeRound/m
 import { MatchGetRoundResultCommand } from "@/application/matches/getRoundResult/matchGetRoundResultCommand";
 import { MatchBetCommand } from "@/application/matches/bet/matchBetCommand";
 import { MatchGetResultCommand } from "@/application/matches/getResult/matchGetResultCommand";
+import { InMemoryUserFactory } from "@/infrastructure/inMemory/users/inMemoryUserFactory";
+import { InMemoryUserRepository } from "@/infrastructure/inMemory/users/inMemoryUserRepository";
+import { UserApplicationService } from "@/application/users/userApplicationService";
+import { UserCreateCommand } from "@/application/users/create/userCreateCommand";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
@@ -30,6 +34,13 @@ const rl = createInterface({
   output: process.stdout,
 });
 
+const userFactory = new InMemoryUserFactory();
+const userRepository = new InMemoryUserRepository();
+const userApplicationService = new UserApplicationService(
+  userFactory,
+  userRepository,
+);
+
 const dealerFactory = new InMemoryDealerFactory();
 const playerFactory = new InMemoryPlayerFactory();
 const matchFactory = new InMemoryMatchFactory(dealerFactory, playerFactory);
@@ -39,12 +50,35 @@ const matchApplicationService = new MatchApplicationService(
   matchRepository,
 );
 
+// ユーザの作成
+const userNames = ["Alice", "Bob"];
+const userIdToUserNameMap = new Map<string, string>();
+for (const userName of userNames) {
+  const userCreateResult = await userApplicationService.createAsync(
+    new UserCreateCommand(userName),
+  );
+  userIdToUserNameMap.set(userCreateResult.id, userName);
+}
+
 // 試合の作成
 const matchCreateResult = await matchApplicationService.createAsync(
-  new MatchCreateCommand(["userId"]),
+  new MatchCreateCommand([...userIdToUserNameMap.keys()]),
 );
 const matchId = matchCreateResult.id;
 
+// TODO 適当な API を実装して処理を代替
+// playerId => userName 変換の Map 作成
+const matchCreateResultSummary = await matchApplicationService.getSummaryAsync(
+  new MatchGetSummaryCommand(matchId),
+);
+const playerIdToUserNameMap = new Map(
+  matchCreateResultSummary.players!.map((player) => [
+    player.id!,
+    userIdToUserNameMap.get(player.userId!)!,
+  ]),
+);
+
+// 試合
 for (let i = 0; i < 10; i++) {
   // ラウンドの開始
   await matchApplicationService.startRoundAsync(
@@ -56,17 +90,6 @@ for (let i = 0; i < 10; i++) {
 
   console.log(`[Round ${matchStartResultSummary.roundCount} start]`);
 
-  // クレジットの表示とベット
-  // TODO 複数プレイヤー対応
-  const playerId = matchStartResultSummary.players![0].id!;
-  console.log("[Bet]");
-  console.log(`Credit: ${matchStartResultSummary.players![0].credit}`);
-  const betAmount = await rl.question("Bet: ");
-  console.log();
-  await matchApplicationService.betAsync(
-    new MatchBetCommand(matchId, playerId, Number(betAmount)),
-  );
-
   // アップカード表示
   const upCard = matchStartResultSummary.dealer.upCard;
   console.log("[Dealer's hand]");
@@ -74,52 +97,67 @@ for (let i = 0; i < 10; i++) {
   console.log("Hole Card: ?");
   console.log();
 
-  while (true) {
-    // プレイヤーのハンド表示
-    const matchSummary = await matchApplicationService.getSummaryAsync(
-      new MatchGetSummaryCommand(matchId),
+  for (const player of matchStartResultSummary.players!) {
+    console.log(`[Turn of ${playerIdToUserNameMap.get(player.id!)}]`);
+
+    // クレジットの表示とベット
+    const playerId = player.id!;
+    console.log("[Bet]");
+    console.log(`Credit: ${player.credit}`);
+    const betAmount = await rl.question("Bet: ");
+    console.log();
+    await matchApplicationService.betAsync(
+      new MatchBetCommand(matchId, playerId, Number(betAmount)),
     );
 
-    // TODO 複数プレイヤー対応
-    const playersHand = matchSummary.players![0].hand!;
-    console.log("[Player's hand]");
-    console.log(
-      `Cards: ${playersHand.cards.map((card) => `${suitStrings.get(card.suit)}${card.rank}`).join(" ")}`,
-    );
-    console.log(`Total: ${playersHand.total}`);
-    console.log();
+    while (true) {
+      // プレイヤーのハンド表示
+      const matchSummary = await matchApplicationService.getSummaryAsync(
+        new MatchGetSummaryCommand(matchId),
+      );
+      const playerSummary = matchSummary.players!.find(
+        (x) => x.id === player.id,
+      )!;
 
-    if (playersHand.isResolved) {
-      break;
-    }
+      const playersHand = playerSummary.hand!;
+      console.log("[Player's hand]");
+      console.log(
+        `Cards: ${playersHand.cards.map((card) => `${suitStrings.get(card.suit)}${card.rank}`).join(" ")}`,
+      );
+      console.log(`Total: ${playersHand.total}`);
+      console.log();
 
-    // ハンドシグナルの選択肢表示
-    // TODO 複数プレイヤー対応
-    const handSignals = matchSummary.players![0].handSignalOptions;
-
-    console.log("[Hand signal options]");
-    for (const [i, handSignal] of handSignals.entries()) {
-      console.log(`${i}: ${handSignal}`);
-    }
-    console.log();
-
-    // ハンドシグナルの選択
-    const selectedHandSignal = await rl.question("Select hand signal: ");
-    console.log();
-
-    // ハンドシグナルを出す
-    switch (handSignals[Number(selectedHandSignal)]) {
-      case HandSignal.Hit:
-        await matchApplicationService.hitAsync(
-          new MatchHitCommand(matchId, playerId),
-        );
+      if (playersHand.isResolved) {
         break;
+      }
 
-      case HandSignal.Stand:
-        await matchApplicationService.standAsync(
-          new MatchStandCommand(matchId, playerId),
-        );
-        break;
+      // ハンドシグナルの選択肢表示
+      const handSignals = playerSummary.handSignalOptions;
+
+      console.log("[Hand signal options]");
+      for (const [i, handSignal] of handSignals.entries()) {
+        console.log(`${i}: ${handSignal}`);
+      }
+      console.log();
+
+      // ハンドシグナルの選択
+      const selectedHandSignal = await rl.question("Select hand signal: ");
+      console.log();
+
+      // ハンドシグナルを出す
+      switch (handSignals[Number(selectedHandSignal)]) {
+        case HandSignal.Hit:
+          await matchApplicationService.hitAsync(
+            new MatchHitCommand(matchId, playerId),
+          );
+          break;
+
+        case HandSignal.Stand:
+          await matchApplicationService.standAsync(
+            new MatchStandCommand(matchId, playerId),
+          );
+          break;
+      }
     }
   }
 
@@ -141,25 +179,30 @@ for (let i = 0; i < 10; i++) {
   console.log(`Total: ${dealersHand.total}`);
   console.log();
 
-  // TODO 複数プレイヤー対応
   console.log("[Round result]");
-  console.log(`Outcome: ${roundResult.players[0].result}`);
-  console.log(`Credit: ${roundResult.players[0].credit}`);
-  console.log();
+  for (const player of roundResult.players) {
+    console.log(`[Result of ${playerIdToUserNameMap.get(player.id)}]`);
+    console.log(`Outcome: ${player.result}`);
+    console.log(`Credit: ${player.credit}`);
+    console.log();
+  }
 }
 
 // 試合結果を表示する
 const matchResult = await matchApplicationService.getResultAsync(
   new MatchGetResultCommand(matchId),
 );
-// TODO 複数プレイヤー対応
 console.log("[Match result]");
-for (const [i, v] of matchResult.players[0].creditHistories.entries()) {
-  console.log(`Round ${i + 1}: ${v}`);
+for (const player of matchResult.players) {
+  console.log(`[Result of ${playerIdToUserNameMap.get(player.id)}]`);
+  for (const [i, v] of player.creditHistories.entries()) {
+    console.log(`Round ${i + 1}: ${v}`);
+  }
+  console.log(`Final credit: ${player.finalCredit}`);
+  console.log(
+    `Balance: ${Intl.NumberFormat(undefined, { signDisplay: "always", useGrouping: false }).format(player.balance)}`,
+  );
+  console.log();
 }
-console.log(`Final credit: ${matchResult.players[0].finalCredit}`);
-console.log(
-  `Balance: ${Intl.NumberFormat(undefined, { signDisplay: "always", useGrouping: false }).format(matchResult.players[0].balance)}`,
-);
 
 exit();
