@@ -1,14 +1,14 @@
-import { MatchGetPlayerHandApiResponseCard } from "./matchGetPlayerHandApiResponseCard";
+import { Card } from "./Card";
 
 export interface ResultSummary {
   id: string;
   dealer: {
-    upCard: MatchGetPlayerHandApiResponseCard;
+    upCard: Card;
   };
   player: {
     id: string;
     hand: {
-      cards: MatchGetPlayerHandApiResponseCard[];
+      cards: Card[];
       isResolved: boolean;
       total: number;
     };
