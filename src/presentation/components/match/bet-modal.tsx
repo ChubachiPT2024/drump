@@ -44,9 +44,13 @@ export const BetModal = ({ onClickDeal, matchId, credit }: BetModalProps) => {
               type="number"
               min={0}
               max={credit}
-              onChange={(e) => setBetAmount(Number(e.target.value))}
+              value={betAmount}
+              onChange={(e) => {
+                const value = e.target.value;
+                setBetAmount(value ? Number(value) : undefined);
+              }}
             />
-            {betAmount && credit < betAmount && (
+            {betAmount !== undefined && credit < betAmount && (
               <Label className="text-red-500">
                 You don't have enough credit
               </Label>
@@ -58,11 +62,13 @@ export const BetModal = ({ onClickDeal, matchId, credit }: BetModalProps) => {
                 className="rounded-sm"
                 size="default"
                 onClick={() => {
-                  if (!betAmount) return;
+                  if (betAmount === undefined) return;
                   onClickDeal(matchId, betAmount);
                   onClose();
                 }}
-                disabled={!betAmount || credit < betAmount}
+                disabled={
+                  betAmount === undefined || credit < betAmount || betAmount < 0
+                }
               >
                 <span className="text-base md:text-xl">DEAL</span>
               </Button>
@@ -72,7 +78,7 @@ export const BetModal = ({ onClickDeal, matchId, credit }: BetModalProps) => {
                 size="default"
                 className="rounded-sm"
                 variant="danger"
-                onClick={() => setBetAmount(0)}
+                onClick={() => setBetAmount(undefined)}
               >
                 <span className="text-base md:text-xl">CLEAR</span>
               </Button>
