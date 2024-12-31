@@ -1,6 +1,7 @@
 import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Dealer } from "../dealers/dealer";
 import { Player } from "../players/player";
+import { PlayerId } from "../players/playerId";
 import { RoundCount } from "../roundCounts/roundCount";
 import { RoundHistory } from "../roundHistories/roundHistory";
 import { RoundPlayerHistory } from "../roundHistories/roundPlayerHistory";
@@ -9,6 +10,7 @@ import { RoundResultCalculator } from "../roundResultCalculators/roundResultCalc
 import { Shoe } from "../shoes/shoe";
 import { MatchId } from "./matchId";
 import { MatchNotification } from "./matchNotification";
+import { MatchPlayerNotFoundError } from "./matchPlayerNotFoundError";
 
 /**
  * 試合
@@ -70,8 +72,11 @@ export class Match {
       this.dealCardToDealer();
     }
 
-    for (let i = 0; i < 2; i++) {
-      this.dealCardToPlayer();
+    for (const player of this.players) {
+      for (let i = 0; i < 2; i++) {
+        player.addCardToHand(this.shoe.peek());
+        this.shoe = this.shoe.draw();
+      }
     }
   }
 
@@ -231,6 +236,23 @@ export class Match {
    */
   public isCompleted(): boolean {
     return this.roundHistories.length === RoundCount.MAX_ROUND_COUNT;
+  }
+
+  /**
+   * プレイヤーを取得する
+   *
+   * @param playerId プレイヤー ID
+   * @returns プレイヤー
+   */
+  private getPlayer(playerId: PlayerId): Player {
+    const player = this.players.find(
+      (player) => player.id.value === playerId.value,
+    );
+    if (!player) {
+      throw new MatchPlayerNotFoundError();
+    }
+
+    return player;
   }
 
   /**
