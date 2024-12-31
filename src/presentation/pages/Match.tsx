@@ -144,8 +144,9 @@ export const MatchPage = () => {
 
     const fetchRoundId = async () => {
       if (matchId) {
-        const matchResultSummary = await getMatchResultSummaryApi(matchId);
-        setMatchResultSummary(matchResultSummary);
+        const matchResultSummaryResponse =
+          await getMatchResultSummaryApi(matchId);
+        setMatchResultSummary(matchResultSummaryResponse);
         setIsLoading(false);
       }
     };
@@ -162,8 +163,8 @@ export const MatchPage = () => {
       const fetchDealerHand = async (matchId: string) => {
         try {
           await postRoundCompleteApi(matchId);
-          const roundResult = await getRoundResultApi(matchId);
-          setRoundResult(roundResult);
+          const roundResultResponse = await getRoundResultApi(matchId);
+          setRoundResult(roundResultResponse);
         } catch (error) {
           console.error("Error fetching dealer's hand:", error);
         }

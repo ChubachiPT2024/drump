@@ -1,8 +1,8 @@
-import { MatchGetPlayerHandApiResponseCard } from "../types/matchGetPlayerHandApiResponseCard";
+import { Card } from "./Card";
 
 export interface RoundResult {
   dealersHand: {
-    cards: MatchGetPlayerHandApiResponseCard[];
+    cards: Card[];
     total: number;
     isResolved: boolean;
   };
