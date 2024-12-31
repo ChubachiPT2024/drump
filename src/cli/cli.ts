@@ -20,6 +20,7 @@ import { InMemoryUserFactory } from "@/infrastructure/inMemory/users/inMemoryUse
 import { InMemoryUserRepository } from "@/infrastructure/inMemory/users/inMemoryUserRepository";
 import { UserApplicationService } from "@/application/users/userApplicationService";
 import { UserCreateCommand } from "@/application/users/create/userCreateCommand";
+import { MatchGetPlayersNamesCommand } from "@/application/matches/getPlayersNames/matchGetPlayersNamesCommand";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
@@ -52,31 +53,27 @@ const matchApplicationService = new MatchApplicationService(
 );
 
 // ユーザの作成
-const userNames = ["Alice", "Bob"];
-const userIdToUserNameMap = new Map<string, string>();
-for (const userName of userNames) {
+const userIds = [];
+for (const userName of ["Alice", "Bob"]) {
   const userCreateResult = await userApplicationService.createAsync(
     new UserCreateCommand(userName),
   );
-  userIdToUserNameMap.set(userCreateResult.id, userName);
+  userIds.push(userCreateResult.id);
 }
 
 // 試合の作成
 const matchCreateResult = await matchApplicationService.createAsync(
-  new MatchCreateCommand([...userIdToUserNameMap.keys()]),
+  new MatchCreateCommand(userIds),
 );
 const matchId = matchCreateResult.id;
 
-// TODO 適当な API を実装して処理を代替
 // playerId => userName 変換の Map 作成
-const matchCreateResultSummary = await matchApplicationService.getSummaryAsync(
-  new MatchGetSummaryCommand(matchId),
-);
+const matchGetPlayersNamesResult =
+  await matchApplicationService.getPlayersNamesAsync(
+    new MatchGetPlayersNamesCommand(matchId),
+  );
 const playerIdToUserNameMap = new Map(
-  matchCreateResultSummary.players!.map((player) => [
-    player.id!,
-    userIdToUserNameMap.get(player.userId!)!,
-  ]),
+  matchGetPlayersNamesResult.players.map((player) => [player.id, player.name]),
 );
 
 // 試合
