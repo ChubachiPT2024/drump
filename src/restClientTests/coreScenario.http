@@ -34,7 +34,7 @@ Post {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/players/{{playerId}}
 
 ###
 # @name matchStand
-Post {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/stand Http/1.1
+Post {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/players/{{playerId}}/stand Http/1.1
 
 ###
 # @name matchCompleteRound

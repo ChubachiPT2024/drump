@@ -118,7 +118,7 @@ export class MatchApplicationService {
   public async standAsync(command: MatchStandCommand): Promise<void> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
 
-    match.stand();
+    match.stand(new PlayerId(command.playerId));
 
     await this.matchRepository.saveAsync(match);
   }

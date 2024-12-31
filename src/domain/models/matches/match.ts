@@ -118,10 +118,11 @@ export class Match {
 
   /**
    * スタンドする
+   *
+   * @param playerId プレイヤー ID
    */
-  public stand(): void {
-    // TODO 複数プレイヤー対応
-    return this.players[0].stand();
+  public stand(playerId: PlayerId): void {
+    return this.getPlayer(playerId).stand();
   }
 
   // TODO テストを書けていないので修正の余地あり

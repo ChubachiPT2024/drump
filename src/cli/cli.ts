@@ -117,7 +117,7 @@ for (let i = 0; i < 10; i++) {
 
       case HandSignal.Stand:
         await matchApplicationService.standAsync(
-          new MatchStandCommand(matchId),
+          new MatchStandCommand(matchId, playerId),
         );
         break;
     }

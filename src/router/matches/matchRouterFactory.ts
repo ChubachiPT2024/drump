@@ -91,9 +91,12 @@ export class MatchRouterFactory {
       }
     });
 
-    router.post("/:id/stand", async (req, res, next) => {
+    router.post("/:id/players/:playerId/stand", async (req, res, next) => {
       try {
-        const command = new MatchStandCommand(req.params.id);
+        const command = new MatchStandCommand(
+          req.params.id,
+          req.params.playerId,
+        );
         await this.matchApplicationService.standAsync(command);
 
         res.status(204).send();
