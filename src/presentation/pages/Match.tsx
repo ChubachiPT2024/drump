@@ -123,14 +123,14 @@ export const MatchPage = () => {
 
   const handleHit = async (matchId: string) => {
     await postHitApi(matchId);
-    const matchResultSummary = await getMatchResultSummaryApi(matchId);
-    setMatchResultSummary(matchResultSummary);
+    const matchResultSummaryResponse = await getMatchResultSummaryApi(matchId);
+    setMatchResultSummary(matchResultSummaryResponse);
   };
 
   const handleStand = async (matchId: string) => {
     await postStandApi(matchId);
-    const matchResultSummary = await getMatchResultSummaryApi(matchId);
-    setMatchResultSummary(matchResultSummary);
+    const matchResultSummaryResponse = await getMatchResultSummaryApi(matchId);
+    setMatchResultSummary(matchResultSummaryResponse);
   };
 
   const handleBet = async (matchId: string, amount: number) => {
@@ -146,6 +146,8 @@ export const MatchPage = () => {
       if (matchId) {
         const matchResultSummary = await getMatchResultSummaryApi(matchId);
         setMatchResultSummary(matchResultSummary);
+        console.log(matchResultSummary);
+
         setIsLoading(false);
       }
     };
@@ -175,7 +177,7 @@ export const MatchPage = () => {
     }
   }, [matchResultSummary]);
 
-  if (!matchId || isLoading) {
+  if (!matchId || isLoading || !matchResultSummary) {
     return <div>Loading...</div>;
   }
 
@@ -376,7 +378,11 @@ export const MatchPage = () => {
         </div>
       </div>
 
-      <BetModal matchId={matchId} onClickDeal={handleBet} />
+      <BetModal
+        matchId={matchId}
+        onClickDeal={handleBet}
+        credit={matchResultSummary.player.credit}
+      />
     </div>
   );
 };
