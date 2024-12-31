@@ -146,8 +146,6 @@ export const MatchPage = () => {
       if (matchId) {
         const matchResultSummary = await getMatchResultSummaryApi(matchId);
         setMatchResultSummary(matchResultSummary);
-        console.log(matchResultSummary);
-
         setIsLoading(false);
       }
     };
