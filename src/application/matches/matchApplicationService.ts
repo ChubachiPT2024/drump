@@ -20,6 +20,7 @@ import { MatchGetResultResult } from "./getResult/matchGetResultResult";
 import { MatchGetResultResultPlayer } from "./getResult/matchGetResultResultPlayer";
 import { MatchApplicationRoundNotCompletedError } from "./matchApplicationRoundNotCompletedError";
 import { MatchApplicationMatchNotCompletedError } from "./matchApplicationMatchNotCompletedError";
+import { PlayerId } from "@/domain/models/players/playerId";
 
 /**
  * 試合アプリケーションサービス
@@ -92,7 +93,7 @@ export class MatchApplicationService {
   public async betAsync(command: MatchBetCommand): Promise<void> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
 
-    match.bet(new ChipAmount(command.amount));
+    match.bet(new PlayerId(command.playerId), new ChipAmount(command.amount));
 
     await this.matchRepository.saveAsync(match);
   }

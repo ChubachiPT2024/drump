@@ -65,9 +65,13 @@ export class MatchRouterFactory {
       }
     });
 
-    router.post("/:id/bet", async (req, res, next) => {
+    router.post("/:id/players/:playerId/bet", async (req, res, next) => {
       try {
-        const command = new MatchBetCommand(req.params.id, req.body.amount);
+        const command = new MatchBetCommand(
+          req.params.id,
+          req.params.playerId,
+          req.body.amount,
+        );
         await this.matchApplicationService.betAsync(command);
 
         res.status(204).send();

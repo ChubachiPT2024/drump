@@ -6,12 +6,14 @@ Post {{baseUrl}}/matches Http/1.1
 content-type: application/json
 
 {
-    "userIds": ["userId"]
+    "userIds": ["userId1", "userId2"]
 }
 
 ###
 # @name matchGetSummary
 Get {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/summary Http/1.1
+
+@playerId = {{matchGetSummary.response.body.$.players[0].id}}
 
 ###
 # @name matchStartRound
@@ -19,7 +21,7 @@ Post {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/start-round Http/1.1
 
 ###
 # @name matchBet
-Post {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/bet Http/1.1
+Post {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/players/{{playerId}}/bet Http/1.1
 content-type: application/json
 
 {

@@ -83,11 +83,11 @@ export class Match {
   /**
    * ベットする
    *
+   * @param playerId プレイヤー ID
    * @param amount 額
    */
-  public bet(amount: ChipAmount): void {
-    // TODO 複数プレイヤー対応
-    this.players[0].bet(amount);
+  public bet(playerId: PlayerId, amount: ChipAmount): void {
+    this.getPlayer(playerId).bet(amount);
   }
 
   /**

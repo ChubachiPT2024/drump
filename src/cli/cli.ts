@@ -57,12 +57,14 @@ for (let i = 0; i < 10; i++) {
   console.log(`[Round ${matchStartResultSummary.roundCount} start]`);
 
   // クレジットの表示とベット
+  // TODO 複数プレイヤー対応
+  const playerId = matchStartResultSummary.players![0].id!;
   console.log("[Bet]");
-  console.log(`Credit: ${matchStartResultSummary.player.credit}`);
+  console.log(`Credit: ${matchStartResultSummary.players![0].credit}`);
   const betAmount = await rl.question("Bet: ");
   console.log();
   await matchApplicationService.betAsync(
-    new MatchBetCommand(matchId, Number(betAmount)),
+    new MatchBetCommand(matchId, playerId, Number(betAmount)),
   );
 
   // アップカード表示
@@ -78,7 +80,8 @@ for (let i = 0; i < 10; i++) {
       new MatchGetSummaryCommand(matchId),
     );
 
-    const playersHand = matchSummary.player.hand!;
+    // TODO 複数プレイヤー対応
+    const playersHand = matchSummary.players![0].hand!;
     console.log("[Player's hand]");
     console.log(
       `Cards: ${playersHand.cards.map((card) => `${suitStrings.get(card.suit)}${card.rank}`).join(" ")}`,
@@ -91,7 +94,8 @@ for (let i = 0; i < 10; i++) {
     }
 
     // ハンドシグナルの選択肢表示
-    const handSignals = matchSummary.player.handSignalOptions;
+    // TODO 複数プレイヤー対応
+    const handSignals = matchSummary.players![0].handSignalOptions;
 
     console.log("[Hand signal options]");
     for (const [i, handSignal] of handSignals.entries()) {
