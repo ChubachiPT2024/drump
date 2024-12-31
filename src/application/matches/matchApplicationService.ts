@@ -20,6 +20,8 @@ import { MatchGetResultResultPlayer } from "./getResult/matchGetResultResultPlay
 import { MatchApplicationRoundNotCompletedError } from "./matchApplicationRoundNotCompletedError";
 import { MatchApplicationMatchNotCompletedError } from "./matchApplicationMatchNotCompletedError";
 import { PlayerId } from "@/domain/models/players/playerId";
+import { Balance } from "@/domain/models/balances/balance";
+import { Player } from "@/domain/models/players/player";
 
 /**
  * 試合アプリケーションサービス
@@ -179,21 +181,23 @@ export class MatchApplicationService {
     // TODO Object.groupBy などで、もう少し簡単に書けるかもしれない
     const resultPlayers: MatchGetResultResultPlayer[] = [];
     for (const playerId of match.getPlayerIds()) {
-      const creditHistories: number[] = [];
+      const creditHistories: ChipAmount[] = [];
       for (const roundHistory of roundHistories) {
         const playerRoundHistory = roundHistory.players.find(
           (x) => x.id.value === playerId.value,
         );
-        creditHistories.push(playerRoundHistory!.credit.value);
+        creditHistories.push(playerRoundHistory!.credit);
       }
 
       const finalCredit = creditHistories.at(-1)!;
-
-      // TODO Player に定義されるクレジットの初期値を使用する
-      const balance = finalCredit - 50000;
+      const balance = Balance.create(Player.INITIAL_CREDIT, finalCredit);
 
       resultPlayers.push(
-        new MatchGetResultResultPlayer(creditHistories, finalCredit, balance),
+        new MatchGetResultResultPlayer(
+          creditHistories.map((creditHistory) => creditHistory.value),
+          finalCredit.value,
+          balance.value,
+        ),
       );
     }
 
