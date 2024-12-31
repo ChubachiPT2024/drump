@@ -110,7 +110,7 @@ export class MatchApplicationService {
       throw new MatchCannotHitError();
     }
 
-    match.dealCardToPlayer();
+    match.hit();
 
     await this.matchRepository.saveAsync(match);
   }

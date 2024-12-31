@@ -101,9 +101,9 @@ export class Match {
   }
 
   /**
-   * プレイヤーにカードを配る
+   * ヒットする
    */
-  public dealCardToPlayer(): void {
+  public hit(): void {
     // TODO 複数プレイヤー対応
     this.players[0].addCardToHand(this.shoe.peek());
 
