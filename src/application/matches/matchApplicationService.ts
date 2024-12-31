@@ -194,6 +194,7 @@ export class MatchApplicationService {
 
       resultPlayers.push(
         new MatchGetResultResultPlayer(
+          playerId.value,
           creditHistories.map((creditHistory) => creditHistory.value),
           finalCredit.value,
           balance.value,
