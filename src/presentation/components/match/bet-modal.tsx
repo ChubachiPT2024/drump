@@ -26,7 +26,7 @@ export const BetModal = ({ onClickDeal, matchId }: BetModalProps) => {
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={onClose}>
+      <Dialog open={isOpen}>
         <DialogContent className="space-y-2 GreenDot border-2 border-yellow-500 shadow-sm shadow-yellow-500">
           <DialogHeader>
             <DialogTitle className="">Place Your Bet!</DialogTitle>
