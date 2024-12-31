@@ -33,7 +33,7 @@ export class MatchRouterFactory {
 
     router.post("/", async (req, res, next) => {
       try {
-        const command = new MatchCreateCommand(req.body.userId);
+        const command = new MatchCreateCommand(req.body.userIds);
         const result = await this.matchApplicationService.createAsync(command);
 
         res.status(201).json(result);

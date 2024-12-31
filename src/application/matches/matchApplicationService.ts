@@ -45,7 +45,9 @@ export class MatchApplicationService {
   public async createAsync(
     command: MatchCreateCommand,
   ): Promise<MatchCreateResult> {
-    const match = this.matchFactory.create(new UserId(command.userId));
+    const match = this.matchFactory.create(
+      command.userIds.map((userId) => new UserId(userId)),
+    );
 
     await this.matchRepository.saveAsync(match);
 

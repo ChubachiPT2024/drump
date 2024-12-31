@@ -6,7 +6,7 @@ Post {{baseUrl}}/matches Http/1.1
 content-type: application/json
 
 {
-    "userId": "userId"
+    "userIds": ["userId"]
 }
 
 ###

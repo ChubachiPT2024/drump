@@ -25,7 +25,7 @@ export class Match {
    * @param id ID
    * @param shoe シュー
    * @param dealer ディーラー
-   * @param player プレイヤー
+   * @param players プレイヤー
    * @param roundCount ラウンド数
    * @param roundResultCalculator ラウンド結果計算機
    * @param roundHistories ラウンド履歴
@@ -34,7 +34,7 @@ export class Match {
     public readonly id: MatchId,
     private shoe: Shoe,
     private readonly dealer: Dealer,
-    private readonly player: Player,
+    private readonly players: Player[],
     private roundCount: RoundCount,
     private readonly roundResultCalculator: RoundResultCalculator,
     private readonly roundHistories: RoundHistory[],
@@ -45,15 +45,15 @@ export class Match {
    *
    * @param id ID
    * @param dealer ディーラー
-   * @param player プレイヤー
+   * @param players プレイヤー
    * @returns インスタンス
    */
-  public static create(id: MatchId, dealer: Dealer, player: Player) {
+  public static create(id: MatchId, dealer: Dealer, players: Player[]) {
     return new Match(
       id,
       Shoe.createFromDecks(this.NUMBER_OF_DECKS).suffle(),
       dealer,
-      player,
+      players,
       RoundCount.ZERO,
       new RoundResultCalculator(),
       [],
@@ -81,7 +81,8 @@ export class Match {
    * @param amount 額
    */
   public bet(amount: ChipAmount): void {
-    this.player.bet(amount);
+    // TODO 複数プレイヤー対応
+    this.players[0].bet(amount);
   }
 
   /**
@@ -98,7 +99,8 @@ export class Match {
    * プレイヤーにカードを配る
    */
   public dealCardToPlayer(): void {
-    this.player.addCardToHand(this.shoe.peek());
+    // TODO 複数プレイヤー対応
+    this.players[0].addCardToHand(this.shoe.peek());
 
     // TODO シューをエンティティにするかどうか
     this.shoe = this.shoe.draw();
@@ -110,14 +112,16 @@ export class Match {
    * @returns ヒットできるかどうか
    */
   public canHit(): boolean {
-    return this.player.getHand().canHit();
+    // TODO 複数プレイヤー対応
+    return this.players[0].getHand().canHit();
   }
 
   /**
    * スタンドする
    */
   public stand(): void {
-    return this.player.stand();
+    // TODO 複数プレイヤー対応
+    return this.players[0].stand();
   }
 
   // TODO テストを書けていないので修正の余地あり
@@ -141,19 +145,21 @@ export class Match {
     this.resolveDealersHand();
     this.settleRound();
 
+    // TODO 複数プレイヤー対応
     this.roundHistories.push(
       new RoundHistory(
         this.roundCount,
         this.dealer.getHand(),
         new RoundPlayerHistory(
           this.calculateRoundResult(),
-          this.player.getCredit(),
+          this.players[0].getCredit(),
         ),
       ),
     );
 
+    // TODO 複数プレイヤー対応
     this.dealer.discard();
-    this.player.discard();
+    this.players[0].discard();
   }
 
   // TODO テストを書けていないので修正の余地あり
@@ -161,16 +167,17 @@ export class Match {
    * ラウンドの清算処理を実行する
    */
   public settleRound(): void {
+    // TODO 複数プレイヤー対応
     switch (this.calculateRoundResult()) {
       case RoundResult.Win:
-        this.player.collectPayoff(this.calculatePayoff());
-        this.player.collectBet();
+        this.players[0].collectPayoff(this.calculatePayoff());
+        this.players[0].collectBet();
         break;
       case RoundResult.Push:
-        this.player.collectBet();
+        this.players[0].collectBet();
         break;
       case RoundResult.Loss:
-        this.player.loseBet();
+        this.players[0].loseBet();
         break;
     }
   }
@@ -181,8 +188,9 @@ export class Match {
    * @returns ラウンドの結果
    */
   private calculateRoundResult(): RoundResult {
+    // TODO 複数プレイヤー対応
     return this.roundResultCalculator.calculate(
-      this.player.getHand(),
+      this.players[0].getHand(),
       this.dealer.getHand(),
     );
   }
@@ -193,8 +201,9 @@ export class Match {
    * @returns ペイオフ
    */
   private calculatePayoff(): ChipAmount {
-    const rate = this.player.getHand().isBlackJack() ? 1.5 : 1;
-    return this.player.getBetAmount().multiplyAndCeil(rate);
+    // TODO 複数プレイヤー対応
+    const rate = this.players[0].getHand().isBlackJack() ? 1.5 : 1;
+    return this.players[0].getBetAmount().multiplyAndCeil(rate);
   }
 
   /**
@@ -232,7 +241,8 @@ export class Match {
   public notify(notification: MatchNotification): void {
     notification.notifyId(this.id);
     notification.notifyDealer(this.dealer);
-    notification.notifyPlayer(this.player);
+    // TODO 複数プレイヤー対応
+    notification.notifyPlayer(this.players[0]);
     notification.notifyRoundCount(this.roundCount);
   }
 }

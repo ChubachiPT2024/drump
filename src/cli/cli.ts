@@ -41,7 +41,7 @@ const matchApplicationService = new MatchApplicationService(
 
 // 試合の作成
 const matchCreateResult = await matchApplicationService.createAsync(
-  new MatchCreateCommand("userId"),
+  new MatchCreateCommand(["userId"]),
 );
 const matchId = matchCreateResult.id;
 
