@@ -263,8 +263,7 @@ export class Match {
   public notify(notification: MatchNotification): void {
     notification.notifyId(this.id);
     notification.notifyDealer(this.dealer);
-    // TODO 複数プレイヤー対応
-    notification.notifyPlayer(this.players[0]);
+    notification.notifyPlayers(this.players);
     notification.notifyRoundCount(this.roundCount);
   }
 }
