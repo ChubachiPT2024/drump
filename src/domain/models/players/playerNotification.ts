@@ -1,6 +1,7 @@
 import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Hand } from "../hands/hand";
 import { HandSignal } from "../handSignals/handSignal";
+import { UserId } from "../users/userId";
 import { PlayerId } from "./playerId";
 
 /**
@@ -13,6 +14,13 @@ export interface PlayerNotification {
    * @param id ID
    */
   notifyId(id: PlayerId): void;
+
+  /**
+   * ユーザ ID を通知する
+   *
+   * @param userId ユーザ ID
+   */
+  notifyUserId(userId: UserId): void;
 
   /**
    * ハンドを通知する

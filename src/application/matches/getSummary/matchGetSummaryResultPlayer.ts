@@ -4,6 +4,7 @@ import { PlayerId } from "@/domain/models/players/playerId";
 import { MatchGetSummaryResultHand } from "./matchGetSummaryResultHand";
 import { HandSignal } from "@/domain/models/handSignals/handSignal";
 import { ChipAmount } from "@/domain/models/chipAmounts/chipAmount";
+import { UserId } from "@/domain/models/users/userId";
 
 /**
  * 試合サマリ取得結果のプレイヤー
@@ -13,6 +14,11 @@ export class MatchGetSummaryResultPlayer implements PlayerNotification {
    * ID
    */
   public id?: string;
+
+  /**
+   * ユーザ ID
+   */
+  public userId?: string;
 
   /**
    * ハンド
@@ -41,6 +47,15 @@ export class MatchGetSummaryResultPlayer implements PlayerNotification {
    */
   public notifyId(id: PlayerId): void {
     this.id = id.value;
+  }
+
+  /**
+   * ユーザ ID を通知する
+   *
+   * @param userId ユーザ ID
+   */
+  public notifyUserId(userId: UserId): void {
+    this.userId = userId.value;
   }
 
   /**
