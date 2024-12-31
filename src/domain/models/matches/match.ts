@@ -157,6 +157,7 @@ export class Match {
         this.players.map(
           (player) =>
             new RoundPlayerHistory(
+              player.id,
               this.calculateRoundResult(player.id),
               player.getCredit(),
             ),
