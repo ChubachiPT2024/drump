@@ -48,6 +48,7 @@ const matchRepository = new InMemoryMatchRepository();
 const matchApplicationService = new MatchApplicationService(
   matchFactory,
   matchRepository,
+  userRepository,
 );
 
 // ユーザの作成

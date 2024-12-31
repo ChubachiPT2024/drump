@@ -1,13 +1,36 @@
 @baseUrl = http://localhost:3000/api
 
+# @name userCreate1
+Post {{baseUrl}}/users Http/1.1
+content-type: application/json
+
+{
+    "name": "Alice"
+}
+
+###
+# @name userCreate2
+Post {{baseUrl}}/users Http/1.1
+content-type: application/json
+
+{
+    "name": "Bob"
+}
+
 ###
 # @name matchCreate
 Post {{baseUrl}}/matches Http/1.1
 content-type: application/json
 
 {
-    "userIds": ["userId1", "userId2"]
+    "userIds": [
+        "{{userCreate1.response.body.$.id}}",
+        "{{userCreate2.response.body.$.id}}"]
 }
+
+###
+# @name matchGetPlayersNames
+Get {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/players-names
 
 ###
 # @name matchGetSummary

@@ -1,6 +1,7 @@
 import { MatchBetCommand } from "@/application/matches/bet/matchBetCommand";
 import { MatchCompleteRoundCommand } from "@/application/matches/completeRound/matchCompleteRoundCommand";
 import { MatchCreateCommand } from "@/application/matches/create/matchCreateCommand";
+import { MatchGetPlayersNamesCommand } from "@/application/matches/getPlayersNames/matchGetPlayersNamesCommand";
 import { MatchGetResultCommand } from "@/application/matches/getResult/matchGetResultCommand";
 import { MatchGetRoundResultCommand } from "@/application/matches/getRoundResult/matchGetRoundResultCommand";
 import { MatchGetSummaryCommand } from "@/application/matches/getSummary/matchGetSummaryCommand";
@@ -136,6 +137,19 @@ export class MatchRouterFactory {
 
         res.status(200).json(result);
       } catch (err) {
+        next(err);
+      }
+    });
+
+    router.get("/:id/players-names", async (req, res, next) => {
+      try {
+        const command = new MatchGetPlayersNamesCommand(req.params.id);
+        const result =
+          await this.matchApplicationService.getPlayersNamesAsync(command);
+
+        res.status(200).json(result);
+      } catch (err) {
+        console.log(err);
         next(err);
       }
     });

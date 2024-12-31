@@ -9,6 +9,7 @@ import { RoundPlayerHistory } from "../roundHistories/roundPlayerHistory";
 import { RoundResult } from "../roundResultCalculators/roundResult";
 import { RoundResultCalculator } from "../roundResultCalculators/roundResultCalculator";
 import { Shoe } from "../shoes/shoe";
+import { UserId } from "../users/userId";
 import { MatchCannotHitError } from "./matchCannotHitError";
 import { MatchId } from "./matchId";
 import { MatchNotification } from "./matchNotification";
@@ -275,6 +276,16 @@ export class Match {
    */
   public getPlayerIds(): PlayerId[] {
     return this.players.map((player) => player.id);
+  }
+
+  /**
+   * 指定されたプレイヤーのユーザ ID を取得する
+   *
+   * @param playerId プレイヤー ID
+   * @returns ユーザ ID
+   */
+  public getUserId(playerId: PlayerId): UserId {
+    return this.getPlayer(playerId).userId;
   }
 
   /**

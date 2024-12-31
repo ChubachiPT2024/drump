@@ -22,6 +22,10 @@ import { MatchApplicationMatchNotCompletedError } from "./matchApplicationMatchN
 import { PlayerId } from "@/domain/models/players/playerId";
 import { Balance } from "@/domain/models/balances/balance";
 import { Player } from "@/domain/models/players/player";
+import { MatchGetPlayersNamesCommand } from "./getPlayersNames/matchGetPlayersNamesCommand";
+import { MatchGetPlayersNamesResult } from "./getPlayersNames/matchGetPlayersNamesResult";
+import { MatchGetPlayersNamesResultPlayer } from "./getPlayersNames/matchGetPlayersNamesResultPlayer";
+import { UserRepository } from "@/domain/models/users/userRepository";
 
 /**
  * 試合アプリケーションサービス
@@ -32,10 +36,12 @@ export class MatchApplicationService {
    *
    * @param matchFactory 試合ファクトリ
    * @param matchRepository 試合リポジトリ
+   * @param userRepository ユーザリポジトリ
    */
   public constructor(
     private readonly matchFactory: MatchFactory,
     private readonly matchRepository: MatchRepository,
+    private readonly userRepository: UserRepository,
   ) {}
 
   /**
@@ -203,5 +209,28 @@ export class MatchApplicationService {
     }
 
     return new MatchGetResultResult(resultPlayers);
+  }
+
+  /**
+   * プレイヤー名を取得する
+   *
+   * @param command プレイヤー名取得コマンド
+   * @returns プレイヤー名取得結果
+   */
+  public async getPlayersNamesAsync(
+    command: MatchGetPlayersNamesCommand,
+  ): Promise<MatchGetPlayersNamesResult> {
+    const match = await this.matchRepository.findAsync(new MatchId(command.id));
+
+    const players: MatchGetPlayersNamesResultPlayer[] = [];
+    for (const playerId of match.getPlayerIds()) {
+      const userId = match.getUserId(playerId);
+      const user = await this.userRepository.findAsync(userId);
+      players.push(
+        new MatchGetPlayersNamesResultPlayer(playerId.value, user.name.value),
+      );
+    }
+
+    return new MatchGetPlayersNamesResult(players);
   }
 }
