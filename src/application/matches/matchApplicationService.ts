@@ -9,7 +9,6 @@ import { MatchGetSummaryResult } from "./getSummary/matchGetSummaryResult";
 import { MatchStartRoundCommand } from "./startRound/matchStartCommand";
 import { MatchHitCommand } from "./hit/matchHitCommand";
 import { MatchStandCommand } from "./stand/matchStandCommand";
-import { MatchCannotHitError } from "./hit/matchCannotHitError";
 import { MatchCompleteRoundCommand } from "./completeRound/matchCompleteRoundCommand";
 import { MatchGetRoundResultCommand } from "./getRoundResult/matchGetRoundResultCommand";
 import { MatchGetRoundResultResult } from "./getRoundResult/matchGetRoundResultResult";
@@ -105,14 +104,8 @@ export class MatchApplicationService {
    */
   public async hitAsync(command: MatchHitCommand): Promise<void> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
-    const playerId = new PlayerId(command.playerId);
 
-    // TODO この検証を Match.hit の中に入れる
-    if (!match.canHit(playerId)) {
-      throw new MatchCannotHitError();
-    }
-
-    match.hit(playerId);
+    match.hit(new PlayerId(command.playerId));
 
     await this.matchRepository.saveAsync(match);
   }

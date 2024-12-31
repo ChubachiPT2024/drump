@@ -8,6 +8,7 @@ import { RoundPlayerHistory } from "../roundHistories/roundPlayerHistory";
 import { RoundResult } from "../roundResultCalculators/roundResult";
 import { RoundResultCalculator } from "../roundResultCalculators/roundResultCalculator";
 import { Shoe } from "../shoes/shoe";
+import { MatchCannotHitError } from "./matchCannotHitError";
 import { MatchId } from "./matchId";
 import { MatchNotification } from "./matchNotification";
 import { MatchPlayerNotFoundError } from "./matchPlayerNotFoundError";
@@ -106,18 +107,13 @@ export class Match {
    * @param playerId プレイヤー ID
    */
   public hit(playerId: PlayerId): void {
-    this.getPlayer(playerId).addCardToHand(this.shoe.peek());
-    this.shoe = this.shoe.draw();
-  }
+    const player = this.getPlayer(playerId);
+    if (!player.getHand().canHit()) {
+      throw new MatchCannotHitError();
+    }
 
-  /**
-   * ヒットできるかどうかを取得する
-   *
-   * @param playerId プレイヤー ID
-   * @returns ヒットできるかどうか
-   */
-  public canHit(playerId: PlayerId): boolean {
-    return this.getPlayer(playerId).getHand().canHit();
+    player.addCardToHand(this.shoe.peek());
+    this.shoe = this.shoe.draw();
   }
 
   /**
