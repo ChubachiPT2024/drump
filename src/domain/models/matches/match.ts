@@ -102,23 +102,22 @@ export class Match {
 
   /**
    * ヒットする
+   *
+   * @param playerId プレイヤー ID
    */
-  public hit(): void {
-    // TODO 複数プレイヤー対応
-    this.players[0].addCardToHand(this.shoe.peek());
-
-    // TODO シューをエンティティにするかどうか
+  public hit(playerId: PlayerId): void {
+    this.getPlayer(playerId).addCardToHand(this.shoe.peek());
     this.shoe = this.shoe.draw();
   }
 
   /**
    * ヒットできるかどうかを取得する
    *
+   * @param playerId プレイヤー ID
    * @returns ヒットできるかどうか
    */
-  public canHit(): boolean {
-    // TODO 複数プレイヤー対応
-    return this.players[0].getHand().canHit();
+  public canHit(playerId: PlayerId): boolean {
+    return this.getPlayer(playerId).getHand().canHit();
   }
 
   /**

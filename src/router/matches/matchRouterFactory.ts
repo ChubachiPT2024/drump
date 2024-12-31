@@ -80,9 +80,9 @@ export class MatchRouterFactory {
       }
     });
 
-    router.post("/:id/hit", async (req, res, next) => {
+    router.post("/:id/players/:playerId/hit", async (req, res, next) => {
       try {
-        const command = new MatchHitCommand(req.params.id);
+        const command = new MatchHitCommand(req.params.id, req.params.playerId);
         await this.matchApplicationService.hitAsync(command);
 
         res.status(204).send();

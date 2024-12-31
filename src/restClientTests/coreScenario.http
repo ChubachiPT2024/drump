@@ -30,7 +30,7 @@ content-type: application/json
 
 ###
 # @name matchHit
-Post {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/hit Http/1.1
+Post {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/players/{{playerId}}/hit Http/1.1
 
 ###
 # @name matchStand

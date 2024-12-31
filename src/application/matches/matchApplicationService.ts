@@ -105,12 +105,14 @@ export class MatchApplicationService {
    */
   public async hitAsync(command: MatchHitCommand): Promise<void> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
+    const playerId = new PlayerId(command.playerId);
 
-    if (!match.canHit()) {
+    // TODO この検証を Match.hit の中に入れる
+    if (!match.canHit(playerId)) {
       throw new MatchCannotHitError();
     }
 
-    match.hit();
+    match.hit(playerId);
 
     await this.matchRepository.saveAsync(match);
   }

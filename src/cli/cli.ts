@@ -110,7 +110,9 @@ for (let i = 0; i < 10; i++) {
     // ハンドシグナルを出す
     switch (handSignals[Number(selectedHandSignal)]) {
       case HandSignal.Hit:
-        await matchApplicationService.hitAsync(new MatchHitCommand(matchId));
+        await matchApplicationService.hitAsync(
+          new MatchHitCommand(matchId, playerId),
+        );
         break;
 
       case HandSignal.Stand:
