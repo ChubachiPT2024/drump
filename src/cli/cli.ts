@@ -152,11 +152,12 @@ for (let i = 0; i < 10; i++) {
 const matchResult = await matchApplicationService.getResultAsync(
   new MatchGetResultCommand(matchId),
 );
+// TODO 複数プレイヤー対応
 console.log("[Match result]");
-for (const [i, v] of matchResult.player.creditHistories.entries()) {
+for (const [i, v] of matchResult.players[0].creditHistories.entries()) {
   console.log(`Round ${i + 1}: ${v}`);
 }
-console.log(`Final credit: ${matchResult.player.finalCredit}`);
-console.log(`Balance: ${matchResult.player.balance}`);
+console.log(`Final credit: ${matchResult.players[0].finalCredit}`);
+console.log(`Balance: ${matchResult.players[0].balance}`);
 
 exit();

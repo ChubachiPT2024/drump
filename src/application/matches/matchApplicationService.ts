@@ -175,19 +175,28 @@ export class MatchApplicationService {
     }
 
     const roundHistories = match.getRoundHistories();
-    // TODO 複数プレイヤー対応
-    const finalCredit = roundHistories.at(-1)!.players[0].credit.value;
 
-    // TODO Player に定義されるクレジットの初期値を使用する
-    const balance = finalCredit - 50000;
+    // TODO Object.groupBy などで、もう少し簡単に書けるかもしれない
+    const resultPlayers: MatchGetResultResultPlayer[] = [];
+    for (const playerId of match.getPlayerIds()) {
+      const creditHistories: number[] = [];
+      for (const roundHistory of roundHistories) {
+        const playerRoundHistory = roundHistory.players.find(
+          (x) => x.id.value === playerId.value,
+        );
+        creditHistories.push(playerRoundHistory!.credit.value);
+      }
 
-    return new MatchGetResultResult(
-      new MatchGetResultResultPlayer(
-        // TODO 複数プレイヤー対応
-        roundHistories.map((x) => x.players[0].credit.value),
-        finalCredit,
-        balance,
-      ),
-    );
+      const finalCredit = creditHistories.at(-1)!;
+
+      // TODO Player に定義されるクレジットの初期値を使用する
+      const balance = finalCredit - 50000;
+
+      resultPlayers.push(
+        new MatchGetResultResultPlayer(creditHistories, finalCredit, balance),
+      );
+    }
+
+    return new MatchGetResultResult(resultPlayers);
   }
 }

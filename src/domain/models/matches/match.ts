@@ -269,6 +269,15 @@ export class Match {
   }
 
   /**
+   * プレイヤー ID リストを取得する
+   *
+   * @returns プレイヤー ID リスト
+   */
+  public getPlayerIds(): PlayerId[] {
+    return this.players.map((player) => player.id);
+  }
+
+  /**
    * 通知する
    *
    * @param notification 通知
