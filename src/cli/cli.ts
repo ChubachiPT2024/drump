@@ -158,6 +158,8 @@ for (const [i, v] of matchResult.players[0].creditHistories.entries()) {
   console.log(`Round ${i + 1}: ${v}`);
 }
 console.log(`Final credit: ${matchResult.players[0].finalCredit}`);
-console.log(`Balance: ${matchResult.players[0].balance}`);
+console.log(
+  `Balance: ${Intl.NumberFormat(undefined, { signDisplay: "always", useGrouping: false }).format(matchResult.players[0].balance)}`,
+);
 
 exit();
