@@ -110,10 +110,8 @@ for (let i = 0; i < 10; i++) {
   console.log("Hole Card: ?");
   console.log();
 
-  for (const player of matchStartRoundResultSummary.players!) {
-    console.log(`[Turn of ${playerIdToUserNameMap.get(player.id!)}]`);
-
-    const playerId = player.id!;
+  for (const [playerId, name] of playerIdToUserNameMap.entries()) {
+    console.log(`[Turn of ${name}]`);
 
     while (true) {
       // プレイヤーのハンド表示
@@ -121,7 +119,7 @@ for (let i = 0; i < 10; i++) {
         new MatchGetSummaryCommand(matchId),
       );
       const playerSummary = matchSummary.players!.find(
-        (x) => x.id === player.id,
+        (x) => x.id === playerId,
       )!;
 
       const playersHand = playerSummary.hand!;
