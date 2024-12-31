@@ -4,7 +4,6 @@ import { PlayerId } from "@/domain/models/players/playerId";
 import { MatchGetSummaryResultHand } from "./matchGetSummaryResultHand";
 import { HandSignal } from "@/domain/models/handSignals/handSignal";
 import { ChipAmount } from "@/domain/models/chipAmounts/chipAmount";
-import { UserId } from "@/domain/models/users/userId";
 
 /**
  * 試合サマリ取得結果のプレイヤー
