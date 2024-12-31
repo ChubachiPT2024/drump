@@ -16,11 +16,6 @@ export class MatchGetSummaryResultPlayer implements PlayerNotification {
   public id?: string;
 
   /**
-   * ユーザ ID
-   */
-  public userId?: string;
-
-  /**
    * ハンド
    */
   public hand?: MatchGetSummaryResultHand;
@@ -47,15 +42,6 @@ export class MatchGetSummaryResultPlayer implements PlayerNotification {
    */
   public notifyId(id: PlayerId): void {
     this.id = id.value;
-  }
-
-  /**
-   * ユーザ ID を通知する
-   *
-   * @param userId ユーザ ID
-   */
-  public notifyUserId(userId: UserId): void {
-    this.userId = userId.value;
   }
 
   /**

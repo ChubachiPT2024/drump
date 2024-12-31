@@ -158,7 +158,6 @@ export class Player {
    */
   public notify(notification: PlayerNotification) {
     notification.notifyId(this.id);
-    notification.notifyUserId(this.userId);
     notification.notifyHand(this.hand);
     notification.notifyHandSignalOptions(this.getHandSignalOptions());
     notification.notifyCredit(this.credit);
