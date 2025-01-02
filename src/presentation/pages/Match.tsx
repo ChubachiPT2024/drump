@@ -135,6 +135,8 @@ export const MatchPage = () => {
 
   const handleBet = async (matchId: string, amount: number) => {
     await postMatchBetApi(matchId, amount);
+    const matchResultSummaryResponse = await getMatchResultSummaryApi(matchId);
+    setMatchResultSummary(matchResultSummaryResponse);
   };
 
   useEffect(() => {
@@ -251,7 +253,7 @@ export const MatchPage = () => {
           className="bg-neutral-50/5 text-center rounded-md relative"
         >
           <h2 className="bg-gradient-to-b from-slate-300/40 via-slate-100/10 to-slate-50/5 text-white text-lg font-bold rounded-t-md">
-            Bet: 35
+            Bet: {matchResultSummary.player.betAmount}
           </h2>
           <div className="absolute top-1/2 -right-9 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl z-10">
             10/20
