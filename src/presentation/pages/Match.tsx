@@ -8,14 +8,15 @@ import { CardComponent } from "../components/match/cardComponent";
 import { BetModal } from "../components/match/bet-modal";
 import { HandSignalButton } from "../components/match/hand-signal-button";
 import { Logo } from "../components/share/logo";
+import { HelpButton } from "../components/match/help-button";
 
 import { ResultSummary } from "../types/resultSummary";
-import { HelpButton } from "../components/match/help-button";
 import { RoundResult } from "../types/roundResult";
 import { postHitApi } from "../hooks/api/matchHit";
 import { postStandApi } from "../hooks/api/matchStand";
 import { postMatchBetApi } from "../hooks/api/matchBet";
 import { getMatchResultSummaryApi } from "../hooks/api/matchResultSummary";
+import { getRoundResultApi } from "../hooks/api/matchRoundResult";
 
 export const MatchPage = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -63,17 +64,6 @@ export const MatchPage = () => {
       );
     } catch (err) {
       console.error(err);
-    }
-  };
-
-  const getRoundResultApi = async (matchId: string): Promise<RoundResult> => {
-    try {
-      const res = await axios.get(`${apiUrl}/matches/${matchId}/round-result`);
-
-      return res.data;
-    } catch (err) {
-      console.error(err);
-      return Promise.reject();
     }
   };
 
