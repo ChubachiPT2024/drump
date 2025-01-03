@@ -7,7 +7,7 @@ export interface RoundResult {
     isResolved: boolean;
   };
   player: {
-    result: "win" | "loss" | "draw";
+    result: "win" | "loss" | "push";
     credit: number;
   };
 }
