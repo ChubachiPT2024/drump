@@ -210,29 +210,22 @@ export const MatchPage = () => {
           </div>
           <div className="flex space-x-2">
             {matchResultSummary?.dealer.upCard &&
-              [
-                matchResultSummary.dealer.upCard,
-                ...(roundResult?.dealersHand.cards ?? []),
-              ]
-                .filter((card, index, self) => {
-                  return (
-                    self.findIndex(
-                      (c) => c.suit === card.suit && c.rank === card.rank
-                    ) === index
-                  );
-                })
-                .map((card) => {
-                  return (
-                    <Card
-                      key={`dealer-${card.suit}-${card.rank}`}
-                      isOpen={true}
-                      initial={{ x: "50vw", y: "25vh" }}
-                      animate={{ x: "0vw", y: "0vh" }}
-                      suit={card.suit}
-                      rank={card.rank}
-                    />
-                  );
-                })}
+              (
+                roundResult?.dealersHand.cards ?? [
+                  matchResultSummary.dealer.upCard,
+                ]
+              ).map((card, index) => {
+                return (
+                  <Card
+                    key={`dealer-${index}`}
+                    isOpen={true}
+                    initial={{ x: "50vw", y: "25vh" }}
+                    animate={{ x: "0vw", y: "0vh" }}
+                    suit={card.suit}
+                    rank={card.rank}
+                  />
+                );
+              })}
 
             {matchResultSummary?.player.hand &&
               !matchResultSummary.player.hand.isResolved && (
@@ -261,10 +254,10 @@ export const MatchPage = () => {
           </div>
           <div className="flex space-x-2">
             {matchResultSummary?.player.hand &&
-              matchResultSummary.player.hand.cards.map((card) => {
+              matchResultSummary.player.hand.cards.map((card, index) => {
                 return (
                   <Card
-                    key={`player-${card.suit}-${card.rank}`}
+                    key={`player-${index}`}
                     isOpen={true}
                     initial={{ x: "50vw", y: "-25vh" }}
                     animate={{ x: "0vw", y: "0vh" }}
