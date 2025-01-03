@@ -50,16 +50,6 @@ export const MatchPage = () => {
       ? 40 * players.length // 基本高さをプレイヤー数に応じてスケーリング
       : 150; // プレイヤーが1人の場合のデフォルト高さ
 
-  const postHitApi = async (roundId: string): Promise<void> => {
-    try {
-      await axios.post(`${apiUrl}/matches/${roundId}/hit`, {
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const postMatchBetApi = async (
     matchId: string,
     amount: number
