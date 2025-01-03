@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const postMatchCreateApi = async (
-  userId: number
+  userId: string
 ): Promise<{ id: string }> => {
   try {
     const res = await axios.post(
