@@ -1,8 +1,10 @@
 import axios from "axios";
 
-export const postMatchCreateApi = async (userId: number): Promise<string> => {
-  return axios
-    .post(
+export const postMatchCreateApi = async (
+  userId: number
+): Promise<{ id: string }> => {
+  try {
+    const res = await axios.post(
       `${import.meta.env.VITE_API_URL}/matches`,
       {
         userId: userId,
@@ -12,12 +14,10 @@ export const postMatchCreateApi = async (userId: number): Promise<string> => {
           "Content-Type": "application/json",
         },
       }
-    )
-    .then((res) => {
-      return res.data.id;
-    })
-    .catch((err) => {
-      console.error(err);
-      return Promise.reject(err);
-    });
+    );
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    return Promise.reject(error);
+  }
 };

@@ -54,10 +54,10 @@ export const MatchStartPage = () => {
 
   // TODO: プレイヤーが設定されていなければ、ボタンを無効にする
   const handleStartMatch = async (userId: number) => {
-    const matchId = await postMatchCreateApi(userId);
-    await postMatchStartApi(matchId);
+    const matchCreate = await postMatchCreateApi(userId);
+    await postMatchStartApi(matchCreate.id);
 
-    navigate(`/match/${matchId}`);
+    navigate(`/match/${matchCreate.id}`);
   };
 
   useEffect(() => {

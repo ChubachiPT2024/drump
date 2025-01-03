@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export const postMatchStartApi = async (matchId: string): Promise<string> => {
-  return axios
-    .post(
+export const postMatchStartApi = async (matchId: string): Promise<void> => {
+  try {
+    await axios.post(
       `${import.meta.env.VITE_API_URL}/matches/${matchId}/start-round`,
       {},
       {
@@ -10,12 +10,9 @@ export const postMatchStartApi = async (matchId: string): Promise<string> => {
           "Content-Type": "application/json",
         },
       }
-    )
-    .then((res) => {
-      return res.data.id;
-    })
-    .catch((err) => {
-      console.error(err);
-      return Promise.reject(err);
-    });
+    );
+  } catch (error) {
+    console.error(error);
+    return Promise.reject(error);
+  }
 };
