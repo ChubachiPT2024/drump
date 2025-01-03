@@ -15,6 +15,7 @@ import { RoundResult } from "../types/roundResult";
 import { postHitApi } from "../hooks/api/matchHit";
 import { postStandApi } from "../hooks/api/matchStand";
 import { postMatchBetApi } from "../hooks/api/matchBet";
+import { getMatchResultSummaryApi } from "../hooks/api/matchResultSummary";
 
 export const MatchPage = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -52,19 +53,6 @@ export const MatchPage = () => {
     players.length > 1
       ? 40 * players.length // 基本高さをプレイヤー数に応じてスケーリング
       : 150; // プレイヤーが1人の場合のデフォルト高さ
-
-  const getMatchResultSummaryApi = async (
-    matchId: string
-  ): Promise<ResultSummary> => {
-    try {
-      const res = await axios.get(`${apiUrl}/matches/${matchId}/summary`);
-
-      return res.data;
-    } catch (err) {
-      console.error(err);
-      return Promise.reject();
-    }
-  };
 
   const postRoundCompleteApi = async (matchId: string): Promise<void> => {
     try {
