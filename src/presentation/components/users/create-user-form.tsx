@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { toast } from "sonner";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,7 +16,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/presentation/shadcnUI/components/ui/form";
-import { toast } from "sonner";
 
 const formSchema = z.object({
   username: z.string().min(1, {
