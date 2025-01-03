@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 import { PlayerCard } from "../components/match-start/player-card";
 import { Header } from "../components/share/header";
@@ -10,12 +9,10 @@ import { ScrollArea } from "../shadcnUI/components/ui/scroll-area";
 
 import { cn } from "../shadcnUI/lib/utils";
 import { postMatchStartApi } from "../hooks/api/matchStartRound";
+import { postMatchCreateApi } from "../hooks/api/matchCreate";
 
 export const MatchStartPage = () => {
   const navigate = useNavigate();
-
-  // TODO: move to .env
-  const apiUrl = "http://localhost:3000/api";
 
   // TODO: ドメインに合わせて、プレイヤーの型を参照する
   const [selectedPlayers, setSelectedPlayers] = useState([
@@ -53,28 +50,6 @@ export const MatchStartPage = () => {
   const handleRemoveSelectedPlayer = (player) => {
     setRegisteredPlayers([...registeredPlayers, player]);
     setSelectedPlayers(selectedPlayers.filter((p) => p.id !== player.id));
-  };
-
-  const postMatchCreateApi = async (userId: number): Promise<string> => {
-    return axios
-      .post(
-        `${apiUrl}/matches`,
-        {
-          userId: userId,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        return res.data.id;
-      })
-      .catch((err) => {
-        console.error(err);
-        return Promise.reject(err);
-      });
   };
 
   // TODO: プレイヤーが設定されていなければ、ボタンを無効にする
