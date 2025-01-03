@@ -12,6 +12,9 @@ import { Logo } from "../components/share/logo";
 import { ResultSummary } from "../types/resultSummary";
 import { HelpButton } from "../components/match/help-button";
 import { RoundResult } from "../types/roundResult";
+import { postHitApi } from "../hooks/api/matchHit";
+import { postStandApi } from "../hooks/api/matchStand";
+import { postMatchBetApi } from "../hooks/api/matchBet";
 
 export const MatchPage = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -49,21 +52,6 @@ export const MatchPage = () => {
     players.length > 1
       ? 40 * players.length // 基本高さをプレイヤー数に応じてスケーリング
       : 150; // プレイヤーが1人の場合のデフォルト高さ
-
-  const postMatchBetApi = async (
-    matchId: string,
-    amount: number
-  ): Promise<void> => {
-    try {
-      await axios.post(
-        `${apiUrl}/matches/${matchId}/bet`,
-        { amount },
-        { headers: { "Content-Type": "application/json" } }
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const getMatchResultSummaryApi = async (
     matchId: string
