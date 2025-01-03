@@ -1,6 +1,6 @@
 import { UserCard } from "./user-card";
 
-import { User } from "../../types/User";
+import { User } from "../../types/user";
 import { cn } from "@/presentation/shadcnUI/lib/utils";
 import { ScrollArea } from "@/presentation/shadcnUI/components/ui/scroll-area";
 
@@ -16,7 +16,7 @@ interface UserCardProps {
 
 export const UserList = ({
   title,
-  users,
+  users = [],
   onUserAction,
   actionLabel,
   variant,
