@@ -23,8 +23,6 @@ export const MatchPage = () => {
 
   // TODO: 現在のプレイヤーの名前を毎回代入する形に変更する
   const avatarConfig = genConfig("Player 2");
-  // TODO: move to .env
-  const apiUrl = "http://localhost:3000/api";
 
   const [isLoading, setIsLoading] = useState(true);
   const [matchResultSummary, setMatchResultSummary] = useState<

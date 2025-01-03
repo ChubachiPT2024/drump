@@ -1,11 +1,9 @@
 import axios from "axios";
 
 export const postMatchStartApi = async (matchId: string): Promise<string> => {
-  const apiUrl = "http://localhost:3000/api";
-
   return axios
     .post(
-      `${apiUrl}/matches/${matchId}/start-round`,
+      `${import.meta.env.VITE_API_URL}/matches/${matchId}/start-round`,
       {},
       {
         headers: {

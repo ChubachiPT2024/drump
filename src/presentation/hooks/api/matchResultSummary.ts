@@ -1,13 +1,13 @@
 import axios from "axios";
-import { ResultSummary } from "../../../types";
+import { ResultSummary } from "../../types/resultSummary";
 
 export const getMatchResultSummaryApi = async (
   matchId: string
 ): Promise<ResultSummary> => {
-  const apiUrl = "http://localhost:3000/api";
-
   try {
-    const res = await axios.get(`${apiUrl}/matches/${matchId}/summary`);
+    const res = await axios.get(
+      `${import.meta.env.VITE_API_URL}/matches/${matchId}/summary`
+    );
 
     return res.data;
   } catch (err) {

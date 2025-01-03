@@ -1,10 +1,9 @@
 import axios from "axios";
 
 export const postMatchCreateApi = async (userId: number): Promise<string> => {
-  const apiUrl = "http://localhost:3000/api";
   return axios
     .post(
-      `${apiUrl}/matches`,
+      `${import.meta.env.VITE_API_URL}/matches`,
       {
         userId: userId,
       },

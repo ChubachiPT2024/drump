@@ -4,9 +4,10 @@ import { RoundResult } from "../../types/roundResult";
 export const getRoundResultApi = async (
   matchId: string
 ): Promise<RoundResult> => {
-  const apiUrl = "http://localhost:3000/api";
   try {
-    const res = await axios.get(`${apiUrl}/matches/${matchId}/round-result`);
+    const res = await axios.get(
+      `${import.meta.env.VITE_API_URL}/matches/${matchId}/round-result`
+    );
 
     return res.data;
   } catch (err) {
