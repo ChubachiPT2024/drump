@@ -4,7 +4,7 @@ import { Hand, CopyPlus, Layers2, Subscript, CircleHelp } from "lucide-react";
 import Avatar, { genConfig } from "react-nice-avatar";
 import axios from "axios";
 
-import { Card } from "../components/match/Card";
+import { CardComponent } from "../components/match/cardComponent";
 import { BetModal } from "../components/match/bet-modal";
 import { HandSignalButton } from "../components/match/hand-signal-button";
 import { Logo } from "../components/share/logo";
@@ -216,7 +216,7 @@ export const MatchPage = () => {
                 ]
               ).map((card, index) => {
                 return (
-                  <Card
+                  <CardComponent
                     key={`dealer-${index}`}
                     isOpen={true}
                     initial={{ x: "50vw", y: "25vh" }}
@@ -229,7 +229,7 @@ export const MatchPage = () => {
 
             {matchResultSummary?.player.hand &&
               !matchResultSummary.player.hand.isResolved && (
-                <Card
+                <CardComponent
                   key="reverse"
                   isOpen={false}
                   initial={{ x: "50vw", y: "25vh" }}
@@ -256,7 +256,7 @@ export const MatchPage = () => {
             {matchResultSummary?.player.hand &&
               matchResultSummary.player.hand.cards.map((card, index) => {
                 return (
-                  <Card
+                  <CardComponent
                     key={`player-${index}`}
                     isOpen={true}
                     initial={{ x: "50vw", y: "-25vh" }}

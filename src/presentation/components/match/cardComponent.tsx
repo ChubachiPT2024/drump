@@ -1,9 +1,9 @@
 import { useState } from "react";
 import ReactCardFlip from "react-card-flip";
 import { motion } from "framer-motion";
-import { ResultSummary } from "../../types/resultSummary";
+import { Card } from "../../types/card";
 
-export const Card = ({
+export const CardComponent = ({
   isOpen,
   initial,
   animate,
@@ -19,14 +19,8 @@ export const Card = ({
     x: string;
     y: string;
   };
-  suit:
-    | Pick<ResultSummary, "player">["player"]["hand"]["cards"][number]["suit"]
-    | Pick<ResultSummary, "dealer">["dealer"]["upCard"]["suit"]
-    | "reverse";
-  rank:
-    | Pick<ResultSummary, "player">["player"]["hand"]["cards"][number]["rank"]
-    | Pick<ResultSummary, "dealer">["dealer"]["upCard"]["rank"]
-    | "reverse";
+  suit: Pick<Card, "suit">["suit"] | "reverse";
+  rank: Pick<Card, "rank">["rank"] | "reverse";
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
