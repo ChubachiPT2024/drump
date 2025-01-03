@@ -1,4 +1,4 @@
-export interface MatchGetPlayerHandApiResponseCard {
+export interface Card {
   suit: "spade" | "heart" | "diamond" | "club";
   rank:
     | "A"

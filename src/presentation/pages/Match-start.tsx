@@ -54,10 +54,10 @@ export const MatchStartPage = () => {
     setSelectedPlayers(selectedPlayers.filter((p) => p.id !== player.id));
   };
 
-  const postShoeApi = async (): Promise<string> => {
+  const postMatchStartApi = async (matchId: string): Promise<string> => {
     return axios
       .post(
-        `${apiUrl}/shoes`,
+        `${apiUrl}/matches/${matchId}/start-round`,
         {},
         {
           headers: {
@@ -74,34 +74,12 @@ export const MatchStartPage = () => {
       });
   };
 
-  const postMatchApi = async (shoeId: string): Promise<string> => {
+  const postMatchCreateApi = async (userId: number): Promise<string> => {
     return axios
       .post(
         `${apiUrl}/matches`,
         {
-          shoeId: shoeId,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        return res.data.id;
-      })
-      .catch((err) => {
-        console.error(err);
-        return Promise.reject(err);
-      });
-  };
-
-  const postRoundApi = async (shoeId: string): Promise<string> => {
-    return axios
-      .post(
-        apiUrl + "/rounds",
-        {
-          shoeId: shoeId,
+          userId: userId,
         },
         {
           headers: {
@@ -119,12 +97,11 @@ export const MatchStartPage = () => {
   };
 
   // TODO: プレイヤーが設定されていなければ、ボタンを無効にする
-  const handleStartMatch = async () => {
-    const shoeId = await postShoeApi();
-    const matchId = await postMatchApi(shoeId);
-    const roundId = await postRoundApi(shoeId);
+  const handleStartMatch = async (userId: number) => {
+    const matchId = await postMatchCreateApi(userId);
+    await postMatchStartApi(matchId);
 
-    navigate(`/match/${matchId}`, { state: { roundId: roundId } });
+    navigate(`/match/${matchId}`);
   };
 
   useEffect(() => {
@@ -191,7 +168,7 @@ export const MatchStartPage = () => {
               )}
             >
               <Button
-                onClick={handleStartMatch}
+                onClick={() => handleStartMatch(selectedPlayers[0].id)} // TODO: 複数人プレー時に変更
                 size="lg"
                 variant={selectedPlayers.length === 0 ? "locked" : "success"}
                 disabled={selectedPlayers.length === 0}
