@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Hand, CopyPlus, Layers2, Subscript, CircleHelp } from "lucide-react";
 import Avatar, { genConfig } from "react-nice-avatar";
-import axios from "axios";
 
 import { CardComponent } from "../components/match/cardComponent";
 import { BetModal } from "../components/match/bet-modal";
@@ -17,6 +16,7 @@ import { postStandApi } from "../hooks/api/matchStand";
 import { postMatchBetApi } from "../hooks/api/matchBet";
 import { getMatchResultSummaryApi } from "../hooks/api/matchResultSummary";
 import { getRoundResultApi } from "../hooks/api/matchRoundResult";
+import { postRoundCompleteApi } from "../hooks/api/matchRoundComplete";
 
 export const MatchPage = () => {
   const { matchId } = useParams<{ matchId: string }>();
@@ -54,18 +54,6 @@ export const MatchPage = () => {
     players.length > 1
       ? 40 * players.length // 基本高さをプレイヤー数に応じてスケーリング
       : 150; // プレイヤーが1人の場合のデフォルト高さ
-
-  const postRoundCompleteApi = async (matchId: string): Promise<void> => {
-    try {
-      await axios.post(
-        `${apiUrl}/matches/${matchId}/complete-round`,
-        {},
-        { headers: { "Content-Type": "application/json" } }
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const handleHit = async (matchId: string) => {
     await postHitApi(matchId);
