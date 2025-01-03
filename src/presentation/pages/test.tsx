@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ChevronDown, ChevronRight } from "lucide-react";
 
-import { userGetAll } from "../hooks/api/userGetAll";
+import { userApi } from "../api/user/userCreateApi";
 
+import { UserCard } from "../components/match-start/user-card";
 import { Header } from "../components/share/header";
-import { StartGameButton } from "../components/match-start/game-start-button";
-import { UserList } from "../components/match-start/user-list";
+
+import { Button } from "../shadcnUI/components/ui/button";
+import { ScrollArea } from "../shadcnUI/components/ui/scroll-area";
 
 import { cn } from "../shadcnUI/lib/utils";
 
-import { User } from "../types/user";
+import { User } from "../types/User";
+import { StartGameButton } from "../components/match-start/game-start-button";
+import { UserList } from "../components/match-start/user-list";
 
 export const MatchStartPage = () => {
   const navigate = useNavigate();
@@ -111,7 +114,7 @@ export const MatchStartPage = () => {
     const fetchUsers = async () => {
       setIsLoading(true);
       try {
-        const users = await userGetAll();
+        const users = await userApi.getAllUsers();
         setRegisteredUsers(users);
       } catch (err) {
         console.error(err);
@@ -128,39 +131,35 @@ export const MatchStartPage = () => {
     <>
       <div className="min-h-screen">
         <Header />
-        <div className="flex flex-col md:flex-row justify-between items-center min-h-screen WhiteDot pt-20 gap-y-3 p-8">
-          <div className="w-[80vw] md:w-5/12">
-            <UserList
+        <div className="flex w-full justify-between items-start min-h-screen WhiteDot pt-16 gap-4">
+          <div className="w-5/12">
+            <DemoUserList
               title="Registered Users"
               users={registeredUsers}
               onUserAction={handleAddSelectedUser}
               actionLabel="Add"
               emptyMessage="No registered users available."
-              isLoading={isLoading}
+              isLoading={false}
             />
           </div>
-          <div className="flex flex-col items-center justify-center md:w-2/12">
-            <ChevronDown
-              size={56}
-              className={cn(
-                "text-gray-400 md:hidden",
-                selectedUsers.length !== 0 && "text-green-400"
-              )}
-            />
-            <ChevronRight
-              size={56}
-              className={cn(
-                "text-gray-400 hidden md:block",
-                selectedUsers.length !== 0 && "text-green-400"
-              )}
-            />
-            <StartGameButton
-              onClick={handleStartMatch}
+
+          <div className="flex flex-col items-center justify-center gap-8 w-2/12 pt-32">
+            <ChevronRight size={48} className="text-gray-400" />
+            <button
+              onClick={() => console.log("Game Start")}
               disabled={selectedUsers.length === 0}
-            />
+              className={`px-6 py-3 rounded-lg font-medium uppercase ${
+                selectedUsers.length === 0
+                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                  : "bg-green-500 text-white hover:bg-green-600"
+              }`}
+            >
+              Game Start
+            </button>
           </div>
-          <div className="w-[80vw] md:w-5/12">
-            <UserList
+
+          <div className="w-5/12">
+            <DemoUserList
               title="Selected Users"
               users={selectedUsers}
               onUserAction={handleRemoveSelectedUser}
