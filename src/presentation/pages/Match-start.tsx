@@ -9,6 +9,7 @@ import { Button } from "../shadcnUI/components/ui/button";
 import { ScrollArea } from "../shadcnUI/components/ui/scroll-area";
 
 import { cn } from "../shadcnUI/lib/utils";
+import { postMatchStartApi } from "../hooks/api/matchStartRound";
 
 export const MatchStartPage = () => {
   const navigate = useNavigate();
@@ -52,26 +53,6 @@ export const MatchStartPage = () => {
   const handleRemoveSelectedPlayer = (player) => {
     setRegisteredPlayers([...registeredPlayers, player]);
     setSelectedPlayers(selectedPlayers.filter((p) => p.id !== player.id));
-  };
-
-  const postMatchStartApi = async (matchId: string): Promise<string> => {
-    return axios
-      .post(
-        `${apiUrl}/matches/${matchId}/start-round`,
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        return res.data.id;
-      })
-      .catch((err) => {
-        console.error(err);
-        return Promise.reject(err);
-      });
   };
 
   const postMatchCreateApi = async (userId: number): Promise<string> => {
