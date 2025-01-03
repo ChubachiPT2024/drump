@@ -6,6 +6,8 @@ import axios from "axios";
 
 import { Card } from "../components/match/Card";
 import { BetModal } from "../components/match/bet-modal";
+import { RoundResultModal } from "../components/match/round-result-modal";
+import { MatchResultModal } from "../components/match/match-result-modal";
 import { HandSignalButton } from "../components/match/hand-signal-button";
 import { Logo } from "../components/share/logo";
 
@@ -390,7 +392,9 @@ export const MatchPage = () => {
         </div>
       </div>
 
-      <BetModal />
+      {/* <BetModal /> */}
+      <RoundResultModal />
+      {/* <MatchResultModal /> */}
     </div>
   );
 };
