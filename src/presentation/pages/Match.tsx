@@ -2,24 +2,27 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Hand, CopyPlus, Layers2, Subscript, CircleHelp } from "lucide-react";
 import Avatar, { genConfig } from "react-nice-avatar";
-import axios from "axios";
 
 import { CardComponent } from "../components/match/cardComponent";
 import { BetModal } from "../components/match/bet-modal";
 import { HandSignalButton } from "../components/match/hand-signal-button";
 import { Logo } from "../components/share/logo";
+import { HelpButton } from "../components/match/help-button";
 
 import { ResultSummary } from "../types/resultSummary";
-import { HelpButton } from "../components/match/help-button";
 import { RoundResult } from "../types/roundResult";
+import { postHitApi } from "../hooks/api/matchHit";
+import { postStandApi } from "../hooks/api/matchStand";
+import { postMatchBetApi } from "../hooks/api/matchBet";
+import { getMatchResultSummaryApi } from "../hooks/api/matchResultSummary";
+import { getRoundResultApi } from "../hooks/api/matchRoundResult";
+import { postRoundCompleteApi } from "../hooks/api/matchRoundComplete";
 
 export const MatchPage = () => {
   const { matchId } = useParams<{ matchId: string }>();
 
   // TODO: 現在のプレイヤーの名前を毎回代入する形に変更する
   const avatarConfig = genConfig("Player 2");
-  // TODO: move to .env
-  const apiUrl = "http://localhost:3000/api";
 
   const [isLoading, setIsLoading] = useState(true);
   const [matchResultSummary, setMatchResultSummary] = useState<
@@ -49,77 +52,6 @@ export const MatchPage = () => {
     players.length > 1
       ? 40 * players.length // 基本高さをプレイヤー数に応じてスケーリング
       : 150; // プレイヤーが1人の場合のデフォルト高さ
-
-  const postStandApi = async (roundId: string): Promise<void> => {
-    try {
-      await axios.post(`${apiUrl}/matches/${roundId}/stand`, {
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const postHitApi = async (roundId: string): Promise<void> => {
-    try {
-      await axios.post(`${apiUrl}/matches/${roundId}/hit`, {
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const postMatchBetApi = async (
-    matchId: string,
-    amount: number
-  ): Promise<void> => {
-    try {
-      await axios.post(
-        `${apiUrl}/matches/${matchId}/bet`,
-        { amount },
-        { headers: { "Content-Type": "application/json" } }
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const getMatchResultSummaryApi = async (
-    matchId: string
-  ): Promise<ResultSummary> => {
-    try {
-      const res = await axios.get(`${apiUrl}/matches/${matchId}/summary`);
-
-      return res.data;
-    } catch (err) {
-      console.error(err);
-      return Promise.reject();
-    }
-  };
-
-  const postRoundCompleteApi = async (matchId: string): Promise<void> => {
-    try {
-      await axios.post(
-        `${apiUrl}/matches/${matchId}/complete-round`,
-        {},
-        { headers: { "Content-Type": "application/json" } }
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const getRoundResultApi = async (matchId: string): Promise<RoundResult> => {
-    try {
-      const res = await axios.get(`${apiUrl}/matches/${matchId}/round-result`);
-
-      return res.data;
-    } catch (err) {
-      console.error(err);
-      return Promise.reject();
-    }
-  };
 
   const handleHit = async (matchId: string) => {
     await postHitApi(matchId);
