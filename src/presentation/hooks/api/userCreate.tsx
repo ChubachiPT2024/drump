@@ -1,8 +1,11 @@
 import axios from "axios";
 
+// TODO: move to .env
+const apiUrl = "http://localhost:3000/api";
+
 export const userCreate = async (name: string): Promise<string> => {
   const response = await axios.post(
-    `${import.meta.env.VITE_API_URL}/users`,
+    `${apiUrl}/users`,
     { name },
     {
       headers: { "Content-Type": "application/json" },
