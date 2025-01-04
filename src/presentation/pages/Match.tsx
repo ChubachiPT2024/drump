@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Hand, CopyPlus, Layers2, Subscript, CircleHelp } from "lucide-react";
+import {
+  Hand,
+  CopyPlus,
+  Layers2,
+  Subscript,
+  CircleHelp,
+  Lightbulb,
+} from "lucide-react";
 import Avatar, { genConfig } from "react-nice-avatar";
 
 import { CardComponent } from "../components/match/cardComponent";
@@ -8,6 +15,7 @@ import { BetModal } from "../components/match/bet-modal";
 import { HandSignalButton } from "../components/match/hand-signal-button";
 import { Logo } from "../components/share/logo";
 import { HelpButton } from "../components/match/help-button";
+import { HintToggle } from "../components/match/hint-toggle";
 
 import { ResultSummary } from "../types/resultSummary";
 import { RoundResult } from "../types/roundResult";
@@ -31,6 +39,7 @@ export const MatchPage = () => {
   const [roundResult, setRoundResult] = useState<RoundResult | undefined>(
     undefined
   );
+  const [showText, setShowText] = useState(false);
 
   // TODO: ドメイン層からプレイヤー情報を取得する
   // ハンドではなく、スートとランクにするかも、ほかプレイヤーの情報は変更の可能性あり
@@ -128,6 +137,11 @@ export const MatchPage = () => {
             </div>
           </div>
           <HelpButton icon={CircleHelp} size={8} />
+          <HintToggle
+            icon={Lightbulb}
+            size={8}
+            onClick={() => setShowText(!showText)}
+          />
         </div>
       </div>
 
@@ -184,6 +198,12 @@ export const MatchPage = () => {
             10/20
             <div className="absolute top-1/2 -left-2 w-0 h-0 border-y-8 border-y-transparent border-r-8 transform -translate-y-1/2" />
           </div>
+          {showText && (
+            <div className="absolute top-3/4 -right-9 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl z-10">
+              ヒント：XXX
+            </div>
+          )}
+
           <div className="flex space-x-2">
             {matchResultSummary?.player.hand &&
               matchResultSummary.player.hand.cards.map((card, index) => {
