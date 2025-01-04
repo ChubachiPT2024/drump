@@ -8,10 +8,13 @@ class Card {
     -{static} softPoints: { A: number; 2: number; 3: number; 4: number; 5: number; 6: number; 7: number; 8: number; 9: number; 10: number; J: number; Q: number; K: number; }
     -{static} hardPoints: { A: number; 2: number; 3: number; 4: number; 5: number; 6: number; 7: number; 8: number; 9: number; 10: number; J: number; Q: number; K: number; }
 }
-class Deck {
-    -cards: Card[]
-    +getCards(): Card[]
-    +{static} create(): Deck
+class ChipAmountNegativeError extends Error
+class ChipAmount {
+    +value: number
+    +plus(other: ChipAmount): ChipAmount
+    +canMinus(other: ChipAmount): boolean
+    +minus(other: ChipAmount): ChipAmount
+    +multiply(rate: number): ChipAmount
 }
 class Hand {
     -cards: Card[]
@@ -26,94 +29,165 @@ class Hand {
     +stand(): Hand
     +isResolved(): boolean
     +getCards(): Card[]
+    +{static} create(): Hand
 }
-class RoundId {
+class DealerId {
     +value: string
 }
-class ShoeId {
+interface DealerNotification {
+    +notifyUpCard(upCard: Card): void
+    +notifyHand(hand: Hand): void
+}
+class Dealer {
+    +id: DealerId
+    -hand: Hand
+    +addCardToHand(card: Card): void
+    +getHand(): Hand
+    +stand(): void
+    +getUpCard(): Card
+    +shouldHit(): boolean
+    +notify(notification: DealerNotification): void
+    +{static} create(id: DealerId): Dealer
+}
+interface DealerFactory {
+    +create(): Dealer
+}
+class Deck {
+    -cards: Card[]
+    +getCards(): Card[]
+    +{static} create(): Deck
+}
+class UserId {
     +value: string
+}
+class PlayerCreditShortageError extends Error
+class PlayerId {
+    +value: string
+}
+interface PlayerNotification {
+    +notifyId(id: PlayerId): void
+    +notifyHand(hand: Hand): void
+    +notifyHandSignalOptions(handSignalOptions: HandSignal[]): void
+    +notifyCredit(credit: ChipAmount): void
+    +notifyBetAmount(betAmount: ChipAmount): void
+}
+class Player {
+    +id: PlayerId
+    +userId: UserId
+    -credit: ChipAmount
+    -betAmount: ChipAmount
+    -hand: Hand
+    +addCardToHand(card: Card): void
+    +getHand(): Hand
+    +getHandSignalOptions(): HandSignal[]
+    +stand(): void
+    +getCredit(): ChipAmount
+    +getBetAmount(): ChipAmount
+    +bet(amount: ChipAmount): void
+    +collectPayoff(amount: ChipAmount): void
+    +collectBet(): void
+    +loseBet(): void
+    +notify(notification: PlayerNotification): void
+    +{static} create(id: PlayerId, userId: UserId): Player
+}
+class RoundResultCalculator {
+    +calculate(playersHand: Hand, dealersHand: Hand): RoundResult
+}
+class Shoe {
+    -cards: Card[]
+    +suffle(): Shoe
+    +peek(): Card
+    +draw(): Shoe
+    +{static} createFromDecks(numberOfDecks: number): Shoe
 }
 class MatchId {
     +value: string
 }
+interface MatchNotification {
+    +notifyId(id: MatchId): void
+    +notifyDealer(dealer: Dealer): void
+    +notifyPlayer(player: Player): void
+}
 class Match {
     +id: MatchId
-    +shoeId: ShoeId
-    -roundIds: RoundId[]
-    +addRound(roundId: RoundId): void
-    +getRoundIds(): RoundId[]
+    -shoe: Shoe
+    -dealer: Dealer
+    -player: Player
+    -roundResultCalculator: RoundResultCalculator
+    +bet(amount: ChipAmount): void
+    +dealCardToDealer(): void
+    +dealCardToPlayer(): void
+    +canHit(): boolean
+    +stand(): void
+    +resolveDealersHand(): void
+    +settleRound(): void
+    +calculateRoundResult(): RoundResult
+    -calculatePayoff(): ChipAmount
+    +notify(notification: MatchNotification): void
+    -{static} NUMBER_OF_DECKS: 6
+    +{static} create(id: MatchId, dealer: Dealer, player: Player): Match
 }
 interface MatchFactory {
-    +create(shoeId: ShoeId): Match
+    +create(userId: UserId): Match
 }
 interface MatchRepository {
     +saveAsync(match: Match): Promise<void>
     +findAsync(id: MatchId): Promise<Match>
 }
-class Round {
-    +id: RoundId
-    +shoeId: ShoeId
-    -dealersHand: Hand
-    -playersHand: Hand
-    +dealCardToDealer(card: Card): void
-    +dealCardToPlayer(card: Card): void
-    +getDealersHand(): Hand
-    +getPlayersHand(): Hand
-    +getPlayersHandSignalOptions(): HandSignal[]
-    +standPlayersHand(): void
-    +standDealearsHand(): void
-    +getUpCard(): Card
-    +shouldDealerHit(): boolean
-    +calculateResult(): RoundResult
+interface PlayerFactory {
+    +create(userId: UserId): Player
 }
-interface RoundFactory {
-    +create(shoeId: ShoeId): Round
+interface PlayerRepository {
+    +saveAsync(player: Player): Promise<void>
+    +findAsync(id: PlayerId): Promise<Player>
 }
-interface RoundRepository {
-    +saveAsync(round: Round): Promise<void>
-    +findAsync(id: RoundId): Promise<Round>
+class User {
+    +id: UserId
+    +{static} create(id: UserId): User
 }
-class Shoe {
-    +id: ShoeId
-    -cards: Card[]
-    +peek(): Card
-    +draw(): void
+interface UserFactory {
+    +create(): User
 }
-interface ShoeFactory {
-    +create(cards: Card[]): Shoe
-}
-interface ShoeRepository {
-    +saveAsync(shoe: Shoe): Promise<void>
-    +findAsync(id: ShoeId): Promise<Shoe>
-}
-class CardsService {
-    +suffle(cards: Card[]): void
-}
-Deck --> "*" Card
 Hand --> "*" Card
 Hand --> "1" Card
+DealerNotification --> "1" Card
+DealerNotification --> "1" Hand
+Dealer --> "1" DealerId
+Dealer --> "1" Hand
+Dealer --> "1" Card
+Dealer --> "1" DealerNotification
+DealerFactory --> "1" Dealer
+Deck --> "*" Card
+PlayerNotification --> "1" PlayerId
+PlayerNotification --> "1" Hand
+PlayerNotification --> "1" ChipAmount
+Player --> "1" PlayerId
+Player --> "1" UserId
+Player --> "1" ChipAmount
+Player --> "1" Hand
+Player --> "1" Card
+Player --> "1" PlayerNotification
+RoundResultCalculator --> "1" Hand
+Shoe --> "*" Card
+Shoe --> "1" Card
+MatchNotification --> "1" MatchId
+MatchNotification --> "1" Dealer
+MatchNotification --> "1" Player
 Match --> "1" MatchId
-Match --> "1" ShoeId
-Match --> "*" RoundId
-Match --> "1" RoundId
-MatchFactory --> "1" ShoeId
+Match --> "1" Shoe
+Match --> "1" Dealer
+Match --> "1" Player
+Match --> "1" RoundResultCalculator
+Match --> "1" ChipAmount
+Match --> "1" MatchNotification
+MatchFactory --> "1" UserId
 MatchFactory --> "1" Match
 MatchRepository --> "1" Match
 MatchRepository --> "1" MatchId
-Round --> "1" RoundId
-Round --> "1" ShoeId
-Round --> "1" Hand
-Round --> "1" Card
-RoundFactory --> "1" ShoeId
-RoundFactory --> "1" Round
-RoundRepository --> "1" Round
-RoundRepository --> "1" RoundId
-Shoe --> "1" ShoeId
-Shoe --> "*" Card
-Shoe --> "1" Card
-ShoeFactory --> "1" Card
-ShoeFactory --> "1" Shoe
-ShoeRepository --> "1" Shoe
-ShoeRepository --> "1" ShoeId
-CardsService --> "1" Card
+PlayerFactory --> "1" UserId
+PlayerFactory --> "1" Player
+PlayerRepository --> "1" Player
+PlayerRepository --> "1" PlayerId
+User --> "1" UserId
+UserFactory --> "1" User
 @enduml

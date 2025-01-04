@@ -1,7 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { TitlePage } from "./presentation/pages/Title";
-import { MatchPage } from "./presentation/pages/Match";
+import { UsersPage } from "./presentation/pages/Users";
 import { MatchStartPage } from "./presentation/pages/Match-start";
+import { MatchPage } from "./presentation/pages/Match";
 
 export function App() {
   return (
@@ -9,8 +10,9 @@ export function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<TitlePage />} />
-          <Route path="/match/:matchId" element={<MatchPage />} />
+          <Route path="/users" element={<UsersPage />} />
           <Route path="/match-start" element={<MatchStartPage />} />
+          <Route path="/match/:matchId" element={<MatchPage />} />
         </Routes>
       </BrowserRouter>
     </>
