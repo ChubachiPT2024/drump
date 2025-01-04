@@ -29,6 +29,7 @@ const matchRepository = new InMemoryMatchRepository();
 const matchApplicationService = new MatchApplicationService(
   matchFactory,
   matchRepository,
+  userRepository,
 );
 const matchRouterFactory = new MatchRouterFactory(matchApplicationService);
 

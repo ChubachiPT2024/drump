@@ -1,4 +1,17 @@
 @startuml
+class ChipAmountNegativeError extends Error
+class ChipAmountNonIntegerError extends Error
+class ChipAmount {
+    +value: number
+    +plus(other: ChipAmount): ChipAmount
+    +canMinus(other: ChipAmount): boolean
+    +minus(other: ChipAmount): ChipAmount
+    +multiplyAndCeil(rate: number): ChipAmount
+}
+class Balance {
+    +value: number
+    +{static} create(before: ChipAmount, after: ChipAmount): Balance
+}
 class Card {
     +rank: Rank
     +suit: Suit
@@ -7,14 +20,6 @@ class Card {
     +equals(other: Card): boolean
     -{static} softPoints: { A: number; 2: number; 3: number; 4: number; 5: number; 6: number; 7: number; 8: number; 9: number; 10: number; J: number; Q: number; K: number; }
     -{static} hardPoints: { A: number; 2: number; 3: number; 4: number; 5: number; 6: number; 7: number; 8: number; 9: number; 10: number; J: number; Q: number; K: number; }
-}
-class ChipAmountNegativeError extends Error
-class ChipAmount {
-    +value: number
-    +plus(other: ChipAmount): ChipAmount
-    +canMinus(other: ChipAmount): boolean
-    +minus(other: ChipAmount): ChipAmount
-    +multiply(rate: number): ChipAmount
 }
 class Hand {
     -cards: Card[]
@@ -36,7 +41,6 @@ class DealerId {
 }
 interface DealerNotification {
     +notifyUpCard(upCard: Card): void
-    +notifyHand(hand: Hand): void
 }
 class Dealer {
     +id: DealerId
@@ -46,6 +50,7 @@ class Dealer {
     +stand(): void
     +getUpCard(): Card
     +shouldHit(): boolean
+    +discard(): void
     +notify(notification: DealerNotification): void
     +{static} create(id: DealerId): Dealer
 }
@@ -87,8 +92,27 @@ class Player {
     +collectPayoff(amount: ChipAmount): void
     +collectBet(): void
     +loseBet(): void
+    +discard(): void
     +notify(notification: PlayerNotification): void
+    +{static} INITIAL_CREDIT: ChipAmount
     +{static} create(id: PlayerId, userId: UserId): Player
+}
+class RoundCountExceedsMaximumError extends Error
+class RoundCount {
+    +value: number
+    +increment(): RoundCount
+    +{static} MAX_ROUND_COUNT: 10
+    +{static} ZERO: RoundCount
+}
+class RoundPlayerHistory {
+    +id: PlayerId
+    +result: RoundResult
+    +credit: ChipAmount
+}
+class RoundHistory {
+    +roundCount: RoundCount
+    +dealersHand: Hand
+    +players: RoundPlayerHistory[]
 }
 class RoundResultCalculator {
     +calculate(playersHand: Hand, dealersHand: Hand): RoundResult
@@ -100,35 +124,47 @@ class Shoe {
     +draw(): Shoe
     +{static} createFromDecks(numberOfDecks: number): Shoe
 }
+class MatchCannotHitError extends Error
 class MatchId {
     +value: string
 }
 interface MatchNotification {
     +notifyId(id: MatchId): void
     +notifyDealer(dealer: Dealer): void
-    +notifyPlayer(player: Player): void
+    +notifyPlayers(players: Player[]): void
+    +notifyRoundCount(roundCount: RoundCount): void
 }
+class MatchPlayerNotFoundError extends Error
 class Match {
     +id: MatchId
     -shoe: Shoe
     -dealer: Dealer
-    -player: Player
+    -players: Player[]
+    -roundCount: RoundCount
     -roundResultCalculator: RoundResultCalculator
-    +bet(amount: ChipAmount): void
+    -roundHistories: RoundHistory[]
+    +startRound(): void
+    +bet(playerId: PlayerId, amount: ChipAmount): void
     +dealCardToDealer(): void
-    +dealCardToPlayer(): void
-    +canHit(): boolean
-    +stand(): void
+    +hit(playerId: PlayerId): void
+    +stand(playerId: PlayerId): void
     +resolveDealersHand(): void
-    +settleRound(): void
-    +calculateRoundResult(): RoundResult
-    -calculatePayoff(): ChipAmount
+    +completeRound(): void
+    +settleRound(playerId: PlayerId): void
+    -calculateRoundResult(playerId: PlayerId): RoundResult
+    +getRoundCount(): RoundCount
+    +getRoundHistories(): RoundHistory[]
+    +isCompleted(): boolean
+    -getPlayer(playerId: PlayerId): Player
+    +getPlayerIds(): PlayerId[]
+    +getUserId(playerId: PlayerId): UserId
     +notify(notification: MatchNotification): void
     -{static} NUMBER_OF_DECKS: 6
-    +{static} create(id: MatchId, dealer: Dealer, player: Player): Match
+    +{static} create(id: MatchId, dealer: Dealer, players: Player[]): Match
+    -{static} calculatePayoff(hand: Hand, betAmount: ChipAmount): ChipAmount
 }
 interface MatchFactory {
-    +create(userId: UserId): Match
+    +create(userIds: UserId[]): Match
 }
 interface MatchRepository {
     +saveAsync(match: Match): Promise<void>
@@ -141,17 +177,25 @@ interface PlayerRepository {
     +saveAsync(player: Player): Promise<void>
     +findAsync(id: PlayerId): Promise<Player>
 }
+class UserName {
+    +value: string
+}
 class User {
     +id: UserId
-    +{static} create(id: UserId): User
+    +name: UserName
 }
 interface UserFactory {
-    +create(): User
+    +create(name: UserName): User
 }
+interface UserRepository {
+    +saveAsync(user: User): Promise<void>
+    +findAsync(id: UserId): Promise<User>
+    +findAllAsync(): Promise<User[]>
+}
+Balance --> "1" ChipAmount
 Hand --> "*" Card
 Hand --> "1" Card
 DealerNotification --> "1" Card
-DealerNotification --> "1" Hand
 Dealer --> "1" DealerId
 Dealer --> "1" Hand
 Dealer --> "1" Card
@@ -167,19 +211,32 @@ Player --> "1" ChipAmount
 Player --> "1" Hand
 Player --> "1" Card
 Player --> "1" PlayerNotification
+RoundPlayerHistory --> "1" PlayerId
+RoundPlayerHistory --> "1" ChipAmount
+RoundHistory --> "1" RoundCount
+RoundHistory --> "1" Hand
+RoundHistory --> "*" RoundPlayerHistory
 RoundResultCalculator --> "1" Hand
 Shoe --> "*" Card
 Shoe --> "1" Card
 MatchNotification --> "1" MatchId
 MatchNotification --> "1" Dealer
 MatchNotification --> "1" Player
+MatchNotification --> "1" RoundCount
 Match --> "1" MatchId
 Match --> "1" Shoe
 Match --> "1" Dealer
-Match --> "1" Player
+Match --> "*" Player
+Match --> "1" RoundCount
 Match --> "1" RoundResultCalculator
+Match --> "*" RoundHistory
+Match --> "1" PlayerId
 Match --> "1" ChipAmount
+Match --> "1" Player
+Match --> "*" PlayerId
+Match --> "1" UserId
 Match --> "1" MatchNotification
+Match --> "1" Hand
 MatchFactory --> "1" UserId
 MatchFactory --> "1" Match
 MatchRepository --> "1" Match
@@ -189,5 +246,10 @@ PlayerFactory --> "1" Player
 PlayerRepository --> "1" Player
 PlayerRepository --> "1" PlayerId
 User --> "1" UserId
+User --> "1" UserName
+UserFactory --> "1" UserName
 UserFactory --> "1" User
+UserRepository --> "1" User
+UserRepository --> "1" UserId
+UserRepository --> "*" User
 @enduml

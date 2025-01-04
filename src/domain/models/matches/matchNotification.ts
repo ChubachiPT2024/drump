@@ -24,9 +24,9 @@ export interface MatchNotification {
   /**
    * プレイヤーを通知する
    *
-   * @param player
+   * @param players
    */
-  notifyPlayer(player: Player): void;
+  notifyPlayers(players: Player[]): void;
 
   /**
    * ラウンド数を通知する

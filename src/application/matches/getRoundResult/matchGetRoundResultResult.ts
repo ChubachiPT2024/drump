@@ -10,11 +10,11 @@ export class MatchGetRoundResultResult {
    * コンストラクタ
    *
    * @param dealersHand ディーラーのハンド
-   * @param player プレイヤー
+   * @param players プレイヤー
    */
   private constructor(
     public readonly dealersHand: MatchGetRoundResultResultHand,
-    public readonly player: MatchGetRoundResultResultPlayer,
+    public readonly players: MatchGetRoundResultResultPlayer[],
   ) {}
 
   /**
@@ -26,7 +26,9 @@ export class MatchGetRoundResultResult {
   public static create(roundHistory: RoundHistory): MatchGetRoundResultResult {
     return new MatchGetRoundResultResult(
       MatchGetRoundResultResultHand.create(roundHistory.dealersHand),
-      MatchGetRoundResultResultPlayer.create(roundHistory.player),
+      roundHistory.players.map((player) =>
+        MatchGetRoundResultResultPlayer.create(player),
+      ),
     );
   }
 }

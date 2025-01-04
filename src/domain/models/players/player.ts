@@ -14,7 +14,7 @@ export class Player {
   /**
    * クレジットの初期値
    */
-  private static readonly INITIAL_CREDIT = new ChipAmount(50000);
+  public static readonly INITIAL_CREDIT = new ChipAmount(50000);
 
   /**
    * コンストラクタ

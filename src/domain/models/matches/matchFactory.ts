@@ -8,7 +8,7 @@ export interface MatchFactory {
   /**
    * 試合を生成する
    *
-   * @param userId ユーザ ID
+   * @param userIds ユーザ ID
    */
-  create(userId: UserId): Match;
+  create(userIds: UserId[]): Match;
 }

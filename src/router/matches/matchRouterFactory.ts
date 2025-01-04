@@ -1,6 +1,7 @@
 import { MatchBetCommand } from "@/application/matches/bet/matchBetCommand";
 import { MatchCompleteRoundCommand } from "@/application/matches/completeRound/matchCompleteRoundCommand";
 import { MatchCreateCommand } from "@/application/matches/create/matchCreateCommand";
+import { MatchGetPlayersNamesCommand } from "@/application/matches/getPlayersNames/matchGetPlayersNamesCommand";
 import { MatchGetResultCommand } from "@/application/matches/getResult/matchGetResultCommand";
 import { MatchGetRoundResultCommand } from "@/application/matches/getRoundResult/matchGetRoundResultCommand";
 import { MatchGetSummaryCommand } from "@/application/matches/getSummary/matchGetSummaryCommand";
@@ -33,7 +34,7 @@ export class MatchRouterFactory {
 
     router.post("/", async (req, res, next) => {
       try {
-        const command = new MatchCreateCommand(req.body.userId);
+        const command = new MatchCreateCommand(req.body.userIds);
         const result = await this.matchApplicationService.createAsync(command);
 
         res.status(201).json(result);
@@ -65,9 +66,13 @@ export class MatchRouterFactory {
       }
     });
 
-    router.post("/:id/bet", async (req, res, next) => {
+    router.post("/:id/players/:playerId/bet", async (req, res, next) => {
       try {
-        const command = new MatchBetCommand(req.params.id, req.body.amount);
+        const command = new MatchBetCommand(
+          req.params.id,
+          req.params.playerId,
+          req.body.amount,
+        );
         await this.matchApplicationService.betAsync(command);
 
         res.status(204).send();
@@ -76,9 +81,9 @@ export class MatchRouterFactory {
       }
     });
 
-    router.post("/:id/hit", async (req, res, next) => {
+    router.post("/:id/players/:playerId/hit", async (req, res, next) => {
       try {
-        const command = new MatchHitCommand(req.params.id);
+        const command = new MatchHitCommand(req.params.id, req.params.playerId);
         await this.matchApplicationService.hitAsync(command);
 
         res.status(204).send();
@@ -87,9 +92,12 @@ export class MatchRouterFactory {
       }
     });
 
-    router.post("/:id/stand", async (req, res, next) => {
+    router.post("/:id/players/:playerId/stand", async (req, res, next) => {
       try {
-        const command = new MatchStandCommand(req.params.id);
+        const command = new MatchStandCommand(
+          req.params.id,
+          req.params.playerId,
+        );
         await this.matchApplicationService.standAsync(command);
 
         res.status(204).send();
@@ -129,6 +137,19 @@ export class MatchRouterFactory {
 
         res.status(200).json(result);
       } catch (err) {
+        next(err);
+      }
+    });
+
+    router.get("/:id/players-names", async (req, res, next) => {
+      try {
+        const command = new MatchGetPlayersNamesCommand(req.params.id);
+        const result =
+          await this.matchApplicationService.getPlayersNamesAsync(command);
+
+        res.status(200).json(result);
+      } catch (err) {
+        console.log(err);
         next(err);
       }
     });

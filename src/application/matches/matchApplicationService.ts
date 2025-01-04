@@ -9,7 +9,6 @@ import { MatchGetSummaryResult } from "./getSummary/matchGetSummaryResult";
 import { MatchStartRoundCommand } from "./startRound/matchStartCommand";
 import { MatchHitCommand } from "./hit/matchHitCommand";
 import { MatchStandCommand } from "./stand/matchStandCommand";
-import { MatchCannotHitError } from "./hit/matchCannotHitError";
 import { MatchCompleteRoundCommand } from "./completeRound/matchCompleteRoundCommand";
 import { MatchGetRoundResultCommand } from "./getRoundResult/matchGetRoundResultCommand";
 import { MatchGetRoundResultResult } from "./getRoundResult/matchGetRoundResultResult";
@@ -20,6 +19,13 @@ import { MatchGetResultResult } from "./getResult/matchGetResultResult";
 import { MatchGetResultResultPlayer } from "./getResult/matchGetResultResultPlayer";
 import { MatchApplicationRoundNotCompletedError } from "./matchApplicationRoundNotCompletedError";
 import { MatchApplicationMatchNotCompletedError } from "./matchApplicationMatchNotCompletedError";
+import { PlayerId } from "@/domain/models/players/playerId";
+import { Balance } from "@/domain/models/balances/balance";
+import { Player } from "@/domain/models/players/player";
+import { MatchGetPlayersNamesCommand } from "./getPlayersNames/matchGetPlayersNamesCommand";
+import { MatchGetPlayersNamesResult } from "./getPlayersNames/matchGetPlayersNamesResult";
+import { MatchGetPlayersNamesResultPlayer } from "./getPlayersNames/matchGetPlayersNamesResultPlayer";
+import { UserRepository } from "@/domain/models/users/userRepository";
 
 /**
  * 試合アプリケーションサービス
@@ -30,10 +36,12 @@ export class MatchApplicationService {
    *
    * @param matchFactory 試合ファクトリ
    * @param matchRepository 試合リポジトリ
+   * @param userRepository ユーザリポジトリ
    */
   public constructor(
     private readonly matchFactory: MatchFactory,
     private readonly matchRepository: MatchRepository,
+    private readonly userRepository: UserRepository,
   ) {}
 
   /**
@@ -45,7 +53,9 @@ export class MatchApplicationService {
   public async createAsync(
     command: MatchCreateCommand,
   ): Promise<MatchCreateResult> {
-    const match = this.matchFactory.create(new UserId(command.userId));
+    const match = this.matchFactory.create(
+      command.userIds.map((userId) => new UserId(userId)),
+    );
 
     await this.matchRepository.saveAsync(match);
 
@@ -90,7 +100,7 @@ export class MatchApplicationService {
   public async betAsync(command: MatchBetCommand): Promise<void> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
 
-    match.bet(new ChipAmount(command.amount));
+    match.bet(new PlayerId(command.playerId), new ChipAmount(command.amount));
 
     await this.matchRepository.saveAsync(match);
   }
@@ -103,11 +113,7 @@ export class MatchApplicationService {
   public async hitAsync(command: MatchHitCommand): Promise<void> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
 
-    if (!match.canHit()) {
-      throw new MatchCannotHitError();
-    }
-
-    match.dealCardToPlayer();
+    match.hit(new PlayerId(command.playerId));
 
     await this.matchRepository.saveAsync(match);
   }
@@ -120,7 +126,7 @@ export class MatchApplicationService {
   public async standAsync(command: MatchStandCommand): Promise<void> {
     const match = await this.matchRepository.findAsync(new MatchId(command.id));
 
-    match.stand();
+    match.stand(new PlayerId(command.playerId));
 
     await this.matchRepository.saveAsync(match);
   }
@@ -177,17 +183,54 @@ export class MatchApplicationService {
     }
 
     const roundHistories = match.getRoundHistories();
-    const finalCredit = roundHistories.at(-1)!.player.credit.value;
 
-    // TODO Player に定義されるクレジットの初期値を使用する
-    const balance = finalCredit - 50000;
+    // TODO Object.groupBy などで、もう少し簡単に書けるかもしれない
+    const resultPlayers: MatchGetResultResultPlayer[] = [];
+    for (const playerId of match.getPlayerIds()) {
+      const creditHistories: ChipAmount[] = [];
+      for (const roundHistory of roundHistories) {
+        const playerRoundHistory = roundHistory.players.find(
+          (x) => x.id.value === playerId.value,
+        );
+        creditHistories.push(playerRoundHistory!.credit);
+      }
 
-    return new MatchGetResultResult(
-      new MatchGetResultResultPlayer(
-        roundHistories.map((x) => x.player.credit.value),
-        finalCredit,
-        balance,
-      ),
-    );
+      const finalCredit = creditHistories.at(-1)!;
+      const balance = Balance.create(Player.INITIAL_CREDIT, finalCredit);
+
+      resultPlayers.push(
+        new MatchGetResultResultPlayer(
+          playerId.value,
+          creditHistories.map((creditHistory) => creditHistory.value),
+          finalCredit.value,
+          balance.value,
+        ),
+      );
+    }
+
+    return new MatchGetResultResult(resultPlayers);
+  }
+
+  /**
+   * プレイヤー名を取得する
+   *
+   * @param command プレイヤー名取得コマンド
+   * @returns プレイヤー名取得結果
+   */
+  public async getPlayersNamesAsync(
+    command: MatchGetPlayersNamesCommand,
+  ): Promise<MatchGetPlayersNamesResult> {
+    const match = await this.matchRepository.findAsync(new MatchId(command.id));
+
+    const players: MatchGetPlayersNamesResultPlayer[] = [];
+    for (const playerId of match.getPlayerIds()) {
+      const userId = match.getUserId(playerId);
+      const user = await this.userRepository.findAsync(userId);
+      players.push(
+        new MatchGetPlayersNamesResultPlayer(playerId.value, user.name.value),
+      );
+    }
+
+    return new MatchGetPlayersNamesResult(players);
   }
 }

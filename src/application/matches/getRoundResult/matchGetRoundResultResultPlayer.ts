@@ -8,10 +8,12 @@ export class MatchGetRoundResultResultPlayer {
   /**
    * コンストラクタ
    *
+   * @param id ID
    * @param result 結果
    * @param credit クレジット
    */
   private constructor(
+    public readonly id: string,
     public readonly result: RoundResult,
     public readonly credit: number,
   ) {}
@@ -26,6 +28,7 @@ export class MatchGetRoundResultResultPlayer {
     roundPlayerHistory: RoundPlayerHistory,
   ): MatchGetRoundResultResultPlayer {
     return new MatchGetRoundResultResultPlayer(
+      roundPlayerHistory.id.value,
       roundPlayerHistory.result,
       roundPlayerHistory.credit.value,
     );
