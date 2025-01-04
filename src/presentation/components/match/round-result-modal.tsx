@@ -47,7 +47,7 @@ export const RoundResultModal = () => {
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-[95vw] sm:max-w-[80vw] md:max-w-[70vw] lg:max-w-[60vw] pt-0 WhiteDot pb-2">
+        <DialogContent className="max-w-[95vw] sm:max-w-[80vw] md:max-w-[70vw] lg:max-w-[60vw] pt-4 WhiteDot pb-2">
           <DialogClose className="absolute top-4 right-4">
             <X className="size-6 my-auto" />
           </DialogClose>
@@ -58,14 +58,12 @@ export const RoundResultModal = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <DialogTitle className="relative text-4xl md:text-5xl xl:text-6xl font-black tracking-tight text-center animate-fade-in">
+                <DialogTitle className="relative text-4xl md:text-5xl xl:text-6xl font-black tracking-tight text-center">
                   <span className="relative inline-block">
-                    {/* Gradient text */}
-                    <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-300 to-teal-400 animate-gradient">
+                    <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-300 to-teal-400">
                       Round Result
                     </span>
 
-                    {/* Decorative underline */}
                     <span className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-green-300 to-teal-400 transform scale-x-0 animate-slide-in" />
                   </span>
                 </DialogTitle>
