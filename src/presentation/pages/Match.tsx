@@ -1,37 +1,36 @@
 import { useState, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
-import { Hand, CopyPlus, Layers2, Subscript } from "lucide-react";
+import { useParams } from "react-router-dom";
+import { Hand, CopyPlus, Layers2, Subscript, CircleHelp } from "lucide-react";
 import Avatar, { genConfig } from "react-nice-avatar";
-import axios from "axios";
 
-import { Card } from "../components/match/Card";
+import { CardComponent } from "../components/match/cardComponent";
 import { BetModal } from "../components/match/bet-modal";
 import { RoundResultModal } from "../components/match/round-result-modal";
 import { MatchResultModal } from "../components/match/match-result-modal";
 import { HandSignalButton } from "../components/match/hand-signal-button";
 import { Logo } from "../components/share/logo";
+import { HelpButton } from "../components/match/help-button";
 
-import { MatchGetPlayerHandApiResponseCard } from "../types/matchGetPlayerHandApiResponseCard";
-import { PlayerHand } from "../types/playerHand";
-import { HandSignalOptions } from "../types/handSignalOptions";
+import { ResultSummary } from "../types/resultSummary";
+import { RoundResult } from "../types/roundResult";
+import { postHitApi } from "../hooks/api/matchHit";
+import { postStandApi } from "../hooks/api/matchStand";
+import { postMatchBetApi } from "../hooks/api/matchBet";
+import { getMatchResultSummaryApi } from "../hooks/api/matchResultSummary";
+import { getRoundResultApi } from "../hooks/api/matchRoundResult";
+import { postRoundCompleteApi } from "../hooks/api/matchRoundComplete";
 
 export const MatchPage = () => {
-  const location = useLocation();
-  const roundId = location.state.roundId;
   const { matchId } = useParams<{ matchId: string }>();
 
   // TODO: 現在のプレイヤーの名前を毎回代入する形に変更する
   const avatarConfig = genConfig("Player 2");
-  // TODO: move to .env
-  const apiUrl = "http://localhost:3000/api";
-  const [handSignals, setHandSignals] = useState<
-    Pick<HandSignalOptions, "handSignals">["handSignals"] | undefined
-  >(undefined);
+
   const [isLoading, setIsLoading] = useState(true);
-  const [dealerCards, setDealerCards] = useState<
-    MatchGetPlayerHandApiResponseCard[] | undefined
+  const [matchResultSummary, setMatchResultSummary] = useState<
+    ResultSummary | undefined
   >(undefined);
-  const [playerHand, setPlayerHand] = useState<PlayerHand | undefined>(
+  const [roundResult, setRoundResult] = useState<RoundResult | undefined>(
     undefined
   );
 
@@ -56,125 +55,22 @@ export const MatchPage = () => {
       ? 40 * players.length // 基本高さをプレイヤー数に応じてスケーリング
       : 150; // プレイヤーが1人の場合のデフォルト高さ
 
-  const getHandSignalOptionsApi = async (
-    roundId: string
-  ): Promise<HandSignalOptions> => {
-    try {
-      const res = await axios.get(
-        `${apiUrl}/rounds/${roundId}/hand-signal-options`
-      );
-
-      return res.data;
-    } catch (err) {
-      console.error(err);
-      return Promise.reject();
-    }
+  const handleHit = async (matchId: string) => {
+    await postHitApi(matchId);
+    const matchResultSummaryResponse = await getMatchResultSummaryApi(matchId);
+    setMatchResultSummary(matchResultSummaryResponse);
   };
 
-  const postStandApi = async (roundId: string): Promise<void> => {
-    try {
-      await axios.post(`${apiUrl}/rounds/${roundId}/stand`, {
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (err) {
-      console.error(err);
-    }
+  const handleStand = async (matchId: string) => {
+    await postStandApi(matchId);
+    const matchResultSummaryResponse = await getMatchResultSummaryApi(matchId);
+    setMatchResultSummary(matchResultSummaryResponse);
   };
 
-  const postHitApi = async (roundId: string): Promise<void> => {
-    try {
-      await axios.post(`${apiUrl}/rounds/${roundId}/hit`, {
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const getDealersHandApi = async (roundId: string): Promise<PlayerHand> => {
-    try {
-      const res = await axios.get(`${apiUrl}/rounds/${roundId}/dealers-hand`);
-
-      return res.data;
-    } catch (err) {
-      console.error(err);
-      return Promise.reject();
-    }
-  };
-
-  const postRoundCompleteApi = async (roundId: string): Promise<void> => {
-    try {
-      await axios.post(
-        `${apiUrl}/rounds/${roundId}/complete`,
-        {},
-        { headers: { "Content-Type": "application/json" } }
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const postAddRoundApi = async (
-    matchId: string,
-    roundId: string
-  ): Promise<void> => {
-    try {
-      await axios.post(
-        `${apiUrl}/matches/${matchId}/add-round`,
-        { roundId },
-        { headers: { "Content-Type": "application/json" } }
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const postRoundStartApi = async (roundId: string): Promise<void> => {
-    try {
-      await axios.post(
-        `${apiUrl}/rounds/${roundId}/start`,
-        {},
-        { headers: { "Content-Type": "application/json" } }
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const getUpCardApi = async (
-    roundId: string
-  ): Promise<MatchGetPlayerHandApiResponseCard> => {
-    try {
-      const res = await axios.get(`${apiUrl}/rounds/${roundId}/up-card`);
-
-      return res.data;
-    } catch (err) {
-      console.error(err);
-      return Promise.reject();
-    }
-  };
-
-  const getPlayersHandApi = async (roundId: string): Promise<PlayerHand> => {
-    try {
-      const res = await axios.get(`${apiUrl}/rounds/${roundId}/players-hand`);
-
-      return res.data;
-    } catch (err) {
-      console.error(err);
-      return Promise.reject();
-    }
-  };
-
-  const handleHit = async (roundId: string) => {
-    await postHitApi(roundId);
-    const updatedPlayerHand = await getPlayersHandApi(roundId);
-    setPlayerHand(updatedPlayerHand);
-  };
-
-  const handleStand = async (roundId: string) => {
-    await postStandApi(roundId);
-    const updatedPlayerHand = await getPlayersHandApi(roundId);
-    setPlayerHand(updatedPlayerHand);
+  const handleBet = async (matchId: string, amount: number) => {
+    await postMatchBetApi(matchId, amount);
+    const matchResultSummaryResponse = await getMatchResultSummaryApi(matchId);
+    setMatchResultSummary(matchResultSummaryResponse);
   };
 
   useEffect(() => {
@@ -183,18 +79,10 @@ export const MatchPage = () => {
     }
 
     const fetchRoundId = async () => {
-      const roundId = location.state.roundId;
-
-      if (roundId && matchId) {
-        await postAddRoundApi(matchId, roundId);
-        await postRoundStartApi(roundId);
-        const upCard = await getUpCardApi(roundId);
-        const playerHand = await getPlayersHandApi(roundId);
-        const handSignalOptions = await getHandSignalOptionsApi(roundId);
-
-        setDealerCards([upCard]);
-        setPlayerHand(playerHand);
-        setHandSignals(handSignalOptions.handSignals);
+      if (matchId) {
+        const matchResultSummaryResponse =
+          await getMatchResultSummaryApi(matchId);
+        setMatchResultSummary(matchResultSummaryResponse);
         setIsLoading(false);
       }
     };
@@ -204,30 +92,44 @@ export const MatchPage = () => {
   }, []);
 
   useEffect(() => {
-    if (playerHand && playerHand.isResolved) {
-      const fetchDealerHand = async () => {
+    if (
+      matchResultSummary?.player.hand &&
+      matchResultSummary.player.hand.isResolved
+    ) {
+      const fetchDealerHand = async (matchId: string) => {
         try {
-          await postRoundCompleteApi(roundId);
-          const dealerHand = await getDealersHandApi(roundId);
-          setDealerCards(dealerHand.cards);
-          console.log("Round completed");
+          await postRoundCompleteApi(matchId);
+          const roundResultResponse = await getRoundResultApi(matchId);
+          setRoundResult(roundResultResponse);
         } catch (error) {
           console.error("Error fetching dealer's hand:", error);
         }
       };
-
-      fetchDealerHand();
+      if (matchId) {
+        fetchDealerHand(matchId);
+        console.log("Round completed");
+      }
     }
-  }, [playerHand]);
+  }, [matchResultSummary]);
+
+  if (!matchId || isLoading || !matchResultSummary) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="relative min-h-screen bg-green-600 flex flex-col items-center">
       <div id="header" className="absolute top-4 left-4 text-center space-y-2">
-        <div className="hidden md:block items-center bg-neutral-950/10 rounded-md">
-          <Logo size="size-32" />
-        </div>
-        <div className="bg-white rounded-full px-2 border-yellow-500 border-2">
-          <p className="text-base text-black font-semibold">Round 1</p>
+        <div className="flex">
+          <div className="mr-2">
+            <div className="hidden md:block items-center bg-neutral-950/10 rounded-md">
+              <Logo size={32} />
+            </div>
+
+            <div className="bg-white rounded-full px-2 border-yellow-500 border-2 ">
+              <p className="text-base text-black font-semibold">Round 1</p>
+            </div>
+          </div>
+          <HelpButton icon={CircleHelp} size={8} />
         </div>
       </div>
 
@@ -241,11 +143,15 @@ export const MatchPage = () => {
             <div className="absolute top-1/2 -left-2 w-0 h-0 border-y-8 border-y-transparent border-r-8 transform -translate-y-1/2" />
           </div>
           <div className="flex space-x-2">
-            {dealerCards &&
-              dealerCards.map((card) => {
+            {matchResultSummary?.dealer.upCard &&
+              (
+                roundResult?.dealersHand.cards ?? [
+                  matchResultSummary.dealer.upCard,
+                ]
+              ).map((card, index) => {
                 return (
-                  <Card
-                    key={card.suit + card.rank}
+                  <CardComponent
+                    key={`dealer-${index}`}
                     isOpen={true}
                     initial={{ x: "50vw", y: "25vh" }}
                     animate={{ x: "0vw", y: "0vh" }}
@@ -254,16 +160,18 @@ export const MatchPage = () => {
                   />
                 );
               })}
-            {playerHand && !playerHand.isResolved && (
-              <Card
-                key="reverse"
-                isOpen={false}
-                initial={{ x: "50vw", y: "25vh" }}
-                animate={{ x: "0vw", y: "0vh" }}
-                suit={"reverse"}
-                rank={"reverse"}
-              />
-            )}
+
+            {matchResultSummary?.player.hand &&
+              !matchResultSummary.player.hand.isResolved && (
+                <CardComponent
+                  key="reverse"
+                  isOpen={false}
+                  initial={{ x: "50vw", y: "25vh" }}
+                  animate={{ x: "0vw", y: "0vh" }}
+                  suit={"reverse"}
+                  rank={"reverse"}
+                />
+              )}
           </div>
         </div>
 
@@ -272,18 +180,18 @@ export const MatchPage = () => {
           className="bg-neutral-50/5 text-center rounded-md relative"
         >
           <h2 className="bg-gradient-to-b from-slate-300/40 via-slate-100/10 to-slate-50/5 text-white text-lg font-bold rounded-t-md">
-            Bet: 35
+            Bet: {matchResultSummary.player.betAmount}
           </h2>
           <div className="absolute top-1/2 -right-9 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl z-10">
             10/20
             <div className="absolute top-1/2 -left-2 w-0 h-0 border-y-8 border-y-transparent border-r-8 transform -translate-y-1/2" />
           </div>
           <div className="flex space-x-2">
-            {playerHand &&
-              playerHand.cards.map((card) => {
+            {matchResultSummary?.player.hand &&
+              matchResultSummary.player.hand.cards.map((card, index) => {
                 return (
-                  <Card
-                    key={card.suit + card.rank}
+                  <CardComponent
+                    key={`player-${index}`}
                     isOpen={true}
                     initial={{ x: "50vw", y: "-25vh" }}
                     animate={{ x: "0vw", y: "0vh" }}
@@ -350,9 +258,12 @@ export const MatchPage = () => {
           text="STAND"
           icon={Hand}
           variant="danger"
-          action={() => handleStand(roundId)}
+          action={() => handleStand(matchId)} // TODO: matchIdがundefinedの場合の処理を追加
           disabled={
-            handSignals && !handSignals.find((signal) => signal === "stand")
+            matchResultSummary?.player.handSignalOptions &&
+            !matchResultSummary.player.handSignalOptions.find(
+              (signal) => signal === "stand"
+            )
           }
         />
         {/* TODO: SPLIT機能を追加 */}
@@ -373,9 +284,12 @@ export const MatchPage = () => {
           text="HIT"
           icon={CopyPlus}
           variant="success"
-          action={() => handleHit(roundId)}
+          action={() => handleHit(matchId)}
           disabled={
-            handSignals && !handSignals.find((signal) => signal === "hit")
+            matchResultSummary?.player.handSignalOptions &&
+            !matchResultSummary.player.handSignalOptions.find(
+              (signal) => signal === "hit"
+            )
           }
         />
       </div>
@@ -392,8 +306,12 @@ export const MatchPage = () => {
         </div>
       </div>
 
-      {/* <BetModal /> */}
-      <RoundResultModal />
+      <BetModal
+        matchId={matchId}
+        onClickDeal={handleBet}
+        credit={matchResultSummary.player.credit}
+      />
+      {/* <RoundResultModal /> */}
       {/* <MatchResultModal /> */}
     </div>
   );

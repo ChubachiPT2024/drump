@@ -1,17 +1,10 @@
 import { describe, expect, test } from "vitest";
 import { Shoe } from "./shoe";
-import { Card } from "../cards/card";
-import { Rank } from "../ranks/rank";
-import { Suit } from "../suits/suit";
-import { ShoeId } from "./shoeId";
 
 describe("peek", () => {
   test("It returns a same card every time.", () => {
     // Arrange
-    const shoe = new Shoe(new ShoeId("id"), [
-      new Card(Rank.Ace, Suit.Diamond),
-      new Card(Rank.Two, Suit.Club),
-    ]);
+    const shoe = Shoe.createFromDecks(1);
 
     // Act
     const first = shoe.peek();
@@ -23,18 +16,14 @@ describe("peek", () => {
 });
 
 describe("draw", () => {
-  test("It changes the next card.", () => {
+  test("It creates a new shoe without the first card.", () => {
     // Arrange
-    const shoe = new Shoe(new ShoeId("id"), [
-      new Card(Rank.Ace, Suit.Diamond),
-      new Card(Rank.Two, Suit.Club),
-    ]);
-    const firstPeek = shoe.peek();
+    const shoe = Shoe.createFromDecks(1);
 
     // Act
-    shoe.draw();
+    const newShoe = shoe.draw();
 
     // Assert
-    expect(firstPeek.equals(shoe.peek())).toBe(false);
+    expect(shoe.peek().equals(newShoe.peek())).toBe(false);
   });
 });
