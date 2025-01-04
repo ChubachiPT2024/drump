@@ -234,5 +234,6 @@ export class Match {
     notification.notifyDealer(this.dealer);
     notification.notifyPlayer(this.player);
     notification.notifyRoundCount(this.roundCount);
+    notification.notifyIsCompleted(this.isCompleted());
   }
 }

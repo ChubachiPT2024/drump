@@ -31,6 +31,11 @@ export class MatchGetSummaryResult implements MatchNotification {
   public roundCount?: number;
 
   /**
+   * 試合が完了しているかどうか
+   */
+  public isCompleted?: boolean;
+
+  /**
    * ID を通知する
    *
    * @param id ID
@@ -64,5 +69,14 @@ export class MatchGetSummaryResult implements MatchNotification {
    */
   public notifyRoundCount(roundCount: RoundCount): void {
     this.roundCount = roundCount.value;
+  }
+
+  /**
+   * 試合が完了しているかどうかを通知する
+   *
+   * @param isCompleted 試合が完了しているかどうか
+   */
+  public notifyIsCompleted(isCompleted: boolean): void {
+    this.isCompleted = isCompleted;
   }
 }
