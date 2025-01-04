@@ -138,11 +138,14 @@ export const MatchResultModal = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
+                  className="relative"
                 >
-                  <DialogTitle className="text-4xl md:text-5xl xl:text-6xl text-green-400 font-bold uppercase">
+                  <div className="absolute inset-0 blur-2xl bg-gradient-to-r from-emerald-600/20 via-green-500/20 to-teal-600/20 opacity-75" />
+                  <div className="absolute -left-4 -top-4 w-8 h-8 border-l-2 border-t-2 border-emerald-500/50" />
+                  <DialogTitle className="relative z-10 text-4xl md:text-5xl xl:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-300 to-teal-400 uppercase tracking-tight text-center animate-gradient-slow">
                     Leaderboard
                   </DialogTitle>
-                  <Separator className="my-2" />
+                  <Separator className="px-10 my-2 bg-gradient-to-r from-emerald-400 via-green-300 to-teal-400" />
                 </motion.div>
                 {[...matchResult]
                   .sort((a, b) => b.balance - a.balance)
@@ -217,9 +220,15 @@ export const MatchResultModal = () => {
                 </motion.div>
               </div>
               <div id="records" className="space-y-2 pt-8">
-                <h2 className="text-2xl md:text-3xl xl:text-4xl uppercase font-bold text-green-400">
-                  Match Records
-                </h2>
+                <div className="relative">
+                  <div className="absolute inset-0 blur-2xl bg-gradient-to-r from-emerald-600/20 via-green-500/20 to-teal-600/20 opacity-75" />
+                  <div className="relative">
+                    <h2 className="relative z-10 text-2xl md:text-3xl xl:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-300 to-teal-400 uppercase tracking-tight animate-gradient-slow">
+                      Match Records
+                    </h2>
+                    <Separator className="px-10 my-2 bg-gradient-to-r from-emerald-400 via-green-300 to-teal-400" />
+                  </div>
+                </div>
                 <Separator className="my-2" />
                 <Table>
                   <TableHeader className="sticky top-0 z-10">
