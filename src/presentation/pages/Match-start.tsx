@@ -77,7 +77,6 @@ export const MatchStartPage = () => {
       });
   };
 
-  // TODO: プレイヤーが設定されていなければ、ボタンを無効にする
   const handleStartMatch = async (userId: string) => {
     const matchId = await postMatchCreateApi(userId);
     await postMatchStartApi(matchId);
