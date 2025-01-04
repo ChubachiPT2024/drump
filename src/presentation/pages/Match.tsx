@@ -7,6 +7,11 @@ import { CardComponent } from "../components/match/cardComponent";
 import { BetModal } from "../components/match/bet-modal";
 import { RoundResultModal } from "../components/match/round-result-modal";
 import { MatchResultModal } from "../components/match/match-result-modal";
+import { RotationModal } from "../components/match/rotation-modal";
+import { RoundStartModal } from "../components/match/round-start-modal";
+import { HitModal } from "../components/match/hit-modal";
+import { StandModal } from "../components/match/stand-modal";
+import { BlackjackModal } from "../components/match/blackjack-modal";
 import { HandSignalButton } from "../components/match/hand-signal-button";
 import { Logo } from "../components/share/logo";
 import { HelpButton } from "../components/match/help-button";
@@ -313,6 +318,13 @@ export const MatchPage = () => {
       />
       {/* <RoundResultModal /> */}
       {/* <MatchResultModal /> */}
+      {/* TODO: プレイヤーの情報を取得して表示する */}
+      {/* <RotationModal name={"Player2"} /> */}
+      {/* TODO: ラウンドを取得して表示する */}
+      {/* <RoundStartModal roundNumber={1} /> */}
+      {/* <HitModal /> */}
+      {/* <StandModal /> */}
+      {/* <BlackjackModal /> */}
     </div>
   );
 };
