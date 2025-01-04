@@ -1,18 +1,23 @@
-import { LucideIcon } from "lucide-react";
-import { Toggle } from "@/presentation/shadcnUI/components/ui/toggle";
+import { Switch } from "@/presentation/shadcnUI/components/ui/switch";
+import { Label } from "@/presentation/shadcnUI/components/ui/label";
 
 interface HintToggleProps {
-  icon: LucideIcon;
-  size: number;
   onClick: () => void;
+  className?: string;
+  text: string;
 }
 
-export const HintToggle = ({ icon: Icon, size, onClick }: HintToggleProps) => {
+export const HintToggle = ({
+  onClick,
+  className = "",
+  text,
+}: HintToggleProps) => {
   return (
-    <>
-      <Toggle className={`size-${size}`} onClick={onClick}>
-        <Icon />
-      </Toggle>
-    </>
+    <div className="flex space-x-2">
+      <Switch onClick={onClick} className={className} id="switch" />
+      <Label htmlFor="switch" className="mt-1">
+        {text}
+      </Label>
+    </div>
   );
 };

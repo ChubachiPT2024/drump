@@ -1,13 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Hand,
-  CopyPlus,
-  Layers2,
-  Subscript,
-  CircleHelp,
-  Lightbulb,
-} from "lucide-react";
+import { Hand, CopyPlus, Layers2, Subscript, CircleHelp } from "lucide-react";
 import Avatar, { genConfig } from "react-nice-avatar";
 
 import { CardComponent } from "../components/match/cardComponent";
@@ -128,20 +121,21 @@ export const MatchPage = () => {
       <div id="header" className="absolute top-4 left-4 text-center space-y-2">
         <div className="flex">
           <div className="mr-2">
-            <div className="hidden md:block items-center bg-neutral-950/10 rounded-md">
-              <Logo size={32} />
+            <div className="flex">
+              <div className="hidden md:block items-center bg-neutral-950/10 rounded-md">
+                <Logo size={32} />
+              </div>
+              <HelpButton icon={CircleHelp} size={8} />
+              <HintToggle
+                onClick={() => setShowText(!showText)}
+                className="ml-2"
+                text="Hint"
+              />
             </div>
-
-            <div className="bg-white rounded-full px-2 border-yellow-500 border-2 ">
+            <div className="bg-white rounded-full px-2 border-yellow-500 border-2 w-32">
               <p className="text-base text-black font-semibold">Round 1</p>
             </div>
           </div>
-          <HelpButton icon={CircleHelp} size={8} />
-          <HintToggle
-            icon={Lightbulb}
-            size={8}
-            onClick={() => setShowText(!showText)}
-          />
         </div>
       </div>
 
@@ -194,15 +188,17 @@ export const MatchPage = () => {
           <h2 className="bg-gradient-to-b from-slate-300/40 via-slate-100/10 to-slate-50/5 text-white text-lg font-bold rounded-t-md">
             Bet: {matchResultSummary.player.betAmount}
           </h2>
-          <div className="absolute top-1/2 -right-9 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl z-10">
-            10/20
-            <div className="absolute top-1/2 -left-2 w-0 h-0 border-y-8 border-y-transparent border-r-8 transform -translate-y-1/2" />
-          </div>
-          {showText && (
-            <div className="absolute top-3/4 -right-9 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl z-10">
-              ヒント：XXX
+          <div className="absolute top-1/4 -right-24 z-10">
+            <div className="relative w-20 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl">
+              10/20
+              <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-0 h-0 border-y-4 border-y-transparent border-r-8" />
             </div>
-          )}
+            {showText && (
+              <div className="absolute top-full mt-2 w-max px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl">
+                ヒント：XXX
+              </div>
+            )}
+          </div>
 
           <div className="flex space-x-2">
             {matchResultSummary?.player.hand &&
