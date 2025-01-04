@@ -2,7 +2,7 @@ import Avatar, { genConfig } from "react-nice-avatar";
 
 import { Button } from "@/presentation/shadcnUI/components/ui/button";
 
-import { User } from "@/presentation/types/User";
+import { User } from "@/presentation/types/user";
 
 interface UserCardProps {
   user: User;

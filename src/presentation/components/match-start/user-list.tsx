@@ -1,8 +1,9 @@
 import { UserCard } from "./user-card";
 
-import { User } from "../../types/user";
 import { cn } from "@/presentation/shadcnUI/lib/utils";
 import { ScrollArea } from "@/presentation/shadcnUI/components/ui/scroll-area";
+
+import { User } from "../../types/user";
 
 interface UserCardProps {
   title: string;
