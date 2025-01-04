@@ -17,6 +17,7 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
+  SheetTitle,
 } from "@/presentation/shadcnUI/components/ui/sheet";
 
 import { cn } from "@/presentation/shadcnUI/lib/utils";
@@ -60,18 +61,20 @@ export const Navigation = () => {
     return (
       <>
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger className="bg-gradient-to-l from-green-400 via-green-300 to-green-400">
-            <Button
-              variant="transparent"
-              size="md"
-              className="font-normal border-none focus-visible:ring-offset-0 focus-visible:ring-transparent outline-none text-black transition"
-            >
-              <Menu size="size-4" />
-            </Button>
+          <SheetTrigger asChild>
+            <div className="bg-gradient-to-l from-green-400 via-green-300 to-green-400">
+              <Button
+                variant="transparent"
+                size="md"
+                className="font-normal border-none focus-visible:ring-offset-0 focus-visible:ring-transparent outline-none text-black transition"
+              >
+                <Menu size={32} />
+              </Button>
+            </div>
           </SheetTrigger>
           <SheetContent side="right" className="px-2">
             <div className="flex items-center">
-              <Logo size={16} />
+              <Logo size={8} />
               <p className="text-4xl font-['Dela_Gothic_One'] [-webkit-text-stroke:1px_#fff462] ml-2.5">
                 Black Jack
               </p>
@@ -90,6 +93,7 @@ export const Navigation = () => {
                   </Button>
                 </div>
               )}
+              <SheetTitle>Menu</SheetTitle>
               {routes.map((route) => (
                 <Button
                   key={route.to}
@@ -139,7 +143,7 @@ export const Navigation = () => {
               className="w-full"
             >
               <span>Play</span>
-              <ArrowRight className="size-6" />
+              <ArrowRight size={6} />
             </Button>
           </div>
         )}
