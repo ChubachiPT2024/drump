@@ -32,7 +32,7 @@ export const MatchPage = () => {
   const [roundResult, setRoundResult] = useState<RoundResult | undefined>(
     undefined
   );
-  const [showText, setShowText] = useState(false);
+  const [isHintEnabled, setIsHintEnabled] = useState(false);
 
   // TODO: ドメイン層からプレイヤー情報を取得する
   // ハンドではなく、スートとランクにするかも、ほかプレイヤーの情報は変更の可能性あり
@@ -127,7 +127,7 @@ export const MatchPage = () => {
               </div>
               <HelpButton icon={CircleHelp} size={8} />
               <HintToggle
-                onClick={() => setShowText(!showText)}
+                onClick={() => setIsHintEnabled(!isHintEnabled)}
                 className="ml-2"
                 text="Hint"
               />
@@ -193,7 +193,7 @@ export const MatchPage = () => {
               10/20
               <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-0 h-0 border-y-4 border-y-transparent border-r-8" />
             </div>
-            {showText && (
+            {isHintEnabled && (
               <div className="absolute top-full mt-2 w-max px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl">
                 ヒント：XXX
               </div>
