@@ -15,6 +15,7 @@ import { BlackjackModal } from "../components/match/blackjack-modal";
 import { HandSignalButton } from "../components/match/hand-signal-button";
 import { Logo } from "../components/share/logo";
 import { HelpButton } from "../components/match/help-button";
+import { HintToggle } from "../components/match/hint-toggle";
 
 import { ResultSummary } from "../types/resultSummary";
 import { RoundResult } from "../types/roundResult";
@@ -38,6 +39,7 @@ export const MatchPage = () => {
   const [roundResult, setRoundResult] = useState<RoundResult | undefined>(
     undefined
   );
+  const [isHintEnabled, setIsHintEnabled] = useState(false);
 
   // TODO: ドメイン層からプレイヤー情報を取得する
   // ハンドではなく、スートとランクにするかも、ほかプレイヤーの情報は変更の可能性あり
@@ -126,15 +128,21 @@ export const MatchPage = () => {
       <div id="header" className="absolute top-4 left-4 text-center space-y-2">
         <div className="flex">
           <div className="mr-2">
-            <div className="hidden md:block items-center bg-neutral-950/10 rounded-md">
-              <Logo size={32} />
+            <div className="flex">
+              <div className="hidden md:block items-center bg-neutral-950/10 rounded-md">
+                <Logo size={32} />
+              </div>
+              <HelpButton icon={CircleHelp} size={8} />
+              <HintToggle
+                onClick={() => setIsHintEnabled(!isHintEnabled)}
+                className="ml-2"
+                text="Hint"
+              />
             </div>
-
-            <div className="bg-white rounded-full px-2 border-yellow-500 border-2 ">
+            <div className="bg-white rounded-full px-2 border-yellow-500 border-2 w-32">
               <p className="text-base text-black font-semibold">Round 1</p>
             </div>
           </div>
-          <HelpButton icon={CircleHelp} size={8} />
         </div>
       </div>
 
@@ -187,10 +195,18 @@ export const MatchPage = () => {
           <h2 className="bg-gradient-to-b from-slate-300/40 via-slate-100/10 to-slate-50/5 text-white text-lg font-bold rounded-t-md">
             Bet: {matchResultSummary.player.betAmount}
           </h2>
-          <div className="absolute top-1/2 -right-9 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl z-10">
-            10/20
-            <div className="absolute top-1/2 -left-2 w-0 h-0 border-y-8 border-y-transparent border-r-8 transform -translate-y-1/2" />
+          <div className="absolute top-1/4 -right-24 z-10">
+            <div className="relative w-20 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl">
+              10/20
+              <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-0 h-0 border-y-4 border-y-transparent border-r-8" />
+            </div>
+            {isHintEnabled && (
+              <div className="absolute top-full mt-2 w-max px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl">
+                ヒント：XXX
+              </div>
+            )}
           </div>
+
           <div className="flex space-x-2">
             {matchResultSummary?.player.hand &&
               matchResultSummary.player.hand.cards.map((card, index) => {
