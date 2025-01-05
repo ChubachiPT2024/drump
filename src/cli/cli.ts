@@ -45,7 +45,7 @@ const matchCreateResult = await matchApplicationService.createAsync(
 );
 const matchId = matchCreateResult.id;
 
-for (let i = 0; i < 10; i++) {
+while (true) {
   // ラウンドの開始
   await matchApplicationService.startRoundAsync(
     new MatchStartRoundCommand(matchId),
@@ -139,6 +139,14 @@ for (let i = 0; i < 10; i++) {
   console.log(`Outcome: ${roundResult.player.result}`);
   console.log(`Credit: ${roundResult.player.credit}`);
   console.log();
+
+  // 試合完了判定
+  const matchAfterRoundSummary = await matchApplicationService.getSummaryAsync(
+    new MatchGetSummaryCommand(matchId),
+  );
+  if (matchAfterRoundSummary.isCompleted) {
+    break;
+  }
 }
 
 // 試合結果を表示する
