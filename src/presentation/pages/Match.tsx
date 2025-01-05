@@ -31,6 +31,12 @@ export const MatchPage = () => {
   const [roundResult, setRoundResult] = useState<RoundResult | undefined>(
     undefined
   );
+  const [dealerCardCompletedIndex, setDealerCardCompletedIndex] = useState<
+    number | undefined
+  >(undefined);
+  const [playerCardCompletedIndex, setPlayerCardCompletedIndex] = useState<
+    number | undefined
+  >(undefined);
 
   // TODO: ドメイン層からプレイヤー情報を取得する
   // ハンドではなく、スートとランクにするかも、ほかプレイヤーの情報は変更の可能性あり
@@ -146,18 +152,31 @@ export const MatchPage = () => {
                 roundResult?.dealersHand.cards ?? [
                   matchResultSummary.dealer.upCard,
                 ]
-              ).map((card, index) => {
-                return (
-                  <CardComponent
-                    key={`dealer-${index}`}
-                    isOpen={true}
-                    initial={{ x: "50vw", y: "25vh" }}
-                    animate={{ x: "0vw", y: "0vh" }}
-                    suit={card.suit}
-                    rank={card.rank}
-                  />
-                );
-              })}
+              )
+                .filter(
+                  (_, index) =>
+                    dealerCardCompletedIndex === undefined ||
+                    dealerCardCompletedIndex + 1 >= index
+                )
+                .map((card, index) => {
+                  return (
+                    <CardComponent
+                      key={`dealer-${index}`}
+                      isOpen={true}
+                      initial={
+                        index !== 1
+                          ? { x: "50vw", y: "25vh" }
+                          : { x: "0vw", y: "0vh" }
+                      }
+                      animate={{ x: "0vw", y: "0vh" }}
+                      suit={card.suit}
+                      rank={card.rank}
+                      onAnimateComplete={() => {
+                        setDealerCardCompletedIndex(index);
+                      }}
+                    />
+                  );
+                })}
 
             {matchResultSummary?.player.hand &&
               !matchResultSummary.player.hand.isResolved && (
@@ -186,18 +205,27 @@ export const MatchPage = () => {
           </div>
           <div className="flex space-x-2">
             {matchResultSummary?.player.hand &&
-              matchResultSummary.player.hand.cards.map((card, index) => {
-                return (
-                  <CardComponent
-                    key={`player-${index}`}
-                    isOpen={true}
-                    initial={{ x: "50vw", y: "-25vh" }}
-                    animate={{ x: "0vw", y: "0vh" }}
-                    suit={card.suit}
-                    rank={card.rank}
-                  />
-                );
-              })}
+              matchResultSummary.player.hand.cards
+                .filter(
+                  (_, index) =>
+                    playerCardCompletedIndex === undefined ||
+                    playerCardCompletedIndex + 1 >= index
+                )
+                .map((card, index) => {
+                  return (
+                    <CardComponent
+                      key={`player-${index}`}
+                      isOpen={true}
+                      initial={{ x: "50vw", y: "-25vh" }}
+                      animate={{ x: "0vw", y: "0vh" }}
+                      suit={card.suit}
+                      rank={card.rank}
+                      onAnimateComplete={() => {
+                        setPlayerCardCompletedIndex(index);
+                      }}
+                    />
+                  );
+                })}
           </div>
         </div>
       </div>
