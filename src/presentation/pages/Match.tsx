@@ -171,15 +171,17 @@ export const MatchPage = () => {
                       key={`dealer-${index}`}
                       isOpen={true}
                       initial={
-                        index !== 1
-                          ? { x: "50vw", y: "25vh" }
-                          : { x: "0vw", y: "0vh" }
+                        index === 1 // upCardの場合は移動前の位置を指定
+                          ? { x: "0vw", y: "0vh" }
+                          : { x: "50vw", y: "25vh" }
                       }
                       animate={{ x: "0vw", y: "0vh" }}
                       suit={card.suit}
                       rank={card.rank}
                       onAnimateComplete={() => {
-                        setDealerCardCompletedIndex(index);
+                        setTimeout(() => {
+                          setDealerCardCompletedIndex(index);
+                        }, 500);
                       }}
                     />
                   );
@@ -228,7 +230,9 @@ export const MatchPage = () => {
                       suit={card.suit}
                       rank={card.rank}
                       onAnimateComplete={() => {
-                        setPlayerCardCompletedIndex(index);
+                        setTimeout(() => {
+                          setPlayerCardCompletedIndex(index);
+                        }, 500);
                       }}
                     />
                   );
