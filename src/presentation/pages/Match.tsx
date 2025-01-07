@@ -5,13 +5,6 @@ import Avatar, { genConfig } from "react-nice-avatar";
 
 import { CardComponent } from "../components/match/cardComponent";
 import { BetModal } from "../components/match/bet-modal";
-import { RoundResultModal } from "../components/match/round-result-modal";
-import { MatchResultModal } from "../components/match/match-result-modal";
-import { RotationModal } from "../components/match/rotation-modal";
-import { RoundStartModal } from "../components/match/round-start-modal";
-import { HitModal } from "../components/match/hit-modal";
-import { StandModal } from "../components/match/stand-modal";
-import { BlackjackModal } from "../components/match/blackjack-modal";
 import { HandSignalButton } from "../components/match/hand-signal-button";
 import { Logo } from "../components/share/logo";
 import { HelpButton } from "../components/match/help-button";
@@ -162,6 +155,7 @@ export const MatchPage = () => {
               )
                 .filter(
                   (_, index) =>
+                    //MEMO:一つ前のカードのアニメーションが完了したら、次のカードを表示する。
                     dealerCardCompletedIndex === undefined ||
                     dealerCardCompletedIndex + 1 >= index
                 )
@@ -171,7 +165,7 @@ export const MatchPage = () => {
                       key={`dealer-${index}`}
                       isOpen={true}
                       initial={
-                        index === 1 // upCardの場合は移動前の位置を指定
+                        index === 1 // HoleCardの場合は移動前の位置を指定
                           ? { x: "0vw", y: "0vh" }
                           : { x: "50vw", y: "25vh" }
                       }
@@ -217,6 +211,7 @@ export const MatchPage = () => {
               matchResultSummary.player.hand.cards
                 .filter(
                   (_, index) =>
+                    //MEMO:一つ前のカードのアニメーションが完了したら、次のカードを表示する。
                     playerCardCompletedIndex === undefined ||
                     playerCardCompletedIndex + 1 >= index
                 )
