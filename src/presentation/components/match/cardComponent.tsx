@@ -1,15 +1,9 @@
 import { useState } from "react";
 import ReactCardFlip from "react-card-flip";
 import { motion } from "framer-motion";
-import { Card } from "../../types/card";
+import { Card } from "../../types/Card";
 
-export const CardComponent = ({
-  isOpen,
-  initial,
-  animate,
-  suit,
-  rank,
-}: {
+interface CardComponentProps {
   isOpen: boolean;
   initial: {
     x: string;
@@ -21,7 +15,17 @@ export const CardComponent = ({
   };
   suit: Pick<Card, "suit">["suit"] | "reverse";
   rank: Pick<Card, "rank">["rank"] | "reverse";
-}) => {
+  delay?: number;
+}
+
+export const CardComponent = ({
+  isOpen,
+  initial,
+  animate,
+  suit,
+  rank,
+  delay,
+}: CardComponentProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
@@ -32,6 +36,7 @@ export const CardComponent = ({
         type: "linear",
         stiffness: 150,
         damping: 20,
+        delay: delay,
       }}
       onAnimationComplete={() => {
         if (isOpen) {
