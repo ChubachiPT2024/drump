@@ -1,4 +1,4 @@
-import { Card } from "./card";
+import { Card } from "./Card";
 
 export interface ResultSummary {
   id: string;
@@ -16,4 +16,6 @@ export interface ResultSummary {
     credit: number;
     betAmount: number;
   };
+  isCompleted: boolean;
+  roundCount: number;
 }
