@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
 import { userGetAll } from "../hooks/api/userGetAll";
-import { postMatchStartApi } from "../hooks/api/matchStartRound";
 import { postMatchCreateApi } from "../hooks/api/matchCreate";
 
 import { Header } from "../components/share/header";
@@ -34,18 +33,17 @@ export const MatchStartPage = () => {
   };
 
   const handleStartMatch = async (userId: string) => {
-    const matchCreate = await postMatchCreateApi(userId);
-    await postMatchStartApi(matchCreate.id);
+    const matchCreateResponse = await postMatchCreateApi(userId);
 
-    navigate(`/match/${matchCreate.id}`);
+    navigate(`/match/${matchCreateResponse.id}`);
   };
 
   useEffect(() => {
     const fetchUsers = async () => {
       setIsLoading(true);
       try {
-        const users = await userGetAll();
-        setRegisteredUsers(users);
+        const userGetAllResponse = await userGetAll();
+        setRegisteredUsers(userGetAllResponse);
       } catch (err) {
         console.error(err);
         setRegisteredUsers([]);
