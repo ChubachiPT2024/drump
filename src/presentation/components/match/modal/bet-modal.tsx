@@ -25,92 +25,42 @@ interface Player {
 
 interface BetModalProps {
   matchId: string;
-  onHandleBet: (matchId: string, playerId: string, betAmount: number) => void;
+  handleBet: (matchId: string, playerId: string, betAmount: number) => void;
   players: Player[];
 }
 
-export const BetModal = ({ matchId, onHandleBet, players }: BetModalProps) => {
+export const BetModal = ({ matchId, handleBet, players }: BetModalProps) => {
   const isOpen = useBetModal((state) => state.isOpen);
   const onClose = useBetModal((state) => state.onClose);
 
-  const [playerBets, setPlayerBets] = useState<
-    Record<string, number | undefined>
-  >(
-    players.reduce(
-      (acc, player) => ({
-        ...acc,
-        [player.id]: undefined,
-      }),
-      {}
-    )
-  );
+  const [betAmount, setBetAmount] = useState<number | undefined>(undefined);
 
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const currentPlayer = players[currentPlayerIndex];
 
-  const handleBetChange = (playerId: string, value: number) => {
-    setPlayerBets({
-      ...playerBets,
-      [playerId]: value,
-    });
+  const handleBetChange = (value: number) => {
+    setBetAmount(value);
   };
 
-  const clearBet = (playerId: string) => {
-    setPlayerBets({
-      ...playerBets,
-      [playerId]: undefined,
-    });
+  const clearBet = () => {
+    setBetAmount(undefined);
   };
 
-  const clearAllBets = () => {
-    setPlayerBets(
-      players.reduce(
-        (acc, player) => ({
-          ...acc,
-          [player.id]: undefined,
-        }),
-        {}
-      )
-    );
-    setCurrentPlayerIndex(0);
-  };
-
-  const isCurrentBetValid = (playerId: string) => {
-    const betAmount = playerBets[playerId];
-    const player = players.find((p) => p.id === playerId);
-    return (
-      betAmount !== undefined &&
-      player &&
-      betAmount >= 0 &&
-      betAmount <= player.credit
-    );
-  };
-
-  const isAllBetsComplete = () => {
-    return players.every((player) => isCurrentBetValid(player.id));
-  };
-
-  const moveToNextPlayer = () => {
-    if (currentPlayerIndex < players.length - 1) {
-      setCurrentPlayerIndex(currentPlayerIndex + 1);
-    }
-  };
-
-  const handleConfirmBet = () => {
-    if (isCurrentBetValid(currentPlayer.id)) {
-      moveToNextPlayer();
-    }
+  const isBetValid = () => {
+    return betAmount && betAmount > 0 && betAmount <= currentPlayer.credit;
   };
 
   const handleDeal = () => {
-    if (!isAllBetsComplete()) return;
-    players.forEach((player) => {
-      const betAmount = playerBets[player.id];
-      if (betAmount !== undefined) {
-        onHandleBet(matchId, player.id, betAmount);
+    if (isBetValid()) {
+      handleBet(matchId, currentPlayer.id, betAmount!);
+      setBetAmount(undefined);
+      if (currentPlayerIndex < players.length - 1) {
+        setCurrentPlayerIndex(currentPlayerIndex + 1);
+      } else {
+        setCurrentPlayerIndex(0);
+        onClose();
       }
-    });
-    onClose();
+    }
   };
 
   return (
@@ -148,13 +98,13 @@ export const BetModal = ({ matchId, onHandleBet, players }: BetModalProps) => {
                           "p-3 rounded-lg flex items-center justify-between",
                           index === currentPlayerIndex &&
                             "bg-yellow-500/20 border-2 border-yellow-500",
-                          isCurrentBetValid(player.id) && "bg-green-400/30"
+                          index < currentPlayerIndex && "bg-green-400/30"
                         )}
                       >
                         <span className="text-lg text-white font-medium">
                           {player.name}
                         </span>
-                        {isCurrentBetValid(player.id) && (
+                        {index < currentPlayerIndex && (
                           <span className="text-green-400 text-xl">✓</span>
                         )}
                       </div>
@@ -177,34 +127,20 @@ export const BetModal = ({ matchId, onHandleBet, players }: BetModalProps) => {
                       </div>
                       <div className="w-32 text-start">
                         <Label className="text-lg text-white">
-                          Bet:{" "}
-                          {(playerBets[currentPlayer.id] ?? 0).toLocaleString()}
+                          Bet: {betAmount?.toLocaleString() ?? 0}
                         </Label>
                       </div>
                     </div>
                   </div>
 
                   <div id="input" className="max-w-xs mx-auto text-start">
-                    <div className="h-7">
-                      {playerBets[currentPlayer.id] !== undefined &&
-                        currentPlayer.credit <
-                          playerBets[currentPlayer.id]! && (
-                          <Label className="text-red-600 text-lg font-semibold">
-                            Not enough credit
-                          </Label>
-                        )}
-                    </div>
+                    <div className="h-7"></div>
                     <Input
                       type="number"
                       min={0}
                       max={currentPlayer.credit}
-                      value={playerBets[currentPlayer.id] ?? ""}
-                      onChange={(e) =>
-                        handleBetChange(
-                          currentPlayer.id,
-                          Number(e.target.value)
-                        )
-                      }
+                      value={betAmount ?? ""}
+                      onChange={(e) => handleBetChange(Number(e.target.value))}
                       className="text-lg mb-4"
                     />
                   </div>
@@ -213,41 +149,20 @@ export const BetModal = ({ matchId, onHandleBet, players }: BetModalProps) => {
                     id="button"
                     className="flex flex-col md:flex-row justify-center items-center gap-2"
                   >
-                    {/* 最後のプレイヤーの場合のみ、DEALボタンが表示される */}
-                    {currentPlayerIndex < players.length - 1 ? (
-                      <>
-                        <Button
-                          className="w-full md:w-[calc(90%/3)] h-12"
-                          variant="success"
-                          onClick={handleConfirmBet}
-                          disabled={!isCurrentBetValid(currentPlayer.id)}
-                        >
-                          <span className="text-lg">CONFIRM</span>
-                        </Button>
-                        <Button
-                          className="w-full md:w-[calc(90%/3)] h-12"
-                          variant="danger"
-                          onClick={() => clearBet(currentPlayer.id)}
-                        >
-                          <span className="text-lg">CLEAR</span>
-                        </Button>
-                      </>
-                    ) : (
-                      <Button
-                        className="w-full md:w-[calc(90%/3)] h-12"
-                        variant="success"
-                        onClick={handleDeal}
-                        disabled={!isAllBetsComplete()}
-                      >
-                        <span className="text-lg">DEAL</span>
-                      </Button>
-                    )}
                     <Button
                       className="w-full md:w-[calc(90%/3)] h-12"
-                      variant="dangerOutline"
-                      onClick={clearAllBets}
+                      variant="success"
+                      onClick={handleDeal}
+                      disabled={!isBetValid()}
                     >
-                      <span className="text-lg">CLEAR ALL</span>
+                      <span className="text-lg">DEAL</span>
+                    </Button>
+                    <Button
+                      className="w-full md:w-[calc(90%/3)] h-12"
+                      variant="danger"
+                      onClick={clearBet}
+                    >
+                      <span className="text-lg">CLEAR</span>
                     </Button>
                   </div>
                 </div>

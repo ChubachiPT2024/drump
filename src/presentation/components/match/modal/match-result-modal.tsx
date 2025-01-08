@@ -32,6 +32,9 @@ interface MatchResultModalProps {
   matchResultPlayers: MatchResultPlayer[];
 }
 
+// TODO: 定数として集約して管理する
+const TOTAL_ROUNDS = 10;
+
 export const MatchResultModal = ({
   matchResultPlayers,
 }: MatchResultModalProps) => {
@@ -40,9 +43,12 @@ export const MatchResultModal = ({
   const isOpen = useMatchResultModal((state) => state.isOpen);
   const onClose = useMatchResultModal((state) => state.onClose);
 
-  const fields = Object.keys(matchResultPlayers[0]).filter(
-    (key): key is string => (key as string) !== "name"
+  const predefinedFields = ["final", "balance"];
+  const roundFields = Array.from(
+    { length: TOTAL_ROUNDS },
+    (_, index) => `round${index + 1}`
   );
+  const fields = [...roundFields, ...predefinedFields];
 
   const handleReMatch = () => {
     // TODO: もう一度マッチを開始する処理を追加
@@ -168,7 +174,7 @@ export const MatchResultModal = ({
                   <TableHeader className="sticky top-0 z-10">
                     <TableRow className="bg-slate-800 hover:bg-slate-800/90 transition-colors">
                       <TableHead className="text-white font-bold py-4 px-6">
-                        Round
+                        Records
                       </TableHead>
                       {matchResultPlayers.map((player) => (
                         <TableHead
@@ -197,9 +203,9 @@ export const MatchResultModal = ({
                             key={playerIndex}
                             className="text-slate-600 py-3 px-6"
                           >
-                            {player[
-                              field as keyof MatchResultPlayer
-                            ].toLocaleString()}
+                            {field.startsWith("round") && player.rounds[index]}
+                            {field === "final" && player.finalCredit}
+                            {field === "balance" && player.balance}
                           </TableHead>
                         ))}
                       </TableRow>
