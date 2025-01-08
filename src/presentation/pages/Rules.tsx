@@ -18,7 +18,7 @@ export const RulesPage = () => {
           <p>プレイヤーがチップを賭けるとゲームが始まります</p>
           <h3 className="text-lg font-semibold mt-4 mb-2">カードの配り方</h3>
           <ul className="list-disc pl-5">
-            <li>プレイヤーには2枚のカードが配られます</li>
+            <li>プレイヤーには2枚の表向きカードが配られます</li>
             <li>
               ディーラーには1枚が表向き、もう1枚が裏向きのカードが配られます
             </li>
@@ -33,13 +33,16 @@ export const RulesPage = () => {
               <strong>ヒット</strong>: カードを1枚引きます
             </li>
             <li>
+              <span>本ゲームでは、ダブルとスプリットはできません。</span>
+            </li>
+            {/* <li>
               <s>ダブル</s>:
               賭け金を2倍にして、カードをもう1枚だけ引きます（本ゲームではサポートされていません）
             </li>
             <li>
               <s>スプリット</s>:
               同じ数字のカードが2枚あるとき、それを2つの手として分けて遊びます（本ゲームではサポートされていません）
-            </li>
+            </li> */}
           </ul>
           <h3 className="text-lg font-semibold mt-4 mb-2">ディーラーの動き</h3>
           <p>
