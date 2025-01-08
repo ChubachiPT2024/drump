@@ -2,7 +2,6 @@ import axios from "axios";
 
 import { MatchResult } from "@/presentation/types/matchResult";
 
-// TODO: 返り値の型を指定
 export const getResultApi = async (
   matchId: string
 ): Promise<MatchResult> => {

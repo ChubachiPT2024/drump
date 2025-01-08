@@ -4,7 +4,6 @@ import { cn } from "@/presentation/shadcnUI/lib/utils";
 
 import { RoundResultPlayer } from "@/presentation/types/roundResultPlayer";
 
-// TODO: ドメインに合わせて、プレイヤーの型を参照する
 interface PlayerResultCardProps {
   player: RoundResultPlayer;
 }
