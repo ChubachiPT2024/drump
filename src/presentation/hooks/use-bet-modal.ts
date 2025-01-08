@@ -7,7 +7,7 @@ interface BetModalState {
 }
 
 export const useBetModal = create<BetModalState>((set) => ({
-    isOpen: true,
+    isOpen: false,
     onOpen: () => set({ isOpen: true }),
     onClose: () => set({ isOpen: false }),
 }));

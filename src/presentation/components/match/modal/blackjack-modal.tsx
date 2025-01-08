@@ -1,18 +1,19 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 
-import { useRoundStartModal } from "@/presentation/hooks/use-round-start-modal";
+import { useBlackJackModal } from "@/presentation/hooks/use-blackjack-modal";
 
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/presentation/shadcnUI/components/ui/dialog";
 
 export const BlackjackModal = () => {
-  const isOpen = useRoundStartModal((state) => state.isOpen);
-  const onClose = useRoundStartModal((state) => state.onClose);
+  const isOpen = useBlackJackModal((state) => state.isOpen);
+  const onClose = useBlackJackModal((state) => state.onClose);
 
   // ダイアログを自動的に閉じる;
   useEffect(() => {
@@ -45,6 +46,10 @@ export const BlackjackModal = () => {
           className="bg-slate-900/80 h-[45vh] max-w-[100vw] w-full flex items-center justify-center sm:rounded-none border-1 border-slate-900 py-2"
         >
           <DialogHeader className="relative w-full h-full flex flex-col items-center justify-between">
+            <DialogDescription className="sr-only">
+              Black jack notification modal with decorative crown images and
+              animations
+            </DialogDescription>
             <div className="relative w-full flex items-center justify-center">
               <div className="w-1/2 h-[2px] filter blur-sm bg-gradient-to-r from-yellow-400 via-yellow-600 to-yellow-800 shadow-[0_0_8px_1px_rgba(208,169,0,1)]" />
               <div className="flex items-center justify-center mx-4">

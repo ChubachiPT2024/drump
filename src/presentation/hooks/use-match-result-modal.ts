@@ -7,8 +7,7 @@ interface MatchResultModalState {
 }
 
 export const useMatchResultModal = create<MatchResultModalState>((set) => ({
-    // TODO: isOpenをfalseにする
-    isOpen: true,
+    isOpen: false,
     onOpen: () => set({ isOpen: true }),
     onClose: () => set({ isOpen: false }),
 }));

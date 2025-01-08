@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/presentation/shadcnUI/components/ui/dialog";
 
 export const HitModal = () => {
@@ -19,7 +20,7 @@ export const HitModal = () => {
     if (isOpen) {
       const timer = setTimeout(() => {
         onClose();
-      }, 2000);
+      }, 1400);
 
       return () => clearTimeout(timer);
     }
@@ -45,6 +46,9 @@ export const HitModal = () => {
           className="bg-slate-900/80 h-[35vh] max-w-[100vw] w-full flex items-center justify-center sm:rounded-none border-1 border-slate-900 py-2 data-[state=open]:slide-in-from-left-full data-[state=closed]:slide-out-to-right-full data-[state=open]:duration-700 data-[state=closed]:duration-700"
         >
           <DialogHeader className="relative w-full h-full flex flex-col items-center justify-between">
+            <DialogDescription className="sr-only">
+              Hit notification modal with decorative card images and animations
+            </DialogDescription>
             <div className="relative w-full flex items-center justify-center">
               <div className="flex items-center justify-center mx-4">
                 <img

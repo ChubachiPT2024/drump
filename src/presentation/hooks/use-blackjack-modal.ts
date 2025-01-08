@@ -7,7 +7,7 @@ interface BlackJackModalState {
 }
 
 export const useBlackJackModal = create<BlackJackModalState>((set) => ({
-    isOpen: true,
+    isOpen: false,
     onOpen: () => set({ isOpen: true }),
     onClose: () => set({ isOpen: false }),
 }));

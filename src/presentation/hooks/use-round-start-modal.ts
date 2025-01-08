@@ -7,7 +7,7 @@ interface RoundStartModalState {
 }
 
 export const useRoundStartModal = create<RoundStartModalState>((set) => ({
-    isOpen: true,
+    isOpen: false,
     onOpen: () => set({ isOpen: true }),
     onClose: () => set({ isOpen: false }),
 }));

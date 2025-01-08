@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/presentation/shadcnUI/components/ui/dialog";
 
 interface RotationModalProps {
@@ -49,6 +50,10 @@ export const RotationModal = ({ name }: RotationModalProps) => {
           className="bg-slate-900/80 h-[35vh] max-w-[100vw] w-full flex items-center justify-center sm:rounded-none border-1 border-slate-900 py-2 data-[state=open]:slide-in-from-left-full data-[state=closed]:slide-out-to-right-full data-[state=open]:duration-700 data-[state=closed]:duration-700"
         >
           <DialogHeader className="relative w-full h-full flex flex-col items-center justify-between">
+            <DialogDescription className="sr-only">
+              Rotation notification modal with decorative card images and
+              animations
+            </DialogDescription>
             <div className="relative w-full flex items-center justify-center">
               <div className="w-full h-[2px] filter blur-sm bg-white shadow-[0_0_8px_1px_rgba(255,255,255,0.5)]" />
             </div>
