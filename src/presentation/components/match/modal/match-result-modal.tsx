@@ -32,9 +32,6 @@ interface MatchResultModalProps {
   matchResultPlayers: MatchResultPlayer[];
 }
 
-// TODO: 定数として集約して管理する
-const TOTAL_ROUNDS = 10;
-
 export const MatchResultModal = ({
   matchResultPlayers,
 }: MatchResultModalProps) => {
@@ -45,7 +42,7 @@ export const MatchResultModal = ({
 
   const predefinedFields = ["final", "balance"];
   const roundFields = Array.from(
-    { length: TOTAL_ROUNDS },
+    { length: matchResultPlayers[0].rounds.length },
     (_, index) => `round${index + 1}`
   );
   const fields = [...roundFields, ...predefinedFields];
