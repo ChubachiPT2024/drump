@@ -34,4 +34,11 @@ export interface MatchNotification {
    * @param roundCount ラウンド数
    */
   notifyRoundCount(roundCount: RoundCount): void;
+
+  /**
+   * 試合が完了しているかどうかを通知する
+   *
+   * @param isCompleted 試合が完了しているかどうか
+   */
+  notifyIsCompleted(isCompleted: boolean): void;
 }

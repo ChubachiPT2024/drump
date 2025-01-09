@@ -77,7 +77,7 @@ const playerIdToNameMap = new Map(
 );
 
 // 試合
-for (let i = 0; i < 10; i++) {
+while (true) {
   // ラウンドの開始
   await matchApplicationService.startRoundAsync(
     new MatchStartRoundCommand(matchId),
@@ -188,6 +188,14 @@ for (let i = 0; i < 10; i++) {
     console.log(`Outcome: ${player.result}`);
     console.log(`Credit: ${player.credit}`);
     console.log();
+  }
+
+  // 試合完了判定
+  const matchAfterRoundSummary = await matchApplicationService.getSummaryAsync(
+    new MatchGetSummaryCommand(matchId),
+  );
+  if (matchAfterRoundSummary.isCompleted) {
+    break;
   }
 }
 

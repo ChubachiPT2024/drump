@@ -1,15 +1,9 @@
 import { useState } from "react";
 import ReactCardFlip from "react-card-flip";
 import { motion } from "framer-motion";
-import { MatchGetPlayerHandApiResponseCard } from "../../types/matchGetPlayerHandApiResponseCard";
+import { Card } from "../../types/Card";
 
-export const Card = ({
-  isOpen,
-  initial,
-  animate,
-  suit,
-  rank,
-}: {
+interface CardComponentProps {
   isOpen: boolean;
   initial: {
     x: string;
@@ -19,9 +13,19 @@ export const Card = ({
     x: string;
     y: string;
   };
-  suit: Pick<MatchGetPlayerHandApiResponseCard, "suit">["suit"] | "reverse";
-  rank: Pick<MatchGetPlayerHandApiResponseCard, "rank">["rank"] | "reverse";
-}) => {
+  suit: Pick<Card, "suit">["suit"] | "reverse";
+  rank: Pick<Card, "rank">["rank"] | "reverse";
+  delay?: number;
+}
+
+export const CardComponent = ({
+  isOpen,
+  initial,
+  animate,
+  suit,
+  rank,
+  delay,
+}: CardComponentProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
@@ -32,6 +36,7 @@ export const Card = ({
         type: "linear",
         stiffness: 150,
         damping: 20,
+        delay: delay,
       }}
       onAnimationComplete={() => {
         if (isOpen) {

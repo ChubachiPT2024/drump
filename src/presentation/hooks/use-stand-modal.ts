@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 
-interface BetModalState {
+interface StandModalState {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
 }
 
-export const useBetModal = create<BetModalState>((set) => ({
+export const useStandModal = create<StandModalState>((set) => ({
     isOpen: false,
     onOpen: () => set({ isOpen: true }),
     onClose: () => set({ isOpen: false }),
