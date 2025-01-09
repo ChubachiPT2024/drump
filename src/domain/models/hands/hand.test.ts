@@ -147,6 +147,21 @@ describe("calculate soft total", () => {
   });
 });
 
+describe("calculate hard total", () => {
+  test("All the aces are considered 11.", () => {
+    // Arrange
+    const hand = Hand.create()
+      .add(new Card(Rank.Ace, Suit.Spade))
+      .add(new Card(Rank.Ace, Suit.Spade));
+
+    // Act
+    const hardTotal = hand.calculateHardTotal();
+
+    // Assert
+    expect(hardTotal).toBe(2);
+  });
+});
+
 describe("count", () => {
   test("The count of empty hand is 0.", () => {
     // Arrange

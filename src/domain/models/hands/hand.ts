@@ -57,7 +57,7 @@ export class Hand {
    *
    * @returns ハードトータル
    */
-  private calculateHardTotal(): number {
+  public calculateHardTotal(): number {
     return this.cards
       .map((card) => card.getHardPoint())
       .reduce((sum, point) => (sum += point), 0);
