@@ -23,7 +23,7 @@ export class MatchGetSummaryResult implements MatchNotification {
   /**
    * プレイヤー
    */
-  public readonly player = new MatchGetSummaryResultPlayer();
+  public players?: MatchGetSummaryResultPlayer[];
 
   /**
    * ラウンド数
@@ -56,10 +56,17 @@ export class MatchGetSummaryResult implements MatchNotification {
   /**
    * プレイヤーを通知する
    *
-   * @param player プレイヤー
+   * @param players プレイヤー
    */
-  public notifyPlayer(player: Player): void {
-    player.notify(this.player);
+  public notifyPlayers(players: Player[]): void {
+    const notifications = [];
+    for (const player of players) {
+      const notification = new MatchGetSummaryResultPlayer();
+      player.notify(notification);
+      notifications.push(notification);
+    }
+
+    this.players = notifications;
   }
 
   /**

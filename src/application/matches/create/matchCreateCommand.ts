@@ -5,7 +5,7 @@ export class MatchCreateCommand {
   /**
    * コンストラクタ
    *
-   * @param userId ユーザ ID
+   * @param userIds ユーザ ID
    */
-  public constructor(public readonly userId: string) {}
+  public constructor(public readonly userIds: string[]) {}
 }

@@ -1,14 +1,19 @@
 import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Dealer } from "../dealers/dealer";
+import { Hand } from "../hands/hand";
 import { Player } from "../players/player";
+import { PlayerId } from "../players/playerId";
 import { RoundCount } from "../roundCounts/roundCount";
 import { RoundHistory } from "../roundHistories/roundHistory";
 import { RoundPlayerHistory } from "../roundHistories/roundPlayerHistory";
 import { RoundResult } from "../roundResultCalculators/roundResult";
 import { RoundResultCalculator } from "../roundResultCalculators/roundResultCalculator";
 import { Shoe } from "../shoes/shoe";
+import { UserId } from "../users/userId";
+import { MatchCannotHitError } from "./matchCannotHitError";
 import { MatchId } from "./matchId";
 import { MatchNotification } from "./matchNotification";
+import { MatchPlayerNotFoundError } from "./matchPlayerNotFoundError";
 
 /**
  * 試合
@@ -25,7 +30,7 @@ export class Match {
    * @param id ID
    * @param shoe シュー
    * @param dealer ディーラー
-   * @param player プレイヤー
+   * @param players プレイヤー
    * @param roundCount ラウンド数
    * @param roundResultCalculator ラウンド結果計算機
    * @param roundHistories ラウンド履歴
@@ -34,7 +39,7 @@ export class Match {
     public readonly id: MatchId,
     private shoe: Shoe,
     private readonly dealer: Dealer,
-    private readonly player: Player,
+    private readonly players: Player[],
     private roundCount: RoundCount,
     private readonly roundResultCalculator: RoundResultCalculator,
     private readonly roundHistories: RoundHistory[],
@@ -45,15 +50,15 @@ export class Match {
    *
    * @param id ID
    * @param dealer ディーラー
-   * @param player プレイヤー
+   * @param players プレイヤー
    * @returns インスタンス
    */
-  public static create(id: MatchId, dealer: Dealer, player: Player) {
+  public static create(id: MatchId, dealer: Dealer, players: Player[]) {
     return new Match(
       id,
       Shoe.createFromDecks(this.NUMBER_OF_DECKS).suffle(),
       dealer,
-      player,
+      players,
       RoundCount.ZERO,
       new RoundResultCalculator(),
       [],
@@ -70,18 +75,22 @@ export class Match {
       this.dealCardToDealer();
     }
 
-    for (let i = 0; i < 2; i++) {
-      this.dealCardToPlayer();
+    for (const player of this.players) {
+      for (let i = 0; i < 2; i++) {
+        player.addCardToHand(this.shoe.peek());
+        this.shoe = this.shoe.draw();
+      }
     }
   }
 
   /**
    * ベットする
    *
+   * @param playerId プレイヤー ID
    * @param amount 額
    */
-  public bet(amount: ChipAmount): void {
-    this.player.bet(amount);
+  public bet(playerId: PlayerId, amount: ChipAmount): void {
+    this.getPlayer(playerId).bet(amount);
   }
 
   /**
@@ -95,29 +104,27 @@ export class Match {
   }
 
   /**
-   * プレイヤーにカードを配る
+   * ヒットする
+   *
+   * @param playerId プレイヤー ID
    */
-  public dealCardToPlayer(): void {
-    this.player.addCardToHand(this.shoe.peek());
+  public hit(playerId: PlayerId): void {
+    const player = this.getPlayer(playerId);
+    if (!player.getHand().canHit()) {
+      throw new MatchCannotHitError();
+    }
 
-    // TODO シューをエンティティにするかどうか
+    player.addCardToHand(this.shoe.peek());
     this.shoe = this.shoe.draw();
   }
 
   /**
-   * ヒットできるかどうかを取得する
-   *
-   * @returns ヒットできるかどうか
-   */
-  public canHit(): boolean {
-    return this.player.getHand().canHit();
-  }
-
-  /**
    * スタンドする
+   *
+   * @param playerId プレイヤー ID
    */
-  public stand(): void {
-    return this.player.stand();
+  public stand(playerId: PlayerId): void {
+    return this.getPlayer(playerId).stand();
   }
 
   // TODO テストを書けていないので修正の余地あり
@@ -139,38 +146,52 @@ export class Match {
    */
   public completeRound(): void {
     this.resolveDealersHand();
-    this.settleRound();
+
+    for (const player of this.players) {
+      this.settleRound(player.id);
+    }
 
     this.roundHistories.push(
       new RoundHistory(
         this.roundCount,
         this.dealer.getHand(),
-        new RoundPlayerHistory(
-          this.calculateRoundResult(),
-          this.player.getCredit(),
+        this.players.map(
+          (player) =>
+            new RoundPlayerHistory(
+              player.id,
+              this.calculateRoundResult(player.id),
+              player.getCredit(),
+            ),
         ),
       ),
     );
 
     this.dealer.discard();
-    this.player.discard();
+    for (const player of this.players) {
+      player.discard();
+    }
   }
 
   // TODO テストを書けていないので修正の余地あり
   /**
    * ラウンドの清算処理を実行する
+   *
+   * @param playerId プレイヤー ID
    */
-  public settleRound(): void {
-    switch (this.calculateRoundResult()) {
+  public settleRound(playerId: PlayerId): void {
+    const player = this.getPlayer(playerId);
+    switch (this.calculateRoundResult(playerId)) {
       case RoundResult.Win:
-        this.player.collectPayoff(this.calculatePayoff());
-        this.player.collectBet();
+        player.collectPayoff(
+          Match.calculatePayoff(player.getHand(), player.getBetAmount()),
+        );
+        player.collectBet();
         break;
       case RoundResult.Push:
-        this.player.collectBet();
+        player.collectBet();
         break;
       case RoundResult.Loss:
-        this.player.loseBet();
+        player.loseBet();
         break;
     }
   }
@@ -178,23 +199,30 @@ export class Match {
   /**
    * ラウンドの結果を計算する
    *
+   * @param playerId プレイヤー ID
    * @returns ラウンドの結果
    */
-  private calculateRoundResult(): RoundResult {
+  private calculateRoundResult(playerId: PlayerId): RoundResult {
     return this.roundResultCalculator.calculate(
-      this.player.getHand(),
+      this.getPlayer(playerId).getHand(),
       this.dealer.getHand(),
     );
   }
 
+  // TODO 別クラスに定義できる可能性あり
   /**
    * ペイオフを計算する
    *
+   * @param hand ハンド
+   * @param betAmount ベット額
    * @returns ペイオフ
    */
-  private calculatePayoff(): ChipAmount {
-    const rate = this.player.getHand().isBlackJack() ? 1.5 : 1;
-    return this.player.getBetAmount().multiplyAndCeil(rate);
+  private static calculatePayoff(
+    hand: Hand,
+    betAmount: ChipAmount,
+  ): ChipAmount {
+    const rate = hand.isBlackJack() ? 1.5 : 1;
+    return betAmount.multiplyAndCeil(rate);
   }
 
   /**
@@ -225,6 +253,42 @@ export class Match {
   }
 
   /**
+   * プレイヤーを取得する
+   *
+   * @param playerId プレイヤー ID
+   * @returns プレイヤー
+   */
+  private getPlayer(playerId: PlayerId): Player {
+    const player = this.players.find(
+      (player) => player.id.value === playerId.value,
+    );
+    if (!player) {
+      throw new MatchPlayerNotFoundError();
+    }
+
+    return player;
+  }
+
+  /**
+   * プレイヤー ID リストを取得する
+   *
+   * @returns プレイヤー ID リスト
+   */
+  public getPlayerIds(): PlayerId[] {
+    return this.players.map((player) => player.id);
+  }
+
+  /**
+   * 指定されたプレイヤーのユーザ ID を取得する
+   *
+   * @param playerId プレイヤー ID
+   * @returns ユーザ ID
+   */
+  public getUserId(playerId: PlayerId): UserId {
+    return this.getPlayer(playerId).userId;
+  }
+
+  /**
    * 通知する
    *
    * @param notification 通知
@@ -232,7 +296,7 @@ export class Match {
   public notify(notification: MatchNotification): void {
     notification.notifyId(this.id);
     notification.notifyDealer(this.dealer);
-    notification.notifyPlayer(this.player);
+    notification.notifyPlayers(this.players);
     notification.notifyRoundCount(this.roundCount);
     notification.notifyIsCompleted(this.isCompleted());
   }

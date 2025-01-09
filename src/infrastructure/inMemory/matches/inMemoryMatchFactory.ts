@@ -22,14 +22,14 @@ export class InMemoryMatchFactory implements MatchFactory {
   /**
    * 試合を生成する
    *
-   * @param userId ユーザ ID
+   * @param userIds ユーザ ID
    * @returns 試合
    */
-  public create(userId: UserId): Match {
+  public create(userIds: UserId[]): Match {
     return Match.create(
       new MatchId(crypto.randomUUID()),
       this.dealerFactory.create(),
-      this.playerFactory.create(userId),
+      userIds.map((userId) => this.playerFactory.create(userId)),
     );
   }
 }

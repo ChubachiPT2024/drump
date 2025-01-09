@@ -14,7 +14,7 @@ describe("save", () => {
     const expected = Match.create(
       new MatchId("matchId"),
       Dealer.create(new DealerId("dealerId")),
-      Player.create(new PlayerId("playerId"), new UserId("userId")),
+      [Player.create(new PlayerId("playerId"), new UserId("userId"))],
     );
 
     await repository.saveAsync(expected);
