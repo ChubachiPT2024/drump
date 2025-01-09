@@ -3,123 +3,210 @@ import { useParams } from "react-router-dom";
 import { Hand, CopyPlus, Layers2, Subscript, CircleHelp } from "lucide-react";
 import Avatar, { genConfig } from "react-nice-avatar";
 
+import { RoundStartModal } from "../components/match/modal/round-start-modal";
+import { BetModal } from "../components/match/modal/bet-modal";
+import { RotationModal } from "../components/match/modal/rotation-modal";
+import { BlackjackModal } from "../components/match/modal/blackjack-modal";
+import { HitModal } from "../components/match/modal/hit-modal";
+import { StandModal } from "../components/match/modal/stand-modal";
+import { RoundResultModal } from "../components/match/modal/round-result-modal";
+import { MatchResultModal } from "../components/match/modal/match-result-modal";
 import { CardComponent } from "../components/match/cardComponent";
-import { BetModal } from "../components/match/bet-modal";
-import { RoundResultModal } from "../components/match/round-result-modal";
-import { MatchResultModal } from "../components/match/match-result-modal";
-import { RotationModal } from "../components/match/rotation-modal";
-import { RoundStartModal } from "../components/match/round-start-modal";
-import { HitModal } from "../components/match/hit-modal";
-import { StandModal } from "../components/match/stand-modal";
-import { BlackjackModal } from "../components/match/blackjack-modal";
 import { HandSignalButton } from "../components/match/hand-signal-button";
-import { Logo } from "../components/share/logo";
 import { HelpButton } from "../components/match/help-button";
+import { Logo } from "../components/share/logo";
 import { HintToggle } from "../components/match/hint-toggle";
 
 import { ResultSummary } from "../types/resultSummary";
 import { RoundResult } from "../types/roundResult";
+import { MatchResult } from "../types/matchResult";
+
+import { postMatchStartApi } from "../hooks/api/matchStartRound";
+import { getMatchResultSummaryApi } from "../hooks/api/matchResultSummary";
+import { postMatchBetApi } from "../hooks/api/matchBet";
 import { postHitApi } from "../hooks/api/matchHit";
 import { postStandApi } from "../hooks/api/matchStand";
-import { postMatchBetApi } from "../hooks/api/matchBet";
-import { getMatchResultSummaryApi } from "../hooks/api/matchResultSummary";
-import { getRoundResultApi } from "../hooks/api/matchRoundResult";
 import { postRoundCompleteApi } from "../hooks/api/matchRoundComplete";
+import { getRoundResultApi } from "../hooks/api/matchRoundResult";
+import { getResultApi } from "../hooks/api/matchResult";
+
+import { useRoundStartModal } from "../hooks/use-round-start-modal";
+import { useBetModal } from "../hooks/use-bet-modal";
+import { useRotationModal } from "../hooks/use-rotation-modal";
+import { useBlackJackModal } from "../hooks/use-blackjack-modal";
+import { useHitModal } from "../hooks/use-hit-modal";
+import { useStandModal } from "../hooks/use-stand-modal";
+import { useRoundResultModal } from "../hooks/use-round-result-modal";
+import { useMatchResultModal } from "../hooks/use-match-result-modal";
+import { set } from "zod";
 
 export const MatchPage = () => {
   const { matchId } = useParams<{ matchId: string }>();
 
+  const { onOpen: onOpenRoundStartModal } = useRoundStartModal();
+  const { onOpen: onOpenBetModal } = useBetModal();
+  const { onOpen: onOpenRotationModal } = useRotationModal();
+  const { onOpen: onOpenBlackjackModal } = useBlackJackModal();
+  const { onOpen: onOpenHitModal } = useHitModal();
+  const { onOpen: onOpenStandModal } = useStandModal();
+  const { onOpen: onOpenRoundResultModal } = useRoundResultModal();
+  const { onOpen: onOpenMatchResultModal } = useMatchResultModal();
+
   // TODO: 現在のプレイヤーの名前を毎回代入する形に変更する
   const avatarConfig = genConfig("Player 2");
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isBeting, setIsBeting] = useState<boolean>(true);
+  const [isDealing, setIsDealing] = useState<boolean>(false);
+
   const [matchResultSummary, setMatchResultSummary] = useState<
     ResultSummary | undefined
   >(undefined);
   const [roundResult, setRoundResult] = useState<RoundResult | undefined>(
     undefined
   );
+  const [matchResult, setMatchResult] = useState<MatchResult | undefined>(
+    undefined
+  );
   const [isHintEnabled, setIsHintEnabled] = useState(false);
 
-  // TODO: ドメイン層からプレイヤー情報を取得する
-  // ハンドではなく、スートとランクにするかも、ほかプレイヤーの情報は変更の可能性あり
-  const [players, setPlayers] = useState([
-    { id: 1, name: "Player 1", hand: 10, isCurrent: false },
-    { id: 5, name: "Player 5", hand: 14, isCurrent: false },
-    { id: 3, name: "Player 3", hand: 12, isCurrent: false },
-    { id: 2, name: "Player 2", hand: 18, isCurrent: true },
-    { id: 4, name: "Player 4", hand: 8, isCurrent: false },
-    { id: 6, name: "Player 6", hand: 16, isCurrent: false },
-    { id: 7, name: "Player 7", hand: 20, isCurrent: false },
-  ]);
-
-  const currentPlayerIndex = players.findIndex((player) => player.isCurrent);
-
-  // プレイヤー間の高さ調整用固定値
-  // TODO: 画面幅に応じて高さを調整する
-  const otherPlayersSpacingHeight =
-    players.length > 1
-      ? 40 * players.length // 基本高さをプレイヤー数に応じてスケーリング
-      : 150; // プレイヤーが1人の場合のデフォルト高さ
+  const handleCardDealing = async () => {
+    setIsDealing(true);
+    // カード配布のアニメーション時間を待つ
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setIsDealing(false);
+  };
 
   const handleHit = async (matchId: string) => {
     await postHitApi(matchId);
+    onOpenHitModal();
     const matchResultSummaryResponse = await getMatchResultSummaryApi(matchId);
-    setMatchResultSummary(matchResultSummaryResponse);
+    setTimeout(async () => {
+      setMatchResultSummary(matchResultSummaryResponse);
+    }, 2000);
   };
 
   const handleStand = async (matchId: string) => {
     await postStandApi(matchId);
+    onOpenStandModal();
     const matchResultSummaryResponse = await getMatchResultSummaryApi(matchId);
-    setMatchResultSummary(matchResultSummaryResponse);
+    setTimeout(async () => {
+      setMatchResultSummary(matchResultSummaryResponse);
+    }, 2000);
   };
 
-  const handleBet = async (matchId: string, amount: number) => {
-    await postMatchBetApi(matchId, amount);
-    const matchResultSummaryResponse = await getMatchResultSummaryApi(matchId);
-    setMatchResultSummary(matchResultSummaryResponse);
+  const handleBet = async (
+    matchId: string,
+    playerId: string,
+    betAmount: number
+  ) => {
+    try {
+      // TODO: 複数人プレイヤーの場合に対応
+      await postMatchBetApi(matchId, betAmount);
+      const updatedSummary = await getMatchResultSummaryApi(matchId);
+      setMatchResultSummary(updatedSummary);
+
+      setIsBeting(false);
+
+      await handleCardDealing();
+    } catch (error) {
+      console.error("Error in betting:", error);
+    }
+  };
+
+  const handleRoundStart = async (matchId: string) => {
+    try {
+      await postMatchStartApi(matchId);
+
+      setIsBeting(true);
+      setRoundResult(undefined);
+
+      const matchResultSummaryResponse =
+        await getMatchResultSummaryApi(matchId);
+      setMatchResultSummary(matchResultSummaryResponse);
+
+      onOpenRoundStartModal();
+
+      setTimeout(() => {
+        onOpenBetModal();
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // TODO: 複数人用に後で対応する
+  const waitForDealerAnimation = (dealerCardCount: number) => {
+    const animationDuration = 0.5;
+    const totalTime = (dealerCardCount * animationDuration + 1) * 1000; // 1秒の余裕を持たせる
+
+    return new Promise((resolve) => {
+      setTimeout(resolve, totalTime);
+    });
+  };
+
+  // TODO: 複数人用に後で対応する
+  const calculateCardDelay = (cardIndex: number, type: "player" | "dealer") => {
+    const animationDuration = 0.5;
+
+    if (type === "player") {
+      // プレイヤーの最初の2枚は順番通り、それ以降は即時表示
+      return cardIndex < 2 ? animationDuration * cardIndex : animationDuration;
+    } else {
+      // ディーラーの最初の1枚はプレイヤーの2枚表示後、それ以降は順番通り
+      return cardIndex === 0
+        ? animationDuration * 2
+        : animationDuration * (cardIndex + 1);
+    }
   };
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!matchId) {
       return;
     }
 
-    const fetchRoundId = async () => {
-      if (matchId) {
-        const matchResultSummaryResponse =
-          await getMatchResultSummaryApi(matchId);
-        setMatchResultSummary(matchResultSummaryResponse);
-        setIsLoading(false);
-      }
-    };
     return () => {
-      fetchRoundId();
+      handleRoundStart(matchId);
     };
-  }, []);
+  }, [matchId]);
 
   useEffect(() => {
-    if (
-      matchResultSummary?.player.hand &&
-      matchResultSummary.player.hand.isResolved
-    ) {
-      const fetchDealerHand = async (matchId: string) => {
-        try {
-          await postRoundCompleteApi(matchId);
-          const roundResultResponse = await getRoundResultApi(matchId);
-          setRoundResult(roundResultResponse);
-        } catch (error) {
-          console.error("Error fetching dealer's hand:", error);
-        }
-      };
-      if (matchId) {
-        fetchDealerHand(matchId);
-        console.log("Round completed");
-      }
+    // TODO: すべてのプレイヤーのハンドが解決されているかどうかによる判定に変更する
+    if (!matchResultSummary?.player.hand?.isResolved || !matchId || isBeting) {
+      return;
     }
-  }, [matchResultSummary]);
 
-  if (!matchId || isLoading || !matchResultSummary) {
+    const fetchRoundComplete = async () => {
+      try {
+        await postRoundCompleteApi(matchId);
+
+        const roundResultResponse = await getRoundResultApi(matchId);
+        setRoundResult(roundResultResponse);
+
+        const matchResultSummaryResponse =
+          await getMatchResultSummaryApi(matchId);
+
+        // ディーラーのカード枚数を取得
+        const dealerCardCount = roundResultResponse.dealersHand.cards.length;
+        // アニメーションの完了を待つ
+        await waitForDealerAnimation(dealerCardCount);
+
+        if (matchResultSummaryResponse.isCompleted) {
+          const matchResultResponse = await getResultApi(matchId);
+          setMatchResult(matchResultResponse);
+
+          onOpenMatchResultModal();
+        } else {
+          onOpenRoundResultModal();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchRoundComplete();
+  }, [matchResultSummary, matchId]);
+
+  if (!matchId || !matchResultSummary) {
     return <div>Loading...</div>;
   }
 
@@ -139,8 +226,12 @@ export const MatchPage = () => {
                 text="Hint"
               />
             </div>
-            <div className="bg-white rounded-full px-2 border-yellow-500 border-2 w-32">
-              <p className="text-base text-black font-semibold">Round 1</p>
+
+            <div className="bg-white rounded-full px-2 border-yellow-500 border-2 ">
+              <p className="text-base text-black font-semibold">
+                Round {matchResultSummary.roundCount} / 10
+              </p>
+              
             </div>
           </div>
         </div>
@@ -152,11 +243,13 @@ export const MatchPage = () => {
       >
         <div id="dealer" className="bg-neutral-50/5 rounded-md relative">
           <div className="absolute top-1/2 -right-9 px-3 py-1.5 border-2 font-bold text-white bg-black rounded-xl z-10">
+            {/* TODO: upcardのみのtotalを取得したい */}
             4
             <div className="absolute top-1/2 -left-2 w-0 h-0 border-y-8 border-y-transparent border-r-8 transform -translate-y-1/2" />
           </div>
           <div className="flex space-x-2">
-            {matchResultSummary?.dealer.upCard &&
+            {!isBeting &&
+              matchResultSummary?.dealer.upCard &&
               (
                 roundResult?.dealersHand.cards ?? [
                   matchResultSummary.dealer.upCard,
@@ -166,15 +259,21 @@ export const MatchPage = () => {
                   <CardComponent
                     key={`dealer-${index}`}
                     isOpen={true}
-                    initial={{ x: "50vw", y: "25vh" }}
+                    initial={
+                      index === 1 // HoleCardの場合は移動前の位置を指定
+                        ? { x: "0vw", y: "0vh" }
+                        : { x: "50vw", y: "25vh" }
+                    }
                     animate={{ x: "0vw", y: "0vh" }}
                     suit={card.suit}
                     rank={card.rank}
+                    delay={calculateCardDelay(index, "dealer")}
                   />
                 );
               })}
 
-            {matchResultSummary?.player.hand &&
+            {!isBeting &&
+              matchResultSummary?.player.hand &&
               !matchResultSummary.player.hand.isResolved && (
                 <CardComponent
                   key="reverse"
@@ -183,6 +282,8 @@ export const MatchPage = () => {
                   animate={{ x: "0vw", y: "0vh" }}
                   suit={"reverse"}
                   rank={"reverse"}
+                  // TODO: 一旦固定値で設定
+                  delay={1.5}
                 />
               )}
           </div>
@@ -196,10 +297,13 @@ export const MatchPage = () => {
             Bet: {matchResultSummary.player.betAmount}
           </h2>
           <div className="absolute top-1/4 -right-24 z-10">
-            <div className="relative w-20 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl">
-              10/20
-              <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-0 h-0 border-y-4 border-y-transparent border-r-8" />
-            </div>
+            {!isBeting && (
+              <div className="relative w-20 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl">
+                {/* TODO: ソフトとハードの表示 */}
+                {matchResultSummary.player.hand.total}
+                <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-0 h-0 border-y-4 border-y-transparent border-r-8" />
+              </div>
+             )}
             {isHintEnabled && (
               <div className="absolute top-full mt-2 w-max px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl">
                 ヒント：XXX
@@ -208,7 +312,8 @@ export const MatchPage = () => {
           </div>
 
           <div className="flex space-x-2">
-            {matchResultSummary?.player.hand &&
+            {!isBeting &&
+              matchResultSummary?.player.hand &&
               matchResultSummary.player.hand.cards.map((card, index) => {
                 return (
                   <CardComponent
@@ -218,6 +323,7 @@ export const MatchPage = () => {
                     animate={{ x: "0vw", y: "0vh" }}
                     suit={card.suit}
                     rank={card.rank}
+                    delay={calculateCardDelay(index, "player")}
                   />
                 );
               })}
@@ -243,7 +349,7 @@ export const MatchPage = () => {
       </div>
 
       {/* TODO: 位置を調整する */}
-      <div id="otherPlayerInfo" className="absolute w-full">
+      {/* <div id="otherPlayerInfo" className="absolute w-full">
         {players.map((player, index) => {
           if (!player.isCurrent) {
             const positionClass =
@@ -271,7 +377,7 @@ export const MatchPage = () => {
             );
           }
         })}
-      </div>
+      </div> */}
 
       {/* TOOD: ボタンすべて、押下できるかの判定を追加する */}
       <div id="handSignal" className="flex justify-center pb-4 gap-x-4">
@@ -279,12 +385,10 @@ export const MatchPage = () => {
           text="STAND"
           icon={Hand}
           variant="danger"
-          action={() => handleStand(matchId)} // TODO: matchIdがundefinedの場合の処理を追加
+          action={() => handleStand(matchId)}
           disabled={
-            matchResultSummary?.player.handSignalOptions &&
-            !matchResultSummary.player.handSignalOptions.find(
-              (signal) => signal === "stand"
-            )
+            isDealing ||
+            !matchResultSummary.player.handSignalOptions?.includes("stand")
           }
         />
         {/* TODO: SPLIT機能を追加 */}
@@ -293,6 +397,7 @@ export const MatchPage = () => {
           icon={Layers2}
           variant="warning"
           action={() => {}}
+          disabled={isDealing}
         />
         {/* TODO: DOUBLE機能を追加 */}
         <HandSignalButton
@@ -300,6 +405,7 @@ export const MatchPage = () => {
           icon={Subscript}
           variant="primary"
           action={() => {}}
+          disabled={isDealing}
         />
         <HandSignalButton
           text="HIT"
@@ -307,10 +413,8 @@ export const MatchPage = () => {
           variant="success"
           action={() => handleHit(matchId)}
           disabled={
-            matchResultSummary?.player.handSignalOptions &&
-            !matchResultSummary.player.handSignalOptions.find(
-              (signal) => signal === "hit"
-            )
+            isDealing ||
+            !matchResultSummary.player.handSignalOptions?.includes("hit")
           }
         />
       </div>
@@ -327,20 +431,47 @@ export const MatchPage = () => {
         </div>
       </div>
 
+      <RoundStartModal roundCount={matchResultSummary.roundCount} />
       <BetModal
         matchId={matchId}
-        onClickDeal={handleBet}
-        credit={matchResultSummary.player.credit}
+        handleBet={handleBet}
+        players={[
+          {
+            // TODO: プレイヤーをapiから取得して表示する
+            id: matchResultSummary?.player.id,
+            name: "Player 1",
+            credit: matchResultSummary?.player.credit,
+          },
+        ]}
       />
-      {/* <RoundResultModal /> */}
-      {/* <MatchResultModal /> */}
       {/* TODO: プレイヤーの情報を取得して表示する */}
       {/* <RotationModal name={"Player2"} /> */}
-      {/* TODO: ラウンドを取得して表示する */}
-      {/* <RoundStartModal roundNumber={1} /> */}
-      {/* <HitModal /> */}
-      {/* <StandModal /> */}
       {/* <BlackjackModal /> */}
+      <HitModal />
+      <StandModal />
+      {roundResult && (
+        <RoundResultModal
+          matchId={matchId}
+          roundResultPlayers={[roundResult.player].map((player) => ({
+            // TODO: プレイヤーのnameを取得して表示する
+            name: "Player 1",
+            result: player.result,
+            credit: player.credit,
+          }))}
+          handleRoundStart={handleRoundStart}
+        />
+      )}
+      {matchResult && (
+        <MatchResultModal
+          matchResultPlayers={[matchResult.player].map((player) => ({
+            // TODO: プレイヤーのnameを取得して表示する
+            name: "Player 1",
+            rounds: player.creditHistories,
+            finalCredit: player.finalCredit,
+            balance: player.balance,
+          }))}
+        />
+      )}
     </div>
   );
 };

@@ -11,6 +11,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogTitle,
+  DialogDescription,
 } from "@/presentation/shadcnUI/components/ui/dialog";
 import {
   Table,
@@ -25,94 +26,26 @@ import { Separator } from "@/presentation/shadcnUI/components/ui/separator";
 
 import { cn } from "@/presentation/shadcnUI/lib/utils";
 
-// TODO: マッチ結果をapiから取得する
-const matchResult = [
-  {
-    name: "Player 1",
-    round1: 50000,
-    round2: 50000,
-    round3: 51000,
-    round4: 52000,
-    round5: 53000,
-    round6: 54000,
-    round7: 55000,
-    round8: 56000,
-    round9: 57000,
-    round10: 58000,
-    final: 58000,
-    balance: 8000,
-  },
-  {
-    name: "Player 2",
-    round1: 50000,
-    round2: 51000,
-    round3: 52000,
-    round4: 53000,
-    round5: 54000,
-    round6: 55000,
-    round7: 56000,
-    round8: 57000,
-    round9: 58000,
-    round10: 59000,
-    final: 59000,
-    balance: 9000,
-  },
-  {
-    name: "Player 3",
-    round1: 50000,
-    round2: 52000,
-    round3: 53000,
-    round4: 54000,
-    round5: 55000,
-    round6: 56000,
-    round7: 57000,
-    round8: 58000,
-    round9: 59000,
-    round10: 60000,
-    final: 60000,
-    balance: 10000,
-  },
-  {
-    name: "Player 4",
-    round1: 50000,
-    round2: 53000,
-    round3: 54000,
-    round4: 55000,
-    round5: 56000,
-    round6: 57000,
-    round7: 58000,
-    round8: 59000,
-    round9: 60000,
-    round10: 61000,
-    final: 61000,
-    balance: 11000,
-  },
-  {
-    name: "Player 5",
-    round1: 50000,
-    round2: 54000,
-    round3: 55000,
-    round4: 56000,
-    round5: 57000,
-    round6: 58000,
-    round7: 59000,
-    round8: 60000,
-    round9: 61000,
-    round10: 62000,
-    final: 62000,
-    balance: 12000,
-  },
-];
+import { MatchResultPlayer } from "@/presentation/types/matchResultPlayer";
 
-export const MatchResultModal = () => {
+interface MatchResultModalProps {
+  matchResultPlayers: MatchResultPlayer[];
+}
+
+export const MatchResultModal = ({
+  matchResultPlayers,
+}: MatchResultModalProps) => {
   const navigate = useNavigate();
 
   const isOpen = useMatchResultModal((state) => state.isOpen);
   const onClose = useMatchResultModal((state) => state.onClose);
 
-  const fields = Object.keys(matchResult[0]).filter(
-    (key): key is keyof (typeof matchResult)[0] => key !== "name"
+  const predefinedFields = ["final", "balance"];
+  const roundFields = Array.from(
+    { length: matchResultPlayers[0].rounds.length },
+    (_, index) => `round${index + 1}`
   );
+  const fields = [...roundFields, ...predefinedFields];
 
   const handleReMatch = () => {
     // TODO: もう一度マッチを開始する処理を追加
@@ -120,17 +53,19 @@ export const MatchResultModal = () => {
   };
 
   const handleEndMatch = () => {
-    onClose();
     navigate("/");
   };
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={onClose}>
+      <Dialog open={isOpen}>
         <DialogContent className="max-w-[95vw] sm:max-w-[80vw] md:max-w-[75vw] lg:max-w-[70vw] pt-0 WhiteDot">
           <DialogClose className="absolute top-4 right-4">
-            <X className="size-6 my-auto" />
+            <X onClick={handleEndMatch} className="size-6 my-auto" />
           </DialogClose>
+          <DialogDescription className="sr-only">
+            Match result modal with leaderboard and match records
+          </DialogDescription>
           <ScrollArea className="h-[80vh] rounded-lg px-4 mt-10">
             <div className="space-y-4">
               <div id="leaderboard" className="space-y-2">
@@ -147,7 +82,8 @@ export const MatchResultModal = () => {
                   </DialogTitle>
                   <Separator className="px-10 my-2 bg-gradient-to-r from-emerald-400 via-green-300 to-teal-400" />
                 </motion.div>
-                {[...matchResult]
+                {/* TODO: 順位はAPIから取得する */}
+                {[...matchResultPlayers]
                   .sort((a, b) => b.balance - a.balance)
                   .slice(0, 3)
                   .map((player, index) => (
@@ -179,7 +115,7 @@ export const MatchResultModal = () => {
                           </div>
                           <div className="flex justify-between items-center gap-4">
                             <div className="text-xl md:text-2xl xl:text-3xl text-white/90">
-                              Final: {player.final.toLocaleString()}
+                              Final: {player.finalCredit.toLocaleString()}
                             </div>
                             <div className="text-xl md:text-2xl xl:text-3xl text-white/90">
                               Balance: {player.balance.toLocaleString()}
@@ -197,7 +133,8 @@ export const MatchResultModal = () => {
                 >
                   <Table className="mt-0">
                     <TableBody>
-                      {[...matchResult]
+                      {/* TODO: 順位はAPIから取得する */}
+                      {[...matchResultPlayers]
                         .sort((a, b) => b.balance - a.balance)
                         .slice(3)
                         .map((player, index) => (
@@ -208,7 +145,7 @@ export const MatchResultModal = () => {
                             <TableHead className="w-16">{index + 4}</TableHead>
                             <TableHead>{player.name}</TableHead>
                             <TableHead className="text-right">
-                              {player.final.toLocaleString()}
+                              {player.finalCredit.toLocaleString()}
                             </TableHead>
                             <TableHead className="text-right">
                               {player.balance.toLocaleString()}
@@ -234,9 +171,9 @@ export const MatchResultModal = () => {
                   <TableHeader className="sticky top-0 z-10">
                     <TableRow className="bg-slate-800 hover:bg-slate-800/90 transition-colors">
                       <TableHead className="text-white font-bold py-4 px-6">
-                        Round
+                        Records
                       </TableHead>
-                      {matchResult.map((player) => (
+                      {matchResultPlayers.map((player) => (
                         <TableHead
                           className="text-white font-bold py-4 px-6"
                           key={player.name}
@@ -258,12 +195,14 @@ export const MatchResultModal = () => {
                         <TableHead className="font-semibold py-3 px-6">
                           {field}
                         </TableHead>
-                        {matchResult.map((player, playerIndex) => (
+                        {matchResultPlayers.map((player, playerIndex) => (
                           <TableHead
                             key={playerIndex}
                             className="text-slate-600 py-3 px-6"
                           >
-                            {player[field].toLocaleString()}
+                            {field.startsWith("round") && player.rounds[index]}
+                            {field === "final" && player.finalCredit}
+                            {field === "balance" && player.balance}
                           </TableHead>
                         ))}
                       </TableRow>

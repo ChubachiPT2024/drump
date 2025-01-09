@@ -8,13 +8,14 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/presentation/shadcnUI/components/ui/dialog";
 
 type RoundStartModalProps = {
-  roundNumber: number;
+  roundCount: number;
 };
 
-export const RoundStartModal = ({ roundNumber }: RoundStartModalProps) => {
+export const RoundStartModal = ({ roundCount }: RoundStartModalProps) => {
   const isOpen = useRoundStartModal((state) => state.isOpen);
   const onClose = useRoundStartModal((state) => state.onClose);
 
@@ -23,7 +24,7 @@ export const RoundStartModal = ({ roundNumber }: RoundStartModalProps) => {
     if (isOpen) {
       const timer = setTimeout(() => {
         onClose();
-      }, 2000);
+      }, 1400);
 
       return () => clearTimeout(timer);
     }
@@ -49,6 +50,10 @@ export const RoundStartModal = ({ roundNumber }: RoundStartModalProps) => {
           className="bg-slate-900/80 h-[35vh] max-w-[100vw] w-full flex items-center justify-center sm:rounded-none border-1 border-slate-900 py-2 data-[state=open]:slide-in-from-left-full data-[state=closed]:slide-out-to-right-full data-[state=open]:duration-700 data-[state=closed]:duration-700"
         >
           <DialogHeader className="relative w-full h-full flex flex-col items-center justify-between">
+            <DialogDescription className="sr-only">
+              Round start notification modal with decorative crown images and
+              animations
+            </DialogDescription>
             <div className="relative w-full flex items-center justify-center">
               <div className="w-1/2 h-[2px] filter blur-sm bg-white shadow-[0_0_8px_1px_rgba(255,255,255,0.5)]" />
               <div className="flex items-center justify-center mx-4">
@@ -70,7 +75,7 @@ export const RoundStartModal = ({ roundNumber }: RoundStartModalProps) => {
               >
                 <div className="relative px-4 pb-1">
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-200 via-gray-400 to-gray-200 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
-                    Round {roundNumber}
+                    Round {roundCount}
                   </span>
                   <div className="absolute -inset-1 bg-gradient-to-r from-gray-400/50 via-gray-300/50 to-gray-400/50 blur-lg -z-10" />
                   <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-gray-300 to-transparent" />

@@ -7,7 +7,7 @@ interface StandModalState {
 }
 
 export const useStandModal = create<StandModalState>((set) => ({
-    isOpen: true,
+    isOpen: false,
     onOpen: () => set({ isOpen: true }),
     onClose: () => set({ isOpen: false }),
 }));

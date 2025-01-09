@@ -1,18 +1,14 @@
-import { cn } from "@/presentation/shadcnUI/lib/utils";
 import Avatar, { genConfig } from "react-nice-avatar";
 
-// TODO: ドメインに合わせて、プレイヤーの型を参照する
+import { cn } from "@/presentation/shadcnUI/lib/utils";
+
+import { RoundResultPlayer } from "@/presentation/types/roundResultPlayer";
+
 interface PlayerResultCardProps {
-  player: Player;
-  outcome: string;
-  credit: number;
+  player: RoundResultPlayer;
 }
 
-export const PlayerResultCard = ({
-  player,
-  outcome,
-  credit,
-}: PlayerResultCardProps) => {
+export const PlayerResultCard = ({ player }: PlayerResultCardProps) => {
   const config = genConfig(player.name);
 
   return (
@@ -20,8 +16,8 @@ export const PlayerResultCard = ({
       <div
         className={cn(
           "py-2 px-4 rounded-md flex flex-row items-center border border-slate-300",
-          outcome === "win" && "bg-green-200 border-none",
-          outcome === "loss" && "bg-red-200 border-none"
+          player.result === "win" && "bg-green-200 border-none",
+          player.result === "loss" && "bg-red-200 border-none"
         )}
       >
         <Avatar
@@ -38,16 +34,16 @@ export const PlayerResultCard = ({
           <div
             className={cn(
               "flex flex-row items-end justify-around xl:w-2/3",
-              outcome === "win" && "text-green-500",
-              outcome === "loss" && "text-red-500"
+              player.result === "win" && "text-green-500",
+              player.result === "loss" && "text-red-500"
             )}
           >
             <div className="text-2xl md:text-3xl lg:text-4xl font-bold uppercase">
-              {outcome}
+              {player.result}
             </div>
             {/* LATER: クレジットの増減をカウントアップダウンでアニメーション表示する */}
             <div className="text-base md:text-lg lg:text-xl">
-              Credit: {credit}
+              Credit: {player.credit}
             </div>
           </div>
         </div>

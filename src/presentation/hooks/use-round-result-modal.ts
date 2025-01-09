@@ -7,8 +7,7 @@ interface RoundResultModalState {
 }
 
 export const useRoundResultModal = create<RoundResultModalState>((set) => ({
-    // TODO: isOpenをfalseにする
-    isOpen: true,
+    isOpen: false,
     onOpen: () => set({ isOpen: true }),
     onClose: () => set({ isOpen: false }),
 }));
