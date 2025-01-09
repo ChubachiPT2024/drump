@@ -93,6 +93,60 @@ describe("get total", () => {
   });
 });
 
+describe("calculate soft total", () => {
+  test("The soft total is undefined if the hand does not contain aces.", () => {
+    // Arrange
+    const hand = Hand.create().add(new Card(Rank.Two, Suit.Spade));
+
+    // Act
+    const softTotal = hand.calculateSoftTotal();
+
+    // Assert
+    expect(softTotal).toBeUndefined();
+  });
+
+  test("The soft total is undefined if considering the point of one ace to be 11 results in the total exceeding 21.", () => {
+    // Arrange
+    const hand = Hand.create()
+      .add(new Card(Rank.Ace, Suit.Spade))
+      .add(new Card(Rank.Nine, Suit.Spade))
+      .add(new Card(Rank.Nine, Suit.Spade));
+
+    // Act
+    const softTotal = hand.calculateSoftTotal();
+
+    // Assert
+    expect(softTotal).toBeUndefined();
+  });
+
+  test("The soft total is defined if the hand contains aces.", () => {
+    // Arrange
+    const hand = Hand.create()
+      .add(new Card(Rank.Ace, Suit.Spade))
+      .add(new Card(Rank.Two, Suit.Spade));
+
+    // Act
+    const softTotal = hand.calculateSoftTotal();
+
+    // Assert
+    expect(softTotal).toBe(13);
+  });
+
+  test("Only one ace is considered 11 even if the hand contains multiple aces.", () => {
+    // Arrange
+    const hand = Hand.create()
+      .add(new Card(Rank.Ace, Suit.Spade))
+      .add(new Card(Rank.Ace, Suit.Spade))
+      .add(new Card(Rank.Two, Suit.Spade));
+
+    // Act
+    const softTotal = hand.calculateSoftTotal();
+
+    // Assert
+    expect(softTotal).toBe(14);
+  });
+});
+
 describe("count", () => {
   test("The count of empty hand is 0.", () => {
     // Arrange
