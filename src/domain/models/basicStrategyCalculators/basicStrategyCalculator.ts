@@ -17,6 +17,21 @@ export class BasicStrategyCalculator {
     Map<Rank, HandSignal>
   >([
     [
+      1,
+      new Map<Rank, HandSignal>([
+        [Rank.Two, HandSignal.Split],
+        [Rank.Three, HandSignal.Split],
+        [Rank.Four, HandSignal.Split],
+        [Rank.Five, HandSignal.Split],
+        [Rank.Six, HandSignal.Split],
+        [Rank.Seven, HandSignal.Split],
+        [Rank.Eight, HandSignal.Split],
+        [Rank.Nine, HandSignal.Split],
+        [Rank.Ten, HandSignal.Split],
+        [Rank.Ace, HandSignal.Split],
+      ]),
+    ],
+    [
       2,
       new Map<Rank, HandSignal>([
         [Rank.Two, HandSignal.Hit],
@@ -149,21 +164,6 @@ export class BasicStrategyCalculator {
         [Rank.Nine, HandSignal.Stand],
         [Rank.Ten, HandSignal.Stand],
         [Rank.Ace, HandSignal.Stand],
-      ]),
-    ],
-    [
-      11,
-      new Map<Rank, HandSignal>([
-        [Rank.Two, HandSignal.Split],
-        [Rank.Three, HandSignal.Split],
-        [Rank.Four, HandSignal.Split],
-        [Rank.Five, HandSignal.Split],
-        [Rank.Six, HandSignal.Split],
-        [Rank.Seven, HandSignal.Split],
-        [Rank.Eight, HandSignal.Split],
-        [Rank.Nine, HandSignal.Split],
-        [Rank.Ten, HandSignal.Split],
-        [Rank.Ace, HandSignal.Split],
       ]),
     ],
   ]);

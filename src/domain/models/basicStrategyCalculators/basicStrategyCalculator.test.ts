@@ -9,6 +9,11 @@ import { BasicStrategyCalculator } from "./basicStrategyCalculator";
 describe("calculate", () => {
   test.each([
     {
+      cards: [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ace, Suit.Spade)],
+      upCard: new Card(Rank.Ace, Suit.Spade),
+      expected: HandSignal.Split,
+    },
+    {
       cards: [new Card(Rank.Two, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
       upCard: new Card(Rank.Two, Suit.Spade),
       expected: HandSignal.Hit,
