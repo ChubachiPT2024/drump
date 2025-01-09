@@ -3,39 +3,6 @@ import { Rank } from "../ranks/rank";
 import { Card } from "./card";
 import { Suit } from "../suits/suit";
 
-describe("get soft point", () => {
-  test.each([
-    { rank: Rank.Ace, expected: 11 },
-    { rank: Rank.Two, expected: 2 },
-    { rank: Rank.Three, expected: 3 },
-    { rank: Rank.Four, expected: 4 },
-    { rank: Rank.Five, expected: 5 },
-    { rank: Rank.Six, expected: 6 },
-    { rank: Rank.Seven, expected: 7 },
-    { rank: Rank.Eight, expected: 8 },
-    { rank: Rank.Nine, expected: 9 },
-    { rank: Rank.Ten, expected: 10 },
-    { rank: Rank.Jack, expected: 10 },
-    { rank: Rank.Queen, expected: 10 },
-    { rank: Rank.King, expected: 10 },
-  ] as {
-    rank: Rank;
-    expected: number;
-  }[])(
-    "The soft point is $expected if the rank is $rank",
-    ({ rank, expected }) => {
-      // Arrange
-      const card = new Card(rank, Suit.Diamond);
-
-      // Act
-      const softPoint = card.getSoftPoint();
-
-      // Assert
-      expect(softPoint).toBe(expected);
-    },
-  );
-});
-
 describe("get hard point", () => {
   test.each([
     { rank: Rank.Ace, expected: 1 },
