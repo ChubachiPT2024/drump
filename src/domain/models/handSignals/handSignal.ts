@@ -3,7 +3,7 @@ export const HandSignal = {
   Hit: "hit",
   Stand: "stand",
   Double: "double",
-  Split: "split"
+  Split: "split",
 } as const;
 
 export type HandSignal = (typeof HandSignal)[keyof typeof HandSignal];

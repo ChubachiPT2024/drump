@@ -8,6 +8,167 @@ import { Rank } from "../ranks/rank";
  */
 export class BasicStrategyCalculator {
   /**
+   * スプリットストラテジー
+   * 1 つ目の Key はカードのハードポイント
+   * 2 つ目の Key はディーラーのアップカードのランク
+   */
+  private static readonly splitStrategies = new Map<
+    number,
+    Map<Rank, HandSignal>
+  >([
+    [
+      2,
+      new Map<Rank, HandSignal>([
+        [Rank.Two, HandSignal.Hit],
+        [Rank.Three, HandSignal.Hit],
+        [Rank.Four, HandSignal.Split],
+        [Rank.Five, HandSignal.Split],
+        [Rank.Six, HandSignal.Split],
+        [Rank.Seven, HandSignal.Hit],
+        [Rank.Eight, HandSignal.Hit],
+        [Rank.Nine, HandSignal.Hit],
+        [Rank.Ten, HandSignal.Hit],
+        [Rank.Ace, HandSignal.Hit],
+      ]),
+    ],
+    [
+      3,
+      new Map<Rank, HandSignal>([
+        [Rank.Two, HandSignal.Hit],
+        [Rank.Three, HandSignal.Hit],
+        [Rank.Four, HandSignal.Split],
+        [Rank.Five, HandSignal.Split],
+        [Rank.Six, HandSignal.Split],
+        [Rank.Seven, HandSignal.Hit],
+        [Rank.Eight, HandSignal.Hit],
+        [Rank.Nine, HandSignal.Hit],
+        [Rank.Ten, HandSignal.Hit],
+        [Rank.Ace, HandSignal.Hit],
+      ]),
+    ],
+    [
+      4,
+      new Map<Rank, HandSignal>([
+        [Rank.Two, HandSignal.Hit],
+        [Rank.Three, HandSignal.Hit],
+        [Rank.Four, HandSignal.Hit],
+        [Rank.Five, HandSignal.Hit],
+        [Rank.Six, HandSignal.Hit],
+        [Rank.Seven, HandSignal.Hit],
+        [Rank.Eight, HandSignal.Hit],
+        [Rank.Nine, HandSignal.Hit],
+        [Rank.Ten, HandSignal.Hit],
+        [Rank.Ace, HandSignal.Hit],
+      ]),
+    ],
+    [
+      5,
+      new Map<Rank, HandSignal>([
+        [Rank.Two, HandSignal.Double],
+        [Rank.Three, HandSignal.Double],
+        [Rank.Four, HandSignal.Double],
+        [Rank.Five, HandSignal.Double],
+        [Rank.Six, HandSignal.Double],
+        [Rank.Seven, HandSignal.Double],
+        [Rank.Eight, HandSignal.Double],
+        [Rank.Nine, HandSignal.Double],
+        [Rank.Ten, HandSignal.Hit],
+        [Rank.Ace, HandSignal.Hit],
+      ]),
+    ],
+    [
+      6,
+      new Map<Rank, HandSignal>([
+        [Rank.Two, HandSignal.Hit],
+        [Rank.Three, HandSignal.Split],
+        [Rank.Four, HandSignal.Split],
+        [Rank.Five, HandSignal.Split],
+        [Rank.Six, HandSignal.Split],
+        [Rank.Seven, HandSignal.Hit],
+        [Rank.Eight, HandSignal.Hit],
+        [Rank.Nine, HandSignal.Hit],
+        [Rank.Ten, HandSignal.Hit],
+        [Rank.Ace, HandSignal.Hit],
+      ]),
+    ],
+    [
+      7,
+      new Map<Rank, HandSignal>([
+        [Rank.Two, HandSignal.Split],
+        [Rank.Three, HandSignal.Split],
+        [Rank.Four, HandSignal.Split],
+        [Rank.Five, HandSignal.Split],
+        [Rank.Six, HandSignal.Split],
+        [Rank.Seven, HandSignal.Split],
+        [Rank.Eight, HandSignal.Hit],
+        [Rank.Nine, HandSignal.Hit],
+        [Rank.Ten, HandSignal.Hit],
+        [Rank.Ace, HandSignal.Hit],
+      ]),
+    ],
+    [
+      8,
+      new Map<Rank, HandSignal>([
+        [Rank.Two, HandSignal.Split],
+        [Rank.Three, HandSignal.Split],
+        [Rank.Four, HandSignal.Split],
+        [Rank.Five, HandSignal.Split],
+        [Rank.Six, HandSignal.Split],
+        [Rank.Seven, HandSignal.Split],
+        [Rank.Eight, HandSignal.Split],
+        [Rank.Nine, HandSignal.Split],
+        [Rank.Ten, HandSignal.Split],
+        [Rank.Ace, HandSignal.Split],
+      ]),
+    ],
+    [
+      9,
+      new Map<Rank, HandSignal>([
+        [Rank.Two, HandSignal.Split],
+        [Rank.Three, HandSignal.Split],
+        [Rank.Four, HandSignal.Split],
+        [Rank.Five, HandSignal.Split],
+        [Rank.Six, HandSignal.Split],
+        [Rank.Seven, HandSignal.Stand],
+        [Rank.Eight, HandSignal.Split],
+        [Rank.Nine, HandSignal.Split],
+        [Rank.Ten, HandSignal.Stand],
+        [Rank.Ace, HandSignal.Stand],
+      ]),
+    ],
+    [
+      10,
+      new Map<Rank, HandSignal>([
+        [Rank.Two, HandSignal.Stand],
+        [Rank.Three, HandSignal.Stand],
+        [Rank.Four, HandSignal.Stand],
+        [Rank.Five, HandSignal.Stand],
+        [Rank.Six, HandSignal.Stand],
+        [Rank.Seven, HandSignal.Stand],
+        [Rank.Eight, HandSignal.Stand],
+        [Rank.Nine, HandSignal.Stand],
+        [Rank.Ten, HandSignal.Stand],
+        [Rank.Ace, HandSignal.Stand],
+      ]),
+    ],
+    [
+      11,
+      new Map<Rank, HandSignal>([
+        [Rank.Two, HandSignal.Split],
+        [Rank.Three, HandSignal.Split],
+        [Rank.Four, HandSignal.Split],
+        [Rank.Five, HandSignal.Split],
+        [Rank.Six, HandSignal.Split],
+        [Rank.Seven, HandSignal.Split],
+        [Rank.Eight, HandSignal.Split],
+        [Rank.Nine, HandSignal.Split],
+        [Rank.Ten, HandSignal.Split],
+        [Rank.Ace, HandSignal.Split],
+      ]),
+    ],
+  ]);
+
+  /**
    * ハードハンドストラテジー
    * 1 つ目の Key はハードトータル（8 以上 17 以下にクランプしたもの）
    * 2 つ目の Key はディーラーのアップカードのランク
@@ -284,8 +445,19 @@ export class BasicStrategyCalculator {
     ],
   ]);
 
+  /**
+   * ベーシックストラテジーを計算する
+   *
+   * @param hand ハンド
+   * @param upCard アップカード
+   * @returns ベーシックストラテジー
+   */
   public static calculate(hand: Hand, upCard: Card): HandSignal {
-    // TODO スプリットストラテジー
+    if (hand.canSplit()) {
+      return BasicStrategyCalculator.splitStrategies
+        .get(hand.getCards()[0].getHardPoint())!
+        .get(upCard.rank)!;
+    }
 
     const softTotal = hand.calculateSoftTotal();
     if (softTotal) {

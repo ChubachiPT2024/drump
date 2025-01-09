@@ -9,6 +9,48 @@ import { BasicStrategyCalculator } from "./basicStrategyCalculator";
 describe("calculate", () => {
   test.each([
     {
+      cards: [new Card(Rank.Two, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+      upCard: new Card(Rank.Two, Suit.Spade),
+      expected: HandSignal.Hit,
+    },
+    {
+      cards: [new Card(Rank.Two, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+      upCard: new Card(Rank.Four, Suit.Spade),
+      expected: HandSignal.Split,
+    },
+    {
+      cards: [new Card(Rank.Five, Suit.Spade), new Card(Rank.Five, Suit.Spade)],
+      upCard: new Card(Rank.Two, Suit.Spade),
+      expected: HandSignal.Double,
+    },
+    {
+      cards: [new Card(Rank.Nine, Suit.Spade), new Card(Rank.Nine, Suit.Spade)],
+      upCard: new Card(Rank.Seven, Suit.Spade),
+      expected: HandSignal.Stand,
+    },
+  ] as {
+    cards: Card[];
+    upCard: Card;
+    expected: HandSignal;
+  }[])(
+    "It returns the split strategy if the hand can split.",
+    ({ cards, upCard, expected }) => {
+      // Arrange
+      let hand = Hand.create();
+      for (const card of cards) {
+        hand = hand.add(card);
+      }
+
+      // Act
+      const basicStrategy = BasicStrategyCalculator.calculate(hand, upCard);
+
+      // Assert
+      expect(basicStrategy).toBe(expected);
+    },
+  );
+
+  test.each([
+    {
       cards: [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
       upCard: new Card(Rank.Two, Suit.Spade),
       expected: HandSignal.Stand,
@@ -76,7 +118,7 @@ describe("calculate", () => {
       expected: HandSignal.Stand,
     },
     {
-      cards: [new Card(Rank.Nine, Suit.Spade), new Card(Rank.Nine, Suit.Spade)],
+      cards: [new Card(Rank.Nine, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
       upCard: new Card(Rank.Two, Suit.Spade),
       expected: HandSignal.Stand,
     },
