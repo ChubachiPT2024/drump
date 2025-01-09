@@ -52,6 +52,10 @@ content-type: application/json
 }
 
 ###
+# @name matchGetHint
+Get {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/players/{{playerId}}/hint Http/1.1
+
+###
 # @name matchHit
 Post {{baseUrl}}/matches/{{matchCreate.response.body.$.id}}/players/{{playerId}}/hit Http/1.1
 
