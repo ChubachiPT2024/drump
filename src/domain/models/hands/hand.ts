@@ -110,6 +110,18 @@ export class Hand {
   }
 
   /**
+   * スプリットできるかどうか判定する
+   *
+   * @returns スプリットできるかどうか
+   */
+  public canSplit(): boolean {
+    return (
+      this.count() === 2 &&
+      this.cards[0].getHardPoint() === this.cards[1].getHardPoint()
+    );
+  }
+
+  /**
    * スタンドする
    *
    * @returns スタンドした新しいハンド
