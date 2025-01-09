@@ -26,6 +26,8 @@ import { MatchGetPlayersNamesCommand } from "./getPlayersNames/matchGetPlayersNa
 import { MatchGetPlayersNamesResult } from "./getPlayersNames/matchGetPlayersNamesResult";
 import { MatchGetPlayersNamesResultPlayer } from "./getPlayersNames/matchGetPlayersNamesResultPlayer";
 import { UserRepository } from "@/domain/models/users/userRepository";
+import { MatchGetHintCommand } from "./getHint/matchGetHintCommand";
+import { MatchGetHintResult } from "./getHint/matchGetHintResult";
 
 /**
  * 試合アプリケーションサービス
@@ -232,5 +234,21 @@ export class MatchApplicationService {
     }
 
     return new MatchGetPlayersNamesResult(players);
+  }
+
+  /**
+   * ヒントを取得する
+   *
+   * @param command ヒント取得コマンド
+   * @returns ヒント取得結果
+   */
+  public async getHintAsync(
+    command: MatchGetHintCommand,
+  ): Promise<MatchGetHintResult> {
+    const match = await this.matchRepository.findAsync(new MatchId(command.id));
+
+    return new MatchGetHintResult(
+      match.calculateBasicStrategy(new PlayerId(command.playerId)),
+    );
   }
 }

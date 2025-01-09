@@ -1,6 +1,8 @@
+import { BasicStrategyCalculator } from "../basicStrategyCalculators/basicStrategyCalculator";
 import { ChipAmount } from "../chipAmounts/chipAmount";
 import { Dealer } from "../dealers/dealer";
 import { Hand } from "../hands/hand";
+import { HandSignal } from "../handSignals/handSignal";
 import { Player } from "../players/player";
 import { PlayerId } from "../players/playerId";
 import { RoundCount } from "../roundCounts/roundCount";
@@ -276,6 +278,19 @@ export class Match {
    */
   public getPlayerIds(): PlayerId[] {
     return this.players.map((player) => player.id);
+  }
+
+  /**
+   * ベーシックストラテジーを計算する
+   *
+   * @param playerId プレイヤー ID
+   * @returns ベーシックストラテジー
+   */
+  public calculateBasicStrategy(playerId: PlayerId): HandSignal {
+    return BasicStrategyCalculator.calculate(
+      this.getPlayer(playerId).getHand(),
+      this.dealer.getUpCard(),
+    );
   }
 
   /**
