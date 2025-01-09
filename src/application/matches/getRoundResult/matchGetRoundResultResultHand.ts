@@ -11,11 +11,15 @@ export class MatchGetRoundResultResultHand {
    * @param cards カード
    * @param total トータル
    * @param isResolved ハンドが決まっているかどうか
+   * @param isBlackJack ブラックジャックかどうか
+   * @param isBust バストかどうか
    */
   private constructor(
     public readonly cards: MatchGetRoundResultResultCard[],
     public readonly total: number,
     public readonly isResolved: boolean,
+    public readonly isBlackJack: boolean,
+    public readonly isBust: boolean,
   ) {}
 
   /**
@@ -29,6 +33,8 @@ export class MatchGetRoundResultResultHand {
       hand.getCards(),
       hand.calculateTotal(),
       hand.isResolved(),
+      hand.isBlackJack(),
+      hand.isBust(),
     );
   }
 }
