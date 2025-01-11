@@ -204,8 +204,12 @@ const matchResult = await matchApplicationService.getResultAsync(
   new MatchGetResultCommand(matchId),
 );
 console.log("[Match result]");
-for (const player of matchResult.players) {
+const matchResultPlayers = [...matchResult.players];
+matchResultPlayers.sort((x, y) => x.rank - y.rank);
+
+for (const player of matchResultPlayers) {
   console.log(`[Result of ${playerIdToNameMap.get(player.id)}]`);
+  console.log(`Rank: ${player.rank}`);
   for (const [i, v] of player.creditHistories.entries()) {
     console.log(`Round ${i + 1}: ${v}`);
   }
