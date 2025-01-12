@@ -36,11 +36,28 @@ export class Hand {
   }
 
   /**
+   * ソフトトータルを計算する
+   *
+   * @returns ソフトトータル。定義されない場合は undefined
+   */
+  public calculateSoftTotal(): number | undefined {
+    if (!this.cards.some((card) => card.rank === Rank.Ace)) {
+      return undefined;
+    }
+
+    // 11 点として数えられるエースは高々 1 枚
+    //（2 枚を 11 点として数えると、その時点で 22 になる）
+    const softTotal = this.calculateHardTotal() + 10;
+
+    return softTotal <= 21 ? softTotal : undefined;
+  }
+
+  /**
    * ハードトータルを計算する
    *
    * @returns ハードトータル
    */
-  private calculateHardTotal(): number {
+  public calculateHardTotal(): number {
     return this.cards
       .map((card) => card.getHardPoint())
       .reduce((sum, point) => (sum += point), 0);
@@ -52,17 +69,8 @@ export class Hand {
    * @returns トータル
    */
   public calculateTotal(): number {
-    const hardTotal = this.calculateHardTotal();
-
-    if (!this.cards.some((card) => card.rank === Rank.Ace)) {
-      return hardTotal;
-    }
-
-    // 11 点として数えられるエースは高々 1 枚
-    //（2 枚を 11 点として数えると、その時点で 22 になる）
-    const softTotal = hardTotal + 10;
-
-    return softTotal <= 21 ? softTotal : hardTotal;
+    // ソフトトータルが定義できる場合、ソフトトータルの方が常に大きい
+    return this.calculateSoftTotal() ?? this.calculateHardTotal();
   }
 
   /**
@@ -99,6 +107,18 @@ export class Hand {
    */
   public canHit(): boolean {
     return !this.isResolved();
+  }
+
+  /**
+   * スプリットできるかどうか判定する
+   *
+   * @returns スプリットできるかどうか
+   */
+  public canSplit(): boolean {
+    return (
+      this.count() === 2 &&
+      this.cards[0].getHardPoint() === this.cards[1].getHardPoint()
+    );
   }
 
   /**

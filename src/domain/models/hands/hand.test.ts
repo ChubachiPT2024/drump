@@ -93,6 +93,75 @@ describe("get total", () => {
   });
 });
 
+describe("calculate soft total", () => {
+  test("The soft total is undefined if the hand does not contain aces.", () => {
+    // Arrange
+    const hand = Hand.create().add(new Card(Rank.Two, Suit.Spade));
+
+    // Act
+    const softTotal = hand.calculateSoftTotal();
+
+    // Assert
+    expect(softTotal).toBeUndefined();
+  });
+
+  test("The soft total is undefined if considering the point of one ace to be 11 results in the total exceeding 21.", () => {
+    // Arrange
+    const hand = Hand.create()
+      .add(new Card(Rank.Ace, Suit.Spade))
+      .add(new Card(Rank.Nine, Suit.Spade))
+      .add(new Card(Rank.Nine, Suit.Spade));
+
+    // Act
+    const softTotal = hand.calculateSoftTotal();
+
+    // Assert
+    expect(softTotal).toBeUndefined();
+  });
+
+  test("The soft total is defined if the hand contains aces.", () => {
+    // Arrange
+    const hand = Hand.create()
+      .add(new Card(Rank.Ace, Suit.Spade))
+      .add(new Card(Rank.Two, Suit.Spade));
+
+    // Act
+    const softTotal = hand.calculateSoftTotal();
+
+    // Assert
+    expect(softTotal).toBe(13);
+  });
+
+  test("Only one ace is considered 11 even if the hand contains multiple aces.", () => {
+    // Arrange
+    const hand = Hand.create()
+      .add(new Card(Rank.Ace, Suit.Spade))
+      .add(new Card(Rank.Ace, Suit.Spade))
+      .add(new Card(Rank.Two, Suit.Spade));
+
+    // Act
+    const softTotal = hand.calculateSoftTotal();
+
+    // Assert
+    expect(softTotal).toBe(14);
+  });
+});
+
+describe("calculate hard total", () => {
+  test("All the aces are considered 11.", () => {
+    // Arrange
+    const hand = Hand.create()
+      .add(new Card(Rank.Ace, Suit.Spade))
+      .add(new Card(Rank.Ace, Suit.Spade));
+
+    // Act
+    const hardTotal = hand.calculateHardTotal();
+
+    // Assert
+    expect(hardTotal).toBe(2);
+  });
+});
+
 describe("count", () => {
   test("The count of empty hand is 0.", () => {
     // Arrange
@@ -259,6 +328,98 @@ describe("can hit", () => {
 
     // Act, Assert
     expect(hand.canHit()).toBe(false);
+  });
+});
+
+describe("can split", () => {
+  test.each([
+    {
+      cards: [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ace, Suit.Spade)],
+    },
+    {
+      cards: [new Card(Rank.Two, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+    },
+    {
+      cards: [new Card(Rank.Ten, Suit.Spade), new Card(Rank.Jack, Suit.Spade)],
+    },
+    {
+      cards: [
+        new Card(Rank.Jack, Suit.Spade),
+        new Card(Rank.Queen, Suit.Spade),
+      ],
+    },
+    {
+      cards: [
+        new Card(Rank.Queen, Suit.Spade),
+        new Card(Rank.King, Suit.Spade),
+      ],
+    },
+  ] as {
+    cards: Card[];
+  }[])(
+    "Can split if the hand is consists of two cards with same hard point.",
+    ({ cards }) => {
+      // Arrange
+      let hand = Hand.create();
+      for (const card of cards) {
+        hand = hand.add(card);
+      }
+
+      // Act
+      const canSplit = hand.canSplit();
+
+      // Assert
+      expect(canSplit).toBe(true);
+    },
+  );
+
+  test.each([
+    {
+      cards: [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+    },
+    {
+      cards: [new Card(Rank.Two, Suit.Spade), new Card(Rank.Three, Suit.Spade)],
+    },
+    {
+      cards: [new Card(Rank.Nine, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
+    },
+    {
+      cards: [new Card(Rank.Nine, Suit.Spade), new Card(Rank.Jack, Suit.Spade)],
+    },
+    {
+      cards: [
+        new Card(Rank.Nine, Suit.Spade),
+        new Card(Rank.Queen, Suit.Spade),
+      ],
+    },
+    {
+      cards: [new Card(Rank.Nine, Suit.Spade), new Card(Rank.King, Suit.Spade)],
+    },
+  ] as {
+    cards: Card[];
+  }[])(
+    "Cannot split if the hand is consists of two cards with different hard points.",
+    ({ cards }) => {
+      // Arrange
+      let hand = Hand.create();
+      for (const card of cards) {
+        hand = hand.add(card);
+      }
+
+      // Act, Assert
+      expect(hand.canSplit()).toBe(false);
+    },
+  );
+
+  test("Cannot split if the hand is consists of three cards with same hard point.", () => {
+    // Arrange
+    const hand = Hand.create()
+      .add(new Card(Rank.Two, Suit.Spade))
+      .add(new Card(Rank.Two, Suit.Spade))
+      .add(new Card(Rank.Two, Suit.Spade));
+
+    // Act, Assert
+    expect(hand.canSplit()).toBe(false);
   });
 });
 

@@ -1,6 +1,7 @@
 import { MatchBetCommand } from "@/application/matches/bet/matchBetCommand";
 import { MatchCompleteRoundCommand } from "@/application/matches/completeRound/matchCompleteRoundCommand";
 import { MatchCreateCommand } from "@/application/matches/create/matchCreateCommand";
+import { MatchGetHintCommand } from "@/application/matches/getHint/matchGetHintCommand";
 import { MatchGetPlayersNamesCommand } from "@/application/matches/getPlayersNames/matchGetPlayersNamesCommand";
 import { MatchGetResultCommand } from "@/application/matches/getResult/matchGetResultCommand";
 import { MatchGetRoundResultCommand } from "@/application/matches/getRoundResult/matchGetRoundResultCommand";
@@ -146,6 +147,21 @@ export class MatchRouterFactory {
         const command = new MatchGetPlayersNamesCommand(req.params.id);
         const result =
           await this.matchApplicationService.getPlayersNamesAsync(command);
+
+        res.status(200).json(result);
+      } catch (err) {
+        console.log(err);
+        next(err);
+      }
+    });
+
+    router.get("/:id/players/:playerId/hint", async (req, res, next) => {
+      try {
+        const command = new MatchGetHintCommand(
+          req.params.id,
+          req.params.playerId,
+        );
+        const result = await this.matchApplicationService.getHintAsync(command);
 
         res.status(200).json(result);
       } catch (err) {

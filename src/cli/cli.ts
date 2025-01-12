@@ -21,6 +21,7 @@ import { InMemoryUserRepository } from "@/infrastructure/inMemory/users/inMemory
 import { UserApplicationService } from "@/application/users/userApplicationService";
 import { UserCreateCommand } from "@/application/users/create/userCreateCommand";
 import { MatchGetPlayersNamesCommand } from "@/application/matches/getPlayersNames/matchGetPlayersNamesCommand";
+import { MatchGetHintCommand } from "@/application/matches/getHint/matchGetHintCommand";
 
 const suitStrings = new Map<Suit, string>([
   [Suit.Spade, "♠"],
@@ -133,6 +134,14 @@ while (true) {
       if (playersHand.isResolved) {
         break;
       }
+
+      // ヒント表示
+      const matchGetHintResult = await matchApplicationService.getHintAsync(
+        new MatchGetHintCommand(matchId, playerId),
+      );
+      console.log("[Hint]");
+      console.log(`Basic strategy: ${matchGetHintResult.basicStrategy}`);
+      console.log();
 
       // ハンドシグナルの選択肢表示
       const handSignals = playerSummary.handSignalOptions;
