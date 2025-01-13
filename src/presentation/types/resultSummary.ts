@@ -4,7 +4,7 @@ export interface ResultSummary {
   id: string;
   dealer: {
     upCard: Card;
-    // TODO: upCardの値を追加
+    upCardSoftTotal: number;
   };
   players: {
     id: string;

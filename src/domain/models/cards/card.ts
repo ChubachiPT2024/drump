@@ -5,6 +5,25 @@ import { Suit } from "../suits/suit";
  * カード
  */
 export class Card {
+   /**
+   * ソフトハンドにおける点数
+   */
+   private static readonly softPoints = {
+    [Rank.Ace]: 11,
+    [Rank.Two]: 2,
+    [Rank.Three]: 3,
+    [Rank.Four]: 4,
+    [Rank.Five]: 5,
+    [Rank.Six]: 6,
+    [Rank.Seven]: 7,
+    [Rank.Eight]: 8,
+    [Rank.Nine]: 9,
+    [Rank.Ten]: 10,
+    [Rank.Jack]: 10,
+    [Rank.Queen]: 10,
+    [Rank.King]: 10,
+  };
+
   /**
    * ハードハンドにおける点数
    */
@@ -34,6 +53,15 @@ export class Card {
     public readonly rank: Rank,
     public readonly suit: Suit,
   ) {}
+
+  /**
+   * ソフトハンドにおける点数を取得する
+   *
+   * @returns ソフトハンドにおける点数
+   */
+  public getSoftPoint(): number {
+    return Card.softPoints[this.rank];
+  }
 
   /**
    * ハードハンドにおける点数を取得する
