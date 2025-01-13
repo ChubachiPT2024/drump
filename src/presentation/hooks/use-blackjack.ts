@@ -125,14 +125,8 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
     }
   }, [state.playerTurnIndex, state.matchResultSummary]);
 
-  // TODO: ベットが完了しているかの判定を検討
-  // ドメインが漏れ出てるかもしれない　ベットが完了しているかはどうするべきか　
-  // 0以上のベットを可能に仕様としてはなっているが、判定がこのままでは一人ベットしてしまうと、プレイヤーのターンに移行してしまう
-  // const isAllPlayersBetComplete = (players: ResultSummaryPlayer[]): boolean => {
-	// 	return players.every(player => player.betAmount !== undefined && player.betAmount >= 0);
-	// };
-	const isAllPlayersBetComplete = (players: ResultSummaryPlayer[]): boolean => {
-		return players.every(player => player.betAmount !== undefined && player.betAmount > 0);
+	const isLastBetPlayer = (playerId: string, players: ResultSummaryPlayer[]): boolean => {
+		return players[players.length - 1].id === playerId;
 	};
 
   const handleBet = useCallback(async (playerId: string, betAmount: number) => {
@@ -143,7 +137,7 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
       const updatedSummary = await getMatchResultSummaryApi(matchId);
       dispatch({ type: 'UPDATE_MATCH_SUMMARY', payload: updatedSummary });
       
-      if (isAllPlayersBetComplete(updatedSummary.players)) {
+      if (isLastBetPlayer(playerId, updatedSummary.players)) {
         await handleInitialDeal(); 
       } else {
         dispatch({ type: 'END_ANIMATION' });

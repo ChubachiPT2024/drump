@@ -40,9 +40,12 @@ export const BetModal = ({ handleBet, players }: BetModalProps) => {
     setBetAmount(undefined);
   };
 
-  // TODO: 0円のベットを許可すると、止まってしまうので、修正が必要
   const isBetValid = () => {
-    return betAmount && betAmount >= 0 && betAmount <= currentPlayer.credit;
+    return (
+      betAmount !== undefined &&
+      betAmount >= 0 &&
+      betAmount <= currentPlayer.credit
+    );
   };
 
   const handleDeal = () => {
