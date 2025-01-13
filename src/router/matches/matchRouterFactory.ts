@@ -149,7 +149,6 @@ export class MatchRouterFactory {
 
         res.status(200).json(result);
       } catch (err) {
-        console.log(err);
         next(err);
       }
     });
