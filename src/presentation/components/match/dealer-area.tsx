@@ -4,7 +4,7 @@ import { MatchPhase } from "@/presentation/types/matchPhase";
 import { ResultSummary } from "@/presentation/types/resultSummary";
 import { RoundResult } from "@/presentation/types/roundResult";
 
-import { ANIMATION_TIMING_SEC } from "@/presentation/constants/animation";
+import { ANIMATION_TIMING_SECONDS } from "@/presentation/constants/animation";
 
 interface DealerAreaProps {
   phase: MatchPhase;
@@ -20,11 +20,11 @@ export const DealerArea = ({
   const showHands =
     phase !== MatchPhase.ROUND_START && phase !== MatchPhase.BETTING;
 
-  const calculateDealerHandDelayMS = (index: number) => {
+  const calculateDealerHandDelaySeconds = (index: number) => {
     if (index === 0) {
-      return ANIMATION_TIMING_SEC.DEAL_DELAY * 2; // プレイヤーのカードが全て表示された後に表示 (プレイヤーのカードが2枚)
+      return ANIMATION_TIMING_SECONDS.DEAL_DELAY * 2; // プレイヤーのカードが全て表示された後に表示 (プレイヤーのカードが2枚)
     } else {
-      return ANIMATION_TIMING_SEC.DEAL_DELAY * index; // ディラーの追加カードは順番に表示
+      return ANIMATION_TIMING_SECONDS.DEAL_DELAY * index; // ディラーの追加カードは順番に表示
     }
   };
 
@@ -56,7 +56,7 @@ export const DealerArea = ({
                 animate={{ x: "0vw", y: "0vh" }}
                 suit={card.suit}
                 rank={card.rank}
-                delaySeconds={calculateDealerHandDelayMS(index)}
+                delaySeconds={calculateDealerHandDelaySeconds(index)}
               />
             </div>
           ))}
@@ -70,7 +70,7 @@ export const DealerArea = ({
               animate={{ x: "0vw", y: "0vh" }}
               suit="reverse"
               rank="reverse"
-              delaySeconds={calculateDealerHandDelayMS(3)} // initail_dealの最後に表示 (プレイヤーのカードが2枚とdealerのカードが1枚の後)
+              delaySeconds={calculateDealerHandDelaySeconds(3)} // initail_dealの最後に表示 (プレイヤーのカードが2枚とdealerのカードが1枚の後)
             />
           </div>
         )}

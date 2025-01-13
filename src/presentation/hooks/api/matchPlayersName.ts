@@ -1,10 +1,10 @@
 import axios from "axios";
 
-import { playerName } from "@/presentation/types/matchPlayerName";
+import { MatchPlayerName } from "@/presentation/types/matchPlayerName";
 
 export const getPlayersNameApi = async (
   matchId: string
-): Promise<playerName[]> => {
+): Promise<MatchPlayerName[]> => {
   try {
     const res = await axios.get(
       `${import.meta.env.VITE_API_URL}/matches/${matchId}/players-names`

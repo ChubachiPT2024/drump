@@ -13,7 +13,7 @@ export type MatchAction =
   | { type: 'UPDATE_ROUND_RESULT'; payload: RoundResult | undefined }
   | { type: 'COMPLETE_ROUND' }
   | { type: 'COMPLETE_MATCH'; payload: MatchResult }
-  | { type: 'SET_PLAYER_NAMES'; payload: [string, string][] }
+  | { type: 'SET_PLAYER_NAMES'; payload: Map<string, string> }
   | { type: 'START_ANIMATION' }
   | { type: 'END_ANIMATION' }
   | { type: 'SET_LOADING'; payload: boolean };

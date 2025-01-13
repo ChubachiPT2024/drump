@@ -3,7 +3,7 @@ import { CardComponent } from "./cardComponent";
 import { MatchPhase } from "@/presentation/types/matchPhase";
 import { ResultSummaryPlayer } from "@/presentation/types/resultSummaryPlayer";
 
-import { ANIMATION_TIMING_SEC } from "@/presentation/constants/animation";
+import { ANIMATION_TIMING_SECONDS } from "@/presentation/constants/animation";
 
 interface PlayerAreaProps {
   phase: MatchPhase;
@@ -19,11 +19,11 @@ export const PlayerArea = ({
   const showHands =
     phase !== MatchPhase.ROUND_START && phase !== MatchPhase.BETTING;
 
-  const calculatePlayerHandDelayMS = (index: number) => {
+  const calculatePlayerHandDelaySeconds = (index: number) => {
     if (index < 2) {
-      return index * ANIMATION_TIMING_SEC.DEAL_DELAY; // 最初の二枚は順番に
+      return index * ANIMATION_TIMING_SECONDS.DEAL_DELAY; // 最初の二枚は順番に
     } else {
-      return ANIMATION_TIMING_SEC.DEAL_DELAY; // それ以降は固定 (hit時のみ)
+      return ANIMATION_TIMING_SECONDS.DEAL_DELAY; // それ以降は固定 (hit時のみ)
     }
   };
 
@@ -59,7 +59,7 @@ export const PlayerArea = ({
               animate={{ x: "0vw", y: "0vh" }}
               suit={card.suit}
               rank={card.rank}
-              delaySeconds={calculatePlayerHandDelayMS(index)}
+              delaySeconds={calculatePlayerHandDelaySeconds(index)}
             />
           ))}
       </div>

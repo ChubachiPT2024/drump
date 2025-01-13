@@ -11,7 +11,7 @@ import {
   DialogDescription,
 } from "@/presentation/shadcnUI/components/ui/dialog";
 
-import { ANIMATION_TIMING_MS } from "@/presentation/constants/animation";
+import { ANIMATION_TIMING_MILLISECONDS } from "@/presentation/constants/animation";
 
 interface RotationModalProps {
   name: string;
@@ -25,7 +25,7 @@ export const RotationModal = ({ name }: RotationModalProps) => {
     if (isOpen) {
       const timer = setTimeout(() => {
         onClose();
-      }, ANIMATION_TIMING_MS.MODAL_CLOSE);
+      }, ANIMATION_TIMING_MILLISECONDS.MODAL_CLOSE);
 
       return () => clearTimeout(timer);
     }

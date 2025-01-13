@@ -4,7 +4,7 @@ import { Logo } from "../share/logo";
 import { HelpButton } from "./help-button";
 import { HintToggle } from "./hint-toggle";
 
-import { GAME_CONSTANTS } from "../../constants/match";
+import { MATCH_CONSTANTS } from "../../constants/match";
 
 interface MatchHeaderProps {
   roundCount: number;
@@ -36,7 +36,7 @@ export const MatchHeader = ({
 
             <div className="bg-white rounded-full px-2 border-yellow-500 border-2 ">
               <p className="text-base text-black font-semibold">
-                Round {roundCount} / {GAME_CONSTANTS.MAX_ROUND_COUNT}
+                Round {roundCount} / {MATCH_CONSTANTS.MAX_ROUND_COUNT}
               </p>
             </div>
           </div>
