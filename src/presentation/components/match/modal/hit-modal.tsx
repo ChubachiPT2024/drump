@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 
-import { useHitModal } from "@/presentation/hooks/use-hit-modal";
+import { useHitModal } from "@/presentation/hooks/modal/use-hit-modal";
 
 import {
   Dialog,
@@ -10,6 +10,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/presentation/shadcnUI/components/ui/dialog";
+
+import { ANIMATION_TIMING_MS } from "@/presentation/constants/animation";
 
 export const HitModal = () => {
   const isOpen = useHitModal((state) => state.isOpen);
@@ -20,7 +22,7 @@ export const HitModal = () => {
     if (isOpen) {
       const timer = setTimeout(() => {
         onClose();
-      }, 1400);
+      }, ANIMATION_TIMING_MS.MODAL_CLOSE);
 
       return () => clearTimeout(timer);
     }

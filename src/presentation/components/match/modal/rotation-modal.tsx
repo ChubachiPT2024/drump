@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 
-import { useRotationModal } from "@/presentation/hooks/use-rotation-modal";
+import { useRotationModal } from "@/presentation/hooks/modal/use-rotation-modal";
 
 import {
   Dialog,
@@ -11,11 +11,12 @@ import {
   DialogDescription,
 } from "@/presentation/shadcnUI/components/ui/dialog";
 
+import { ANIMATION_TIMING_MS } from "@/presentation/constants/animation";
+
 interface RotationModalProps {
   name: string;
 }
 
-// TODO: プレイヤーの情報を受け取れるようにする
 export const RotationModal = ({ name }: RotationModalProps) => {
   const isOpen = useRotationModal((state) => state.isOpen);
   const onClose = useRotationModal((state) => state.onClose);
@@ -24,7 +25,7 @@ export const RotationModal = ({ name }: RotationModalProps) => {
     if (isOpen) {
       const timer = setTimeout(() => {
         onClose();
-      }, 1500);
+      }, ANIMATION_TIMING_MS.MODAL_CLOSE);
 
       return () => clearTimeout(timer);
     }

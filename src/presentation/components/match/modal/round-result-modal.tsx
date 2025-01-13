@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-import { useRoundResultModal } from "@/presentation/hooks/use-round-result-modal";
+import { useRoundResultModal } from "@/presentation/hooks/modal/use-round-result-modal";
 
 import { PlayerResultCard } from "../player-result-card";
 
