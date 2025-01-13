@@ -6,8 +6,9 @@ export interface RoundResult {
     total: number;
     isResolved: boolean;
   };
-  player: {
+  players: {
+    id: string;
     result: "win" | "loss" | "push";
     credit: number;
-  };
+  }[];
 }

@@ -32,8 +32,8 @@ export const MatchStartPage = () => {
     setSelectedUsers(selectedUsers.filter((u: User) => u.id !== user.id));
   };
 
-  const handleStartMatch = async (userId: string) => {
-    const matchCreateResponse = await postMatchCreateApi(userId);
+  const handleStartMatch = async (userIds: string[]) => {
+    const matchCreateResponse = await postMatchCreateApi(userIds);
 
     navigate(`/match/${matchCreateResponse.id}`);
   };

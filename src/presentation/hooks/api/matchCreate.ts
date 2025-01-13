@@ -1,13 +1,13 @@
 import axios from "axios";
 
 export const postMatchCreateApi = async (
-  userId: string
+  userIds: string[]
 ): Promise<{ id: string }> => {
   try {
     const res = await axios.post(
       `${import.meta.env.VITE_API_URL}/matches`,
       {
-        userId: userId,
+        userIds: userIds,
       },
       {
         headers: {

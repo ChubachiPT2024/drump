@@ -1,12 +1,13 @@
 import { Button } from "@/presentation/shadcnUI/components/ui/button";
 
 import { cn } from "@/presentation/shadcnUI/lib/utils";
+
 import { User } from "@/presentation/types/user";
 
 interface StartGameButtonProps {
   selectedUsers: User[];
   disabled: boolean;
-  onClick: (userId: string) => void;
+  onClick: (userIds: string[]) => void;
 }
 
 export const StartGameButton = ({
@@ -24,7 +25,7 @@ export const StartGameButton = ({
           )}
         >
           <Button
-            onClick={() => onClick(selectedUsers[0].id)}
+            onClick={() => onClick(selectedUsers.map((user) => user.id))}
             size="lg"
             variant={disabled ? "locked" : "success"}
             disabled={disabled}
