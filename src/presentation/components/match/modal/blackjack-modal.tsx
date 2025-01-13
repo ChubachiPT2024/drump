@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 
-import { useBlackJackModal } from "@/presentation/hooks/use-blackjack-modal";
+import { useBlackJackModal } from "@/presentation/hooks/modal/use-blackjack-modal";
 
 import {
   Dialog,
@@ -10,6 +10,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/presentation/shadcnUI/components/ui/dialog";
+
+import { ANIMATION_TIMING_MILLISECONDS } from "@/presentation/constants/animation";
 
 export const BlackjackModal = () => {
   const isOpen = useBlackJackModal((state) => state.isOpen);
@@ -20,7 +22,7 @@ export const BlackjackModal = () => {
     if (isOpen) {
       const timer = setTimeout(() => {
         onClose();
-      }, 2000);
+      }, ANIMATION_TIMING_MILLISECONDS.MODAL_CLOSE);
 
       return () => clearTimeout(timer);
     }

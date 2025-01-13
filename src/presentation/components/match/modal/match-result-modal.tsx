@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 import { useNavigate } from "react-router-dom";
 
-import { useMatchResultModal } from "@/presentation/hooks/use-match-result-modal";
+import { useMatchResultModal } from "@/presentation/hooks/modal/use-match-result-modal";
 
 import {
   Dialog,

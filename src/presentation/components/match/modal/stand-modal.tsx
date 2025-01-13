@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 
-import { useStandModal } from "@/presentation/hooks/use-stand-modal";
+import { useStandModal } from "@/presentation/hooks/modal/use-stand-modal";
 
 import {
   Dialog,
@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/presentation/shadcnUI/components/ui/dialog";
+import { ANIMATION_TIMING_MILLISECONDS } from "@/presentation/constants/animation";
 
 export const StandModal = () => {
   const isOpen = useStandModal((state) => state.isOpen);
@@ -20,7 +21,7 @@ export const StandModal = () => {
     if (isOpen) {
       const timer = setTimeout(() => {
         onClose();
-      }, 1400);
+      }, ANIMATION_TIMING_MILLISECONDS.MODAL_CLOSE);
 
       return () => clearTimeout(timer);
     }

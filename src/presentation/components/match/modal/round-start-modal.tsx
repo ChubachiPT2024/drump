@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 
-import { useRoundStartModal } from "@/presentation/hooks/use-round-start-modal";
+import { useRoundStartModal } from "@/presentation/hooks/modal/use-round-start-modal";
 
 import {
   Dialog,
@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/presentation/shadcnUI/components/ui/dialog";
+import { ANIMATION_TIMING_MILLISECONDS } from "@/presentation/constants/animation";
 
 type RoundStartModalProps = {
   roundCount: number;
@@ -24,7 +25,7 @@ export const RoundStartModal = ({ roundCount }: RoundStartModalProps) => {
     if (isOpen) {
       const timer = setTimeout(() => {
         onClose();
-      }, 1400);
+      }, ANIMATION_TIMING_MILLISECONDS.MODAL_CLOSE);
 
       return () => clearTimeout(timer);
     }

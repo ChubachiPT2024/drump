@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useBetModal } from "@/presentation/hooks/use-bet-modal";
+import { useBetModal } from "@/presentation/hooks/modal/use-bet-modal";
 
 import { Button } from "@/presentation/shadcnUI/components/ui/button";
 import {
@@ -16,27 +16,21 @@ import { ScrollArea } from "@/presentation/shadcnUI/components/ui/scroll-area";
 
 import { cn } from "@/presentation/shadcnUI/lib/utils";
 
-// TODO: プレイヤーの型を定義する
-interface Player {
-  id: string;
-  name: string;
-  credit: number;
-}
+import { MatchBetPlayer } from "@/presentation/types/matchBetPlayer";
 
 interface BetModalProps {
-  matchId: string;
-  handleBet: (matchId: string, playerId: string, betAmount: number) => void;
-  players: Player[];
+  handleBet: (playerId: string, betAmount: number) => void;
+  players: MatchBetPlayer[];
 }
 
-export const BetModal = ({ matchId, handleBet, players }: BetModalProps) => {
+export const BetModal = ({ handleBet, players }: BetModalProps) => {
   const isOpen = useBetModal((state) => state.isOpen);
   const onClose = useBetModal((state) => state.onClose);
 
   const [betAmount, setBetAmount] = useState<number | undefined>(undefined);
 
-  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
-  const currentPlayer = players[currentPlayerIndex];
+  const [currentBetPlayerIndex, setCurrentBetPlayerIndex] = useState(0);
+  const currentPlayer = players[currentBetPlayerIndex];
 
   const handleBetChange = (value: number) => {
     setBetAmount(value);
@@ -47,17 +41,22 @@ export const BetModal = ({ matchId, handleBet, players }: BetModalProps) => {
   };
 
   const isBetValid = () => {
-    return betAmount && betAmount > 0 && betAmount <= currentPlayer.credit;
+    return (
+      betAmount !== undefined &&
+      betAmount >= 0 &&
+      betAmount <= currentPlayer.credit
+    );
   };
 
   const handleDeal = () => {
     if (isBetValid()) {
-      handleBet(matchId, currentPlayer.id, betAmount!);
+      handleBet(currentPlayer.id, betAmount!);
       setBetAmount(undefined);
-      if (currentPlayerIndex < players.length - 1) {
-        setCurrentPlayerIndex(currentPlayerIndex + 1);
+
+      if (currentBetPlayerIndex < players.length - 1) {
+        setCurrentBetPlayerIndex(currentBetPlayerIndex + 1);
       } else {
-        setCurrentPlayerIndex(0);
+        setCurrentBetPlayerIndex(0);
         onClose();
       }
     }
@@ -96,15 +95,15 @@ export const BetModal = ({ matchId, handleBet, players }: BetModalProps) => {
                         key={player.id}
                         className={cn(
                           "p-3 rounded-lg flex items-center justify-between",
-                          index === currentPlayerIndex &&
+                          index === currentBetPlayerIndex &&
                             "bg-yellow-500/20 border-2 border-yellow-500",
-                          index < currentPlayerIndex && "bg-green-400/30"
+                          index < currentBetPlayerIndex && "bg-green-400/30"
                         )}
                       >
                         <span className="text-lg text-white font-medium">
                           {player.name}
                         </span>
-                        {index < currentPlayerIndex && (
+                        {index < currentBetPlayerIndex && (
                           <span className="text-green-400 text-xl">✓</span>
                         )}
                       </div>
@@ -134,7 +133,14 @@ export const BetModal = ({ matchId, handleBet, players }: BetModalProps) => {
                   </div>
 
                   <div id="input" className="max-w-xs mx-auto text-start">
-                    <div className="h-7"></div>
+                    <div className="h-7">
+                      {(currentPlayer.credit < betAmount!! ||
+                        betAmount!! < 0) && (
+                        <Label className="text-red-600 text-lg font-bold">
+                          Bet amount invalid
+                        </Label>
+                      )}
+                    </div>
                     <Input
                       type="number"
                       min={0}

@@ -4,18 +4,21 @@ export interface ResultSummary {
   id: string;
   dealer: {
     upCard: Card;
+    // TODO: upCardの値を追加
   };
-  player: {
+  players: {
     id: string;
     hand: {
       cards: Card[];
-      isResolved: boolean;
       total: number;
+      isResolved: boolean;
+      isBlackJack: boolean;
+      isBust: boolean;
     };
     handSignalOptions: string[];
     credit: number;
     betAmount: number;
-  };
+  }[];
   isCompleted: boolean;
   roundCount: number;
 }
