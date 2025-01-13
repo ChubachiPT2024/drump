@@ -126,7 +126,7 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
   }, [state.playerTurnIndex, state.matchResultSummary]);
 
 	const isLastBetPlayer = (playerId: string, players: ResultSummaryPlayer[]): boolean => {
-		return players[-1].id === playerId;
+		return players[players.length - 1].id === playerId;
 	};
 
   const handleBet = useCallback(async (playerId: string, betAmount: number) => {
