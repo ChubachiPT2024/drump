@@ -186,6 +186,8 @@ export class MatchApplicationService {
 
     const roundHistories = match.getRoundHistories();
 
+    const ranking = match.calculateRanking();
+
     // TODO Object.groupBy などで、もう少し簡単に書けるかもしれない
     const resultPlayers: MatchGetResultResultPlayer[] = [];
     for (const playerId of match.getPlayerIds()) {
@@ -206,6 +208,7 @@ export class MatchApplicationService {
           creditHistories.map((creditHistory) => creditHistory.value),
           finalCredit.value,
           balance.value,
+          ranking.get(playerId.value)!,
         ),
       );
     }

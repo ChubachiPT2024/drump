@@ -5,6 +5,7 @@ import { Hand } from "../hands/hand";
 import { HandSignal } from "../handSignals/handSignal";
 import { Player } from "../players/player";
 import { PlayerId } from "../players/playerId";
+import { RankingCalculator } from "../rankingCalculators/rankingCalculator";
 import { RoundCount } from "../roundCounts/roundCount";
 import { RoundHistory } from "../roundHistories/roundHistory";
 import { RoundPlayerHistory } from "../roundHistories/roundPlayerHistory";
@@ -301,6 +302,22 @@ export class Match {
    */
   public getUserId(playerId: PlayerId): UserId {
     return this.getPlayer(playerId).userId;
+  }
+
+  /**
+   * ランキングを計算する
+   *
+   * @returns ランキング
+   */
+  public calculateRanking(): Map<string, number> {
+    return RankingCalculator.calculate(
+      new Map<string, number>(
+        this.players.map((player) => [
+          player.id.value,
+          player.getCredit().value,
+        ]),
+      ),
+    );
   }
 
   /**
