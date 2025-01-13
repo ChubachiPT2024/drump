@@ -15,7 +15,7 @@ interface CardComponentProps {
   };
   suit: Pick<Card, "suit">["suit"] | "reverse";
   rank: Pick<Card, "rank">["rank"] | "reverse";
-  delay?: number;
+  delaySeconds?: number;
 }
 
 export const CardComponent = ({
@@ -24,7 +24,7 @@ export const CardComponent = ({
   animate,
   suit,
   rank,
-  delay,
+  delaySeconds,
 }: CardComponentProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -36,7 +36,7 @@ export const CardComponent = ({
         type: "linear",
         stiffness: 150,
         damping: 20,
-        delay: delay,
+        delay: delaySeconds,
       }}
       onAnimationComplete={() => {
         if (isOpen) {
