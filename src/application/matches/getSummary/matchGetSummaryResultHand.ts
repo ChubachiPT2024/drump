@@ -16,7 +16,8 @@ export class MatchGetSummaryResultHand {
    */
   private constructor(
     public readonly cards: MatchGetSummaryResultCard[],
-    public readonly total: number,
+    public readonly softTotal: number | undefined,
+    public readonly hardTotal: number,
     public readonly isResolved: boolean,
     public readonly isBlackJack: boolean,
     public readonly isBust: boolean,
@@ -31,7 +32,8 @@ export class MatchGetSummaryResultHand {
   public static create(hand: Hand): MatchGetSummaryResultHand {
     return new MatchGetSummaryResultHand(
       hand.getCards(),
-      hand.calculateTotal(),
+      hand.calculateSoftTotal(),
+      hand.calculateHardTotal(),
       hand.isResolved(),
       hand.isBlackJack(),
       hand.isBust(),
