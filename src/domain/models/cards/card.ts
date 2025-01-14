@@ -5,10 +5,10 @@ import { Suit } from "../suits/suit";
  * カード
  */
 export class Card {
-   /**
+  /**
    * ソフトハンドにおける点数
    */
-   private static readonly softPoints = {
+  private static readonly softPoints = {
     [Rank.Ace]: 11,
     [Rank.Two]: 2,
     [Rank.Three]: 3,
