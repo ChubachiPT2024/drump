@@ -28,8 +28,6 @@ export const DealerArea = ({
     }
   };
 
-  console.log(matchResultSummary.dealer);
-
   return (
     <div className="bg-neutral-50/5 rounded-md relative">
       <div className="absolute top-1/4 -right-24 z-10">
