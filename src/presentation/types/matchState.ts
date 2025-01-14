@@ -2,6 +2,7 @@ import { MatchPhase } from "./matchPhase";
 import { ResultSummary } from "./resultSummary";
 import { MatchResult } from "./matchResult";
 import { RoundResult } from "./roundResult";
+import { MatchHint } from "./matchHint";
 
 export interface MatchState {
   phase: MatchPhase;
@@ -12,4 +13,5 @@ export interface MatchState {
   matchResult?: MatchResult;
   playerIdToNameMap: Map<string, string>;
   isLoading: boolean;
+  hint?: MatchHint;
 }

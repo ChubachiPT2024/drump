@@ -5,6 +5,7 @@ import { MatchPhase } from "@/presentation/types/matchPhase";
 import { ResultSummary } from "@/presentation/types/resultSummary";
 import { ResultSummaryPlayer } from "@/presentation/types/resultSummaryPlayer";
 import { RoundResult } from "@/presentation/types/roundResult";
+import { MatchHint } from "@/presentation/types/matchHint";
 
 interface MatchTableProps {
   phase: MatchPhase;
@@ -12,6 +13,7 @@ interface MatchTableProps {
   currentPlayer?: ResultSummaryPlayer & { name: string };
   roundResult?: RoundResult;
   isHintEnabled: boolean;
+  hint?: MatchHint;
 }
 
 export const MatchTable = ({
@@ -20,6 +22,7 @@ export const MatchTable = ({
   currentPlayer,
   roundResult,
   isHintEnabled,
+  hint,
 }: MatchTableProps) => {
   if (!currentPlayer) return null;
 
@@ -35,6 +38,7 @@ export const MatchTable = ({
         phase={phase}
         currentPlayer={currentPlayer}
         isHintEnabled={isHintEnabled}
+        hint={hint}
       />
     </div>
   );

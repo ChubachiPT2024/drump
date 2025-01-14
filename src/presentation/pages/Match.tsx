@@ -35,6 +35,7 @@ export const MatchPage = () => {
     matchResult,
     playerIdToNameMap,
     isLoading,
+    hint,
   } = state;
 
   const getPlayerName = (playerId: string) => {
@@ -46,7 +47,7 @@ export const MatchPage = () => {
     name: getPlayerName(matchResultSummary.players[playerTurnIndex].id),
   };
 
-  if (isLoading || !matchId || !matchResultSummary) {
+  if (isLoading || !matchId || !matchResultSummary || !currentPlayer) {
     // TOOD: loading画面の作成
     return <div>Loading...</div>;
   }
@@ -55,9 +56,11 @@ export const MatchPage = () => {
     <>
       <div className="relative min-h-screen bg-green-600 flex flex-col items-center">
         <MatchHeader
+          currentPlayerId={currentPlayer?.id}
           roundCount={matchResultSummary.roundCount}
           isHintEnabled={isHintEnabled}
           setIsHintEnabled={setIsHintEnabled}
+          onHintToggle={actions.handleHint}
         />
         <MatchTable
           phase={phase}
@@ -65,6 +68,7 @@ export const MatchPage = () => {
           currentPlayer={currentPlayer}
           roundResult={roundResult}
           isHintEnabled={isHintEnabled}
+          hint={hint}
         />
         <Shoe />
         {/* TODO: otherInfoはできれば、一旦複数人ラウンドだけを */}
