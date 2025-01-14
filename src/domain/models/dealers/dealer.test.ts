@@ -23,8 +23,8 @@ describe("get up card", () => {
 
     const upCard = dealer.getUpCard();
 
-    expect(upCard.rank).toBe(Rank.Ace);
-    expect(upCard.suit).toBe(Suit.Spade);
+    expect(upCard?.rank).toBe(Rank.Ace);
+    expect(upCard?.suit).toBe(Suit.Spade);
   });
 });
 
