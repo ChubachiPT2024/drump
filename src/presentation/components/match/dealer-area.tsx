@@ -30,10 +30,19 @@ export const DealerArea = ({
 
   return (
     <div className="bg-neutral-50/5 rounded-md relative">
-      <div className="absolute top-1/2 -right-9 px-3 py-1.5 border-2 font-bold text-white bg-black rounded-xl z-10">
-        {/* TODO: upcardのみのtotalを取得したい */}
-        4
-        <div className="absolute top-1/2 -left-2 w-0 h-0 border-y-8 border-y-transparent border-r-8 transform -translate-y-1/2" />
+      <div className="absolute top-1/4 -right-24 z-10">
+        {phase === MatchPhase.PLAYER_TURNS && (
+          <div className="relative w-20 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl text-center">
+            {matchResultSummary?.dealer.upCardSoftTotal}
+            <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-0 h-0 border-y-4 border-y-transparent border-r-8" />
+          </div>
+        )}
+        {phase === MatchPhase.DEALER_TURN && (
+          <div className="relative w-20 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl text-center">
+            {roundResult?.dealersHand.total}
+            <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 w-0 h-0 border-y-4 border-y-transparent border-r-8" />
+          </div>
+        )}
       </div>
 
       <div className="flex space-x-2">
