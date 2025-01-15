@@ -7,7 +7,8 @@ export type MatchAction =
   | { type: "START_ROUND" }
   | { type: "SET_BETTING" }
   | { type: "UPDATE_MATCH_SUMMARY"; payload: ResultSummary }
-  | { type: "UPDATE_HINT"; payload: MatchHint }
+  | { type: "UPDATE_HINT_ENABLED"; payload: boolean }
+  | { type: "UPDATE_HINT"; payload: MatchHint | undefined }
   | { type: "START_DEALING" }
   | { type: "COMPLETE_DEALING" }
   | { type: "MOVE_TO_NEXT_PLAYER"; payload?: { isLastPlayer: boolean } }

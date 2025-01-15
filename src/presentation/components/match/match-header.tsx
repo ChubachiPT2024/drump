@@ -7,19 +7,15 @@ import { HintToggle } from "./hint-toggle";
 import { MATCH_CONSTANTS } from "../../constants/match";
 
 interface MatchHeaderProps {
-  currentPlayerId: string;
   roundCount: number;
   isHintEnabled: boolean;
   setIsHintEnabled: (isHintEnabled: boolean) => void;
-  onHintToggle: (playerId: string) => void;
 }
 
 export const MatchHeader = ({
-  currentPlayerId,
   roundCount,
   isHintEnabled,
   setIsHintEnabled,
-  onHintToggle,
 }: MatchHeaderProps) => {
   return (
     <>
@@ -32,12 +28,8 @@ export const MatchHeader = ({
               </div>
               <HelpButton icon={CircleHelp} size={8} />
               <HintToggle
-                onClick={() => {
-                  setIsHintEnabled(!isHintEnabled);
-                  if (!isHintEnabled) {
-                    onHintToggle(currentPlayerId);
-                  }
-                }}
+                isHintEnabled={isHintEnabled}
+                onClick={() => setIsHintEnabled(!isHintEnabled)}
                 className="ml-2"
                 text="Hint"
               />

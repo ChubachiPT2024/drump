@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { MatchHeader } from "../components/match/match-header";
@@ -22,9 +21,9 @@ import { useBlackjack } from "../hooks/use-blackjack";
 
 export const MatchPage = () => {
   const { matchId } = useParams<{ matchId: string }>();
-  const [isHintEnabled, setIsHintEnabled] = useState<boolean>(false);
-
-  const { state, actions } = useBlackjack({ matchId: matchId ?? "" });
+  const { state, actions } = useBlackjack({
+    matchId: matchId ?? "",
+  });
 
   const {
     phase,
@@ -35,6 +34,7 @@ export const MatchPage = () => {
     matchResult,
     playerIdToNameMap,
     isLoading,
+    isHintEnabled,
     hint,
   } = state;
 
@@ -47,7 +47,7 @@ export const MatchPage = () => {
     name: getPlayerName(matchResultSummary.players[playerTurnIndex].id),
   };
 
-  if (isLoading || !matchId || !matchResultSummary || !currentPlayer) {
+  if (isLoading || !matchId || !matchResultSummary) {
     // TOOD: loading画面の作成
     return <div>Loading...</div>;
   }
@@ -56,11 +56,9 @@ export const MatchPage = () => {
     <>
       <div className="relative min-h-screen bg-green-600 flex flex-col items-center">
         <MatchHeader
-          currentPlayerId={currentPlayer?.id}
           roundCount={matchResultSummary.roundCount}
-          isHintEnabled={isHintEnabled}
-          setIsHintEnabled={setIsHintEnabled}
-          onHintToggle={actions.handleHint}
+          isHintEnabled={state.isHintEnabled}
+          setIsHintEnabled={actions.handleHintEnable}
         />
         <MatchTable
           phase={phase}

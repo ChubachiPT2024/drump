@@ -28,6 +28,12 @@ export const matchReducer = (
         matchResultSummary: action.payload,
       };
 
+    case "UPDATE_HINT_ENABLED":
+      return {
+        ...state,
+        isHintEnabled: action.payload,
+      };
+
     case "UPDATE_HINT":
       return {
         ...state,

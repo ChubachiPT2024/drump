@@ -13,5 +13,6 @@ export interface MatchState {
   matchResult?: MatchResult;
   playerIdToNameMap: Map<string, string>;
   isLoading: boolean;
+  isHintEnabled: boolean;
   hint?: MatchHint;
 }

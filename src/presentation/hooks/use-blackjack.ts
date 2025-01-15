@@ -41,6 +41,7 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
     playerTurnIndex: 0,
     playerIdToNameMap: new Map(),
     isLoading: true,
+    isHintEnabled: false,
     hint: undefined,
   });
 
@@ -276,23 +277,11 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
     }
   }, [matchId, handleError, onOpenRoundResultModal, onOpenMatchResultModal]);
 
-  const handleHint = useCallback(
-    async (playerId: string) => {
-      try {
-        const hint = await getMatchHintApi(matchId, playerId);
-        dispatch({ type: "UPDATE_HINT", payload: hint });
-      } catch (error) {
-        handleError(error as Error, "hint");
-      }
-    },
-    [
-      state.matchResultSummary,
-      matchId,
-      moveToNextPlayer,
-      handleError,
-      onOpenStandModal,
-    ]
-  );
+  const handleHintEnable = useCallback(async () => {
+    if (state.hint) {
+      dispatch({ type: "UPDATE_HINT_ENABLED", payload: true });
+    }
+  }, [matchId, state.matchResultSummary, state.playerTurnIndex]);
 
   useEffect(() => {
     const initializePlayerNames = async () => {
@@ -320,6 +309,25 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
     };
   }, [handleRoundStart]);
 
+  useEffect(() => {
+    const handleHint = async (playerId: string) => {
+      try {
+        const hint = await getMatchHintApi(matchId, playerId);
+        dispatch({ type: "UPDATE_HINT", payload: hint });
+      } catch (error) {
+        handleError(error as Error, "hint");
+      }
+    };
+    if (state.matchResultSummary) {
+      handleHint(state.matchResultSummary.players[state.playerTurnIndex].id);
+    }
+  }, [matchId, state.matchResultSummary, state.playerTurnIndex]);
+
+  useEffect(() => {
+    dispatch({ type: "UPDATE_HINT_ENABLED", payload: false });
+    dispatch({ type: "UPDATE_HINT", payload: undefined });
+  }, [state.playerTurnIndex]);
+
   return {
     state,
     actions: {
@@ -329,7 +337,7 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
       handleHit,
       handleStand,
       handleRoundComplete,
-      handleHint,
+      handleHintEnable,
     },
   };
 };
