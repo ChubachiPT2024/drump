@@ -99,29 +99,38 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
     }
   }, [matchId, state.playerTurnIndex, handleError, onOpenRotationModal, onOpenBlackjackModal]);
 
-  const moveToNextPlayer = useCallback(async () => {
-    const nextPlayerIndex = state.playerTurnIndex + 1;
-    const isLastPlayer = !!(state.matchResultSummary && 
-      nextPlayerIndex >= state.matchResultSummary.players.length);
-
-    dispatch({ 
-      type: 'MOVE_TO_NEXT_PLAYER', 
-      payload: { isLastPlayer } 
+  const moveToNextPlayer = useCallback(async (currentTurnIndex = state.playerTurnIndex) => {
+    const nextPlayerIndex = currentTurnIndex + 1;
+    const isLastPlayer = !!(
+      state.matchResultSummary &&
+      nextPlayerIndex >= state.matchResultSummary.players.length
+    );
+  
+    dispatch({
+      type: 'MOVE_TO_NEXT_PLAYER',
+      payload: { isLastPlayer },
     });
-
-    if (isLastPlayer) {
-      await handleRoundComplete();
-    } else {
-      // TODO: handのアニメーションを追加 できたら
+  
+    if (!isLastPlayer) {
+      // TODO: hand のアニメーションを追加できたら
 
       onOpenRotationModal();
-      await new Promise(resolve => setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION));
-
+      await new Promise((resolve) =>
+        setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
+      );
+  
       const nextPlayer = state.matchResultSummary?.players[nextPlayerIndex];
+  
       if (nextPlayer?.hand?.isBlackJack) {
         onOpenBlackjackModal();
-        await new Promise(resolve => setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION));
+        await new Promise((resolve) =>
+          setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
+        );
+  
+        await moveToNextPlayer(nextPlayerIndex);
       }
+    } else {
+      await handleRoundComplete();
     }
   }, [state.playerTurnIndex, state.matchResultSummary]);
 
@@ -163,6 +172,8 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
       if (updatedSummary.players[state.playerTurnIndex].hand?.isBust) {
         onOpenBustModal();
         await new Promise(resolve => setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION));
+        await moveToNextPlayer();
+      } else if (updatedSummary.players[state.playerTurnIndex].hand?.isResolved) {
         await moveToNextPlayer();
       }
 
