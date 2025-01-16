@@ -9,5 +9,5 @@ export interface DealerNotification {
    *
    * @param upCard アップカード
    */
-  notifyUpCard(upCard: Card): void;
+  notifyUpCard(upCard?: Card): void;
 }

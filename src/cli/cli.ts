@@ -128,7 +128,11 @@ while (true) {
       console.log(
         `Cards: ${playersHand.cards.map((card) => `${suitStrings.get(card.suit)}${card.rank}`).join(" ")}`,
       );
-      console.log(`Total: ${playersHand.total}`);
+      if (playersHand.softTotal) {
+        console.log(`Total: ${playersHand.hardTotal}/${playersHand.softTotal}`);
+      } else {
+        console.log(`Total: ${playersHand.hardTotal}`);
+      }
       console.log();
 
       if (playersHand.isResolved) {

@@ -20,8 +20,8 @@ export class MatchGetSummaryResultDealer implements DealerNotification {
    *
    * @param upCard アップカード
    */
-  public notifyUpCard(upCard: Card): void {
+  public notifyUpCard(upCard?: Card): void {
     this.upCard = upCard;
-    this.upCardSoftTotal = upCard.getSoftPoint();
+    this.upCardSoftTotal = upCard?.getSoftPoint();
   }
 }

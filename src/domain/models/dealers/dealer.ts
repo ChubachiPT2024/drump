@@ -58,8 +58,8 @@ export class Dealer {
    *
    * @returns アップカード
    */
-  public getUpCard(): Card {
-    return this.hand.getCards()[0];
+  public getUpCard(): Card | undefined {
+    return this.hand.getCards().at(0);
   }
 
   /**
