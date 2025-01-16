@@ -4,7 +4,8 @@ export interface ResultSummaryPlayer {
   id: string;
   hand: {
     cards: Card[];
-    total: number;
+    softTotal: number | undefined;
+    hardTotal: number;
     isResolved: boolean;
     isBlackJack: boolean;
     isBust: boolean;
