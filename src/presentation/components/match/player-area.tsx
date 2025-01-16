@@ -38,7 +38,6 @@ export const PlayerArea = ({
       <div className="absolute top-1/4 -right-24 z-10">
         {showHands && (
           <div className="relative w-20 px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl">
-            {/* TODO: ソフトとハードで表示 */}
             {currentPlayer.hand?.hardTotal}
             {currentPlayer.hand?.softTotal &&
               ` / ${currentPlayer.hand?.softTotal}`}
