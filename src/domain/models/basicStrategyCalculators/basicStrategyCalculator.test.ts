@@ -56,6 +56,43 @@ describe("calculate", () => {
 
   test.each([
     {
+      cards: [new Card(Rank.Two, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+      upCard: new Card(Rank.Jack, Suit.Spade),
+      expected: HandSignal.Hit,
+    },
+    {
+      cards: [new Card(Rank.Two, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+      upCard: new Card(Rank.Queen, Suit.Spade),
+      expected: HandSignal.Hit,
+    },
+    {
+      cards: [new Card(Rank.Two, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+      upCard: new Card(Rank.King, Suit.Spade),
+      expected: HandSignal.Hit,
+    },
+  ] as {
+    cards: Card[];
+    upCard: Card;
+    expected: HandSignal;
+  }[])(
+    "Can calculate the split strategy if the up card is a face card.",
+    ({ cards, upCard, expected }) => {
+      // Arrange
+      let hand = Hand.create();
+      for (const card of cards) {
+        hand = hand.add(card);
+      }
+
+      // Act
+      const basicStrategy = BasicStrategyCalculator.calculate(hand, upCard);
+
+      // Assert
+      expect(basicStrategy).toBe(expected);
+    },
+  );
+
+  test.each([
+    {
       cards: [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Ten, Suit.Spade)],
       upCard: new Card(Rank.Two, Suit.Spade),
       expected: HandSignal.Stand,
@@ -83,6 +120,43 @@ describe("calculate", () => {
     expected: HandSignal;
   }[])(
     "It returns the soft hand strategy if the hand is soft hand.",
+    ({ cards, upCard, expected }) => {
+      // Arrange
+      let hand = Hand.create();
+      for (const card of cards) {
+        hand = hand.add(card);
+      }
+
+      // Act
+      const basicStrategy = BasicStrategyCalculator.calculate(hand, upCard);
+
+      // Assert
+      expect(basicStrategy).toBe(expected);
+    },
+  );
+
+  test.each([
+    {
+      cards: [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+      upCard: new Card(Rank.Jack, Suit.Spade),
+      expected: HandSignal.Hit,
+    },
+    {
+      cards: [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+      upCard: new Card(Rank.Queen, Suit.Spade),
+      expected: HandSignal.Hit,
+    },
+    {
+      cards: [new Card(Rank.Ace, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+      upCard: new Card(Rank.King, Suit.Spade),
+      expected: HandSignal.Hit,
+    },
+  ] as {
+    cards: Card[];
+    upCard: Card;
+    expected: HandSignal;
+  }[])(
+    "Can calculate the soft hand strategy if the up card is a face card.",
     ({ cards, upCard, expected }) => {
       // Arrange
       let hand = Hand.create();
@@ -133,6 +207,43 @@ describe("calculate", () => {
     expected: HandSignal;
   }[])(
     "It returns the hard hand strategy if the hand is hard hand.",
+    ({ cards, upCard, expected }) => {
+      // Arrange
+      let hand = Hand.create();
+      for (const card of cards) {
+        hand = hand.add(card);
+      }
+
+      // Act
+      const basicStrategy = BasicStrategyCalculator.calculate(hand, upCard);
+
+      // Assert
+      expect(basicStrategy).toBe(expected);
+    },
+  );
+
+  test.each([
+    {
+      cards: [new Card(Rank.Two, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+      upCard: new Card(Rank.Jack, Suit.Spade),
+      expected: HandSignal.Hit,
+    },
+    {
+      cards: [new Card(Rank.Two, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+      upCard: new Card(Rank.Queen, Suit.Spade),
+      expected: HandSignal.Hit,
+    },
+    {
+      cards: [new Card(Rank.Two, Suit.Spade), new Card(Rank.Two, Suit.Spade)],
+      upCard: new Card(Rank.King, Suit.Spade),
+      expected: HandSignal.Hit,
+    },
+  ] as {
+    cards: Card[];
+    upCard: Card;
+    expected: HandSignal;
+  }[])(
+    "Can calculate the hard hand strategy if the up card is a face card.",
     ({ cards, upCard, expected }) => {
       // Arrange
       let hand = Hand.create();

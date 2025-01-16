@@ -2,6 +2,7 @@ import { Card } from "../cards/card";
 import { Hand } from "../hands/hand";
 import { HandSignal } from "../handSignals/handSignal";
 import { Rank } from "../ranks/rank";
+import { BasicStrategyCalculatorStrategyUndefinedError } from "./basicStrategyCalculatorStrategyUndefinedError";
 
 /**
  * ベーシックストラテジー計算機
@@ -28,6 +29,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Split],
         [Rank.Nine, HandSignal.Split],
         [Rank.Ten, HandSignal.Split],
+        [Rank.Jack, HandSignal.Split],
+        [Rank.Queen, HandSignal.Split],
+        [Rank.King, HandSignal.Split],
         [Rank.Ace, HandSignal.Split],
       ]),
     ],
@@ -43,6 +47,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -58,6 +65,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -73,6 +83,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -88,6 +101,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Double],
         [Rank.Nine, HandSignal.Double],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -103,6 +119,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -118,6 +137,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -133,6 +155,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Split],
         [Rank.Nine, HandSignal.Split],
         [Rank.Ten, HandSignal.Split],
+        [Rank.Jack, HandSignal.Split],
+        [Rank.Queen, HandSignal.Split],
+        [Rank.King, HandSignal.Split],
         [Rank.Ace, HandSignal.Split],
       ]),
     ],
@@ -148,6 +173,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Split],
         [Rank.Nine, HandSignal.Split],
         [Rank.Ten, HandSignal.Stand],
+        [Rank.Jack, HandSignal.Stand],
+        [Rank.Queen, HandSignal.Stand],
+        [Rank.King, HandSignal.Stand],
         [Rank.Ace, HandSignal.Stand],
       ]),
     ],
@@ -163,6 +191,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Stand],
         [Rank.Nine, HandSignal.Stand],
         [Rank.Ten, HandSignal.Stand],
+        [Rank.Jack, HandSignal.Stand],
+        [Rank.Queen, HandSignal.Stand],
+        [Rank.King, HandSignal.Stand],
         [Rank.Ace, HandSignal.Stand],
       ]),
     ],
@@ -189,6 +220,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -204,6 +238,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -219,6 +256,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Double],
         [Rank.Nine, HandSignal.Double],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -234,6 +274,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Double],
         [Rank.Nine, HandSignal.Double],
         [Rank.Ten, HandSignal.Double],
+        [Rank.Jack, HandSignal.Double],
+        [Rank.Queen, HandSignal.Double],
+        [Rank.King, HandSignal.Double],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -249,6 +292,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -264,6 +310,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -279,6 +328,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -294,6 +346,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -309,6 +364,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -324,6 +382,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Stand],
         [Rank.Nine, HandSignal.Stand],
         [Rank.Ten, HandSignal.Stand],
+        [Rank.Jack, HandSignal.Stand],
+        [Rank.Queen, HandSignal.Stand],
+        [Rank.King, HandSignal.Stand],
         [Rank.Ace, HandSignal.Stand],
       ]),
     ],
@@ -350,6 +411,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Stand],
         [Rank.Nine, HandSignal.Stand],
         [Rank.Ten, HandSignal.Stand],
+        [Rank.Jack, HandSignal.Stand],
+        [Rank.Queen, HandSignal.Stand],
+        [Rank.King, HandSignal.Stand],
         [Rank.Ace, HandSignal.Stand],
       ]),
     ],
@@ -365,6 +429,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Stand],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -380,6 +447,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -395,6 +465,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -410,6 +483,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -425,6 +501,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -440,6 +519,9 @@ export class BasicStrategyCalculator {
         [Rank.Eight, HandSignal.Hit],
         [Rank.Nine, HandSignal.Hit],
         [Rank.Ten, HandSignal.Hit],
+        [Rank.Jack, HandSignal.Hit],
+        [Rank.Queen, HandSignal.Hit],
+        [Rank.King, HandSignal.Hit],
         [Rank.Ace, HandSignal.Hit],
       ]),
     ],
@@ -454,21 +536,81 @@ export class BasicStrategyCalculator {
    */
   public static calculate(hand: Hand, upCard: Card): HandSignal {
     if (hand.canSplit()) {
-      return BasicStrategyCalculator.splitStrategies
-        .get(hand.getCards()[0].getHardPoint())!
-        .get(upCard.rank)!;
+      return BasicStrategyCalculator.calculateSplitStrategy(hand, upCard);
     }
 
     const softTotal = hand.calculateSoftTotal();
     if (softTotal) {
-      return BasicStrategyCalculator.softHandStrategies
-        .get(BasicStrategyCalculator.clamp(softTotal, 13, 19))!
-        .get(upCard.rank)!;
+      return BasicStrategyCalculator.calculateSoftHandStrategy(
+        softTotal,
+        upCard,
+      );
     }
 
-    return BasicStrategyCalculator.hardHandStrategies
-      .get(BasicStrategyCalculator.clamp(hand.calculateHardTotal(), 8, 17))!
-      .get(upCard.rank)!;
+    return BasicStrategyCalculator.calculateHardHandStrategy(
+      hand.calculateHardTotal(),
+      upCard,
+    );
+  }
+
+  /**
+   * スプリットストラテジーを計算する
+   *
+   * @param hand ハンド
+   * @param upCard アップカード
+   * @returns スプリットストラテジー
+   */
+  private static calculateSplitStrategy(hand: Hand, upCard: Card): HandSignal {
+    const strategy = BasicStrategyCalculator.splitStrategies
+      .get(hand.getCards()[0].getHardPoint())
+      ?.get(upCard.rank);
+
+    if (!strategy) {
+      throw new BasicStrategyCalculatorStrategyUndefinedError();
+    }
+    return strategy;
+  }
+
+  /**
+   * ソフトハンドストラテジーを計算する
+   *
+   * @param softTotal ソフトトータル
+   * @param upCard アップカード
+   * @returns ソフトハンドストラテジー
+   */
+  private static calculateSoftHandStrategy(
+    softTotal: number,
+    upCard: Card,
+  ): HandSignal {
+    const strategy = BasicStrategyCalculator.softHandStrategies
+      .get(BasicStrategyCalculator.clamp(softTotal, 13, 19))
+      ?.get(upCard.rank);
+
+    if (!strategy) {
+      throw new BasicStrategyCalculatorStrategyUndefinedError();
+    }
+    return strategy;
+  }
+
+  /**
+   * ハードハンドストラテジーを計算する
+   *
+   * @param hardTotal ハードトータル
+   * @param upCard アップカード
+   * @returns ハードハンドストラテジー
+   */
+  private static calculateHardHandStrategy(
+    hardTotal: number,
+    upCard: Card,
+  ): HandSignal {
+    const strategy = BasicStrategyCalculator.hardHandStrategies
+      .get(BasicStrategyCalculator.clamp(hardTotal, 8, 17))
+      ?.get(upCard.rank);
+
+    if (!strategy) {
+      throw new BasicStrategyCalculatorStrategyUndefinedError();
+    }
+    return strategy;
   }
 
   /**
