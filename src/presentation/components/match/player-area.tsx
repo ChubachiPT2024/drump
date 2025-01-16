@@ -27,8 +27,6 @@ export const PlayerArea = ({
     }
   };
 
-  console.log("PlayerArea", currentPlayer);
-
   return (
     <div className="bg-neutral-50/5 text-center rounded-md relative">
       <h2 className="bg-gradient-to-b from-slate-300/40 via-slate-100/10 to-slate-50/5 text-white text-lg font-bold rounded-t-md">
