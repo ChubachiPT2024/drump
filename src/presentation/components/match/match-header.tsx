@@ -10,12 +10,14 @@ interface MatchHeaderProps {
   roundCount: number;
   isHintEnabled: boolean;
   setIsHintEnabled: (isHintEnabled: boolean) => void;
+  handleRule: () => void;
 }
 
 export const MatchHeader = ({
   roundCount,
   isHintEnabled,
   setIsHintEnabled,
+  handleRule,
 }: MatchHeaderProps) => {
   return (
     <>
@@ -26,7 +28,7 @@ export const MatchHeader = ({
               <div className="hidden md:block items-center bg-neutral-950/10 rounded-md">
                 <Logo size={32} />
               </div>
-              <HelpButton icon={CircleHelp} size={8} />
+              <HelpButton icon={CircleHelp} size={8} onClick={handleRule} />
               <HintToggle
                 onClick={() => setIsHintEnabled(!isHintEnabled)}
                 className="ml-2"

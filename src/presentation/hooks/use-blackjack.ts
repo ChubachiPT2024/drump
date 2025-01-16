@@ -9,6 +9,7 @@ import { useStandModal } from "./modal/use-stand-modal";
 import { useBustModal } from "./modal/use-bust-modal";
 import { useRoundResultModal } from "./modal/use-round-result-modal";
 import { useMatchResultModal } from "./modal/use-match-result-modal";
+import { useRuleModal } from "./modal/use-rule-modal";
 
 import { useErrorHandling } from "./use-error-handling";
 
@@ -30,7 +31,7 @@ import { ANIMATION_TIMING_MILLISECONDS } from "../constants/animation";
 import { matchReducer } from "../reducers/match-reducer";
 
 interface BlackjackProps {
-	matchId: string;
+  matchId: string;
 }
 
 export const useBlackjack = ({ matchId }: BlackjackProps) => {
@@ -42,30 +43,33 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
     isLoading: true,
   });
 
-	const { onOpen: onOpenStartModal } = useRoundStartModal();
-	const { onOpen: onOpenBetModal } = useBetModal();
-	const { onOpen: onOpenRotationModal } = useRotationModal();
-	const { onOpen: onOpenBlackjackModal } = useBlackJackModal();
-	const { onOpen: onOpenHitModal } = useHitModal();
-	const { onOpen: onOpenStandModal } = useStandModal();
-	const { onOpen: onOpenBustModal } = useBustModal();
-	const { onOpen: onOpenRoundResultModal } = useRoundResultModal();
-	const { onOpen: onOpenMatchResultModal } = useMatchResultModal();
+  const { onOpen: onOpenStartModal } = useRoundStartModal();
+  const { onOpen: onOpenBetModal } = useBetModal();
+  const { onOpen: onOpenRotationModal } = useRotationModal();
+  const { onOpen: onOpenBlackjackModal } = useBlackJackModal();
+  const { onOpen: onOpenHitModal } = useHitModal();
+  const { onOpen: onOpenStandModal } = useStandModal();
+  const { onOpen: onOpenBustModal } = useBustModal();
+  const { onOpen: onOpenRoundResultModal } = useRoundResultModal();
+  const { onOpen: onOpenMatchResultModal } = useMatchResultModal();
+  const { onOpen: onOpenRuleModal } = useRuleModal();
 
-	const { handleError } = useErrorHandling();
+  const { handleError } = useErrorHandling();
 
   const handleRoundStart = useCallback(async () => {
     try {
-      dispatch({ type: 'START_ROUND' });
+      dispatch({ type: "START_ROUND" });
       await postMatchStartApi(matchId);
-      
+
       const updatedSummary = await getMatchResultSummaryApi(matchId);
-      dispatch({ type: 'UPDATE_MATCH_SUMMARY', payload: updatedSummary });
-      
+      dispatch({ type: "UPDATE_MATCH_SUMMARY", payload: updatedSummary });
+
       onOpenStartModal();
-      await new Promise(resolve => setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION));
-      
-      dispatch({ type: 'SET_BETTING' });
+      await new Promise((resolve) =>
+        setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
+      );
+
+      dispatch({ type: "SET_BETTING" });
       onOpenBetModal();
     } catch (error) {
       handleError(error as Error, "round start");
@@ -73,185 +77,243 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
   }, [matchId]);
 
   const handleInitialDeal = useCallback(async () => {
-    try {      
-      onOpenRotationModal();
-      await new Promise(resolve => setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION));
-
-      dispatch({ type: 'START_DEALING' });
-      
-      const updatedSummary = await getMatchResultSummaryApi(matchId);
-      dispatch({ type: 'UPDATE_MATCH_SUMMARY', payload: updatedSummary });
-
-      dispatch({ type: 'UPDATE_ROUND_RESULT', payload: undefined });
-
-      await new Promise(resolve => setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.INITIAL_DEAL));
-
-      dispatch({ type: 'COMPLETE_DEALING' });
-
-      if (updatedSummary.players[state.playerTurnIndex].hand?.isBlackJack) {
-        onOpenBlackjackModal();
-        await new Promise(resolve => setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION));
-        await moveToNextPlayer();
-      }
-    } catch (error) {
-      handleError(error as Error, "initial deal");
-      dispatch({ type: 'END_ANIMATION' });
-    }
-  }, [matchId, state.playerTurnIndex, handleError, onOpenRotationModal, onOpenBlackjackModal]);
-
-  const moveToNextPlayer = useCallback(async (currentTurnIndex = state.playerTurnIndex) => {
-    const nextPlayerIndex = currentTurnIndex + 1;
-    const isLastPlayer = !!(
-      state.matchResultSummary &&
-      nextPlayerIndex >= state.matchResultSummary.players.length
-    );
-  
-    dispatch({
-      type: 'MOVE_TO_NEXT_PLAYER',
-      payload: { isLastPlayer },
-    });
-  
-    if (!isLastPlayer) {
-      // TODO: hand のアニメーションを追加できたら
-
+    try {
       onOpenRotationModal();
       await new Promise((resolve) =>
         setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
       );
-  
-      const nextPlayer = state.matchResultSummary?.players[nextPlayerIndex];
-  
-      if (nextPlayer?.hand?.isBlackJack) {
+
+      dispatch({ type: "START_DEALING" });
+
+      const updatedSummary = await getMatchResultSummaryApi(matchId);
+      dispatch({ type: "UPDATE_MATCH_SUMMARY", payload: updatedSummary });
+
+      dispatch({ type: "UPDATE_ROUND_RESULT", payload: undefined });
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.INITIAL_DEAL)
+      );
+
+      dispatch({ type: "COMPLETE_DEALING" });
+
+      if (updatedSummary.players[state.playerTurnIndex].hand?.isBlackJack) {
         onOpenBlackjackModal();
         await new Promise((resolve) =>
           setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
         );
-  
-        await moveToNextPlayer(nextPlayerIndex);
+        await moveToNextPlayer();
       }
-    } else {
-      await handleRoundComplete();
+    } catch (error) {
+      handleError(error as Error, "initial deal");
+      dispatch({ type: "END_ANIMATION" });
     }
-  }, [state.playerTurnIndex, state.matchResultSummary]);
+  }, [
+    matchId,
+    state.playerTurnIndex,
+    handleError,
+    onOpenRotationModal,
+    onOpenBlackjackModal,
+  ]);
 
-	const isLastBetPlayer = (playerId: string, players: ResultSummaryPlayer[]): boolean => {
-		return players[players.length - 1].id === playerId;
-	};
+  const moveToNextPlayer = useCallback(
+    async (currentTurnIndex = state.playerTurnIndex) => {
+      const nextPlayerIndex = currentTurnIndex + 1;
+      const isLastPlayer = !!(
+        state.matchResultSummary &&
+        nextPlayerIndex >= state.matchResultSummary.players.length
+      );
 
-  const handleBet = useCallback(async (playerId: string, betAmount: number) => {
-    try {
-      dispatch({ type: 'START_ANIMATION' });
-      await postMatchBetApi(matchId, playerId, betAmount);
+      dispatch({
+        type: "MOVE_TO_NEXT_PLAYER",
+        payload: { isLastPlayer },
+      });
 
-      const updatedSummary = await getMatchResultSummaryApi(matchId);
-      dispatch({ type: 'UPDATE_MATCH_SUMMARY', payload: updatedSummary });
-      
-      if (isLastBetPlayer(playerId, updatedSummary.players)) {
-        await handleInitialDeal(); 
+      if (!isLastPlayer) {
+        // TODO: hand のアニメーションを追加できたら
+
+        onOpenRotationModal();
+        await new Promise((resolve) =>
+          setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
+        );
+
+        const nextPlayer = state.matchResultSummary?.players[nextPlayerIndex];
+
+        if (nextPlayer?.hand?.isBlackJack) {
+          onOpenBlackjackModal();
+          await new Promise((resolve) =>
+            setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
+          );
+
+          await moveToNextPlayer(nextPlayerIndex);
+        }
       } else {
-        dispatch({ type: 'END_ANIMATION' });
+        await handleRoundComplete();
       }
-    } catch (error) {
-      handleError(error as Error, "bet");
-      dispatch({ type: 'END_ANIMATION' });
-    }
-  }, [matchId, handleError]);
+    },
+    [state.playerTurnIndex, state.matchResultSummary]
+  );
 
-	const handleHit = useCallback(async (playerId: string) => {
-    try {
-      dispatch({ type: 'START_ANIMATION' });
-      await postHitApi(matchId, playerId);
+  const isLastBetPlayer = (
+    playerId: string,
+    players: ResultSummaryPlayer[]
+  ): boolean => {
+    return players[players.length - 1].id === playerId;
+  };
 
-      onOpenHitModal();
-      await new Promise(resolve => setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION));
+  const handleBet = useCallback(
+    async (playerId: string, betAmount: number) => {
+      try {
+        dispatch({ type: "START_ANIMATION" });
+        await postMatchBetApi(matchId, playerId, betAmount);
 
-      const updatedSummary = await getMatchResultSummaryApi(matchId);
-      dispatch({ type: 'UPDATE_MATCH_SUMMARY', payload: updatedSummary });
-      await new Promise(resolve => setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.DEAL * 2)); // DEAL分だけ余裕を持って待つ
+        const updatedSummary = await getMatchResultSummaryApi(matchId);
+        dispatch({ type: "UPDATE_MATCH_SUMMARY", payload: updatedSummary });
 
-      if (updatedSummary.players[state.playerTurnIndex].hand?.isBust) {
-        onOpenBustModal();
-        await new Promise(resolve => setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION));
-        await moveToNextPlayer();
-      } else if (updatedSummary.players[state.playerTurnIndex].hand?.isResolved) {
-        await moveToNextPlayer();
+        if (isLastBetPlayer(playerId, updatedSummary.players)) {
+          await handleInitialDeal();
+        } else {
+          dispatch({ type: "END_ANIMATION" });
+        }
+      } catch (error) {
+        handleError(error as Error, "bet");
+        dispatch({ type: "END_ANIMATION" });
       }
+    },
+    [matchId, handleError]
+  );
 
-      dispatch({ type: 'END_ANIMATION' });
-    } catch (error) {
-      handleError(error as Error, "hit");
-      dispatch({ type: 'END_ANIMATION' });
-    }
-  }, [matchId, state.playerTurnIndex, moveToNextPlayer, handleError, onOpenHitModal, onOpenBustModal]);
+  const handleHit = useCallback(
+    async (playerId: string) => {
+      try {
+        dispatch({ type: "START_ANIMATION" });
+        await postHitApi(matchId, playerId);
 
-	const handleStand = useCallback(async (playerId: string) => {
+        onOpenHitModal();
+        await new Promise((resolve) =>
+          setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
+        );
+
+        const updatedSummary = await getMatchResultSummaryApi(matchId);
+        dispatch({ type: "UPDATE_MATCH_SUMMARY", payload: updatedSummary });
+        await new Promise((resolve) =>
+          setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.DEAL * 2)
+        ); // DEAL分だけ余裕を持って待つ
+
+        if (updatedSummary.players[state.playerTurnIndex].hand?.isBust) {
+          onOpenBustModal();
+          await new Promise((resolve) =>
+            setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
+          );
+          await moveToNextPlayer();
+        } else if (
+          updatedSummary.players[state.playerTurnIndex].hand?.isResolved
+        ) {
+          await moveToNextPlayer();
+        }
+
+        dispatch({ type: "END_ANIMATION" });
+      } catch (error) {
+        handleError(error as Error, "hit");
+        dispatch({ type: "END_ANIMATION" });
+      }
+    },
+    [
+      matchId,
+      state.playerTurnIndex,
+      moveToNextPlayer,
+      handleError,
+      onOpenHitModal,
+      onOpenBustModal,
+    ]
+  );
+
+  const handleStand = useCallback(
+    async (playerId: string) => {
+      try {
+        dispatch({ type: "START_ANIMATION" });
+        await postStandApi(matchId, playerId);
+
+        onOpenStandModal();
+        await new Promise((resolve) =>
+          setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
+        );
+
+        const updatedSummary = await getMatchResultSummaryApi(matchId);
+        dispatch({ type: "UPDATE_MATCH_SUMMARY", payload: updatedSummary });
+
+        await moveToNextPlayer();
+        dispatch({ type: "END_ANIMATION" });
+      } catch (error) {
+        handleError(error as Error, "stand");
+        dispatch({ type: "END_ANIMATION" });
+      }
+    },
+    [matchId, moveToNextPlayer, handleError, onOpenStandModal]
+  );
+
+  const handleRoundComplete = useCallback(async () => {
     try {
-      dispatch({ type: 'START_ANIMATION' });
-      await postStandApi(matchId, playerId);
-
-      onOpenStandModal();
-      await new Promise(resolve => setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION));
-
-      const updatedSummary = await getMatchResultSummaryApi(matchId);
-      dispatch({ type: 'UPDATE_MATCH_SUMMARY', payload: updatedSummary });
-
-      await moveToNextPlayer();
-      dispatch({ type: 'END_ANIMATION' });
-    } catch (error) {
-      handleError(error as Error, "stand");
-      dispatch({ type: 'END_ANIMATION' });
-    }
-  }, [matchId, moveToNextPlayer, handleError, onOpenStandModal]);
-
-	const handleRoundComplete = useCallback(async () => {
-    try {
-      dispatch({ type: 'START_DEALER_TURN' });
+      dispatch({ type: "START_DEALER_TURN" });
       await postRoundCompleteApi(matchId);
 
       const roundResultResponse = await getRoundResultApi(matchId);
-      dispatch({ type: 'UPDATE_ROUND_RESULT', payload: roundResultResponse });
+      dispatch({ type: "UPDATE_ROUND_RESULT", payload: roundResultResponse });
 
       // ディーラーのカードを表示するための待機時間　DEAL分だけ余裕を持って待つ
-      await new Promise(resolve => setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.DEAL_DELAY * roundResultResponse.dealersHand.cards.length + ANIMATION_TIMING_MILLISECONDS.DEAL));
+      await new Promise((resolve) =>
+        setTimeout(
+          resolve,
+          ANIMATION_TIMING_MILLISECONDS.DEAL_DELAY *
+            roundResultResponse.dealersHand.cards.length +
+            ANIMATION_TIMING_MILLISECONDS.DEAL
+        )
+      );
 
-      const matchResultSummaryResponse = await getMatchResultSummaryApi(matchId);
+      const matchResultSummaryResponse =
+        await getMatchResultSummaryApi(matchId);
 
       if (matchResultSummaryResponse.isCompleted) {
         const matchResultResponse = await getResultApi(matchId);
-        dispatch({ type: 'COMPLETE_MATCH', payload: matchResultResponse });
+        dispatch({ type: "COMPLETE_MATCH", payload: matchResultResponse });
         onOpenMatchResultModal();
       } else {
-        dispatch({ type: 'COMPLETE_ROUND' });
+        dispatch({ type: "COMPLETE_ROUND" });
         onOpenRoundResultModal();
       }
     } catch (error) {
       handleError(error as Error, "round complete");
-      dispatch({ type: 'END_ANIMATION' });
+      dispatch({ type: "END_ANIMATION" });
     }
   }, [matchId, handleError, onOpenRoundResultModal, onOpenMatchResultModal]);
+
+  const handleRule = useCallback(() => {
+    onOpenRuleModal();
+  }, [onOpenRuleModal]);
 
   useEffect(() => {
     const initializePlayerNames = async () => {
       try {
         const playersData = await getPlayersNameApi(matchId);
-        dispatch({ 
-          type: 'SET_PLAYER_NAMES', 
-          payload: new Map(playersData.map(player => [player.id, player.name]))
+        dispatch({
+          type: "SET_PLAYER_NAMES",
+          payload: new Map(
+            playersData.map((player) => [player.id, player.name])
+          ),
         });
       } catch (error) {
         handleError(error as Error, "getting player names");
       } finally {
-        dispatch({ type: 'SET_LOADING', payload: false });
+        dispatch({ type: "SET_LOADING", payload: false });
       }
     };
 
     initializePlayerNames();
   }, [matchId]);
 
-	useEffect(() => {
+  useEffect(() => {
     return () => {
-		  handleRoundStart();
-    }
+      handleRoundStart();
+    };
   }, [handleRoundStart]);
 
   return {
@@ -263,6 +325,7 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
       handleHit,
       handleStand,
       handleRoundComplete,
-    }
+      handleRule,
+    },
   };
 };

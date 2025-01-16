@@ -17,6 +17,7 @@ import { StandModal } from "../components/match/modal/stand-modal";
 import { BustModal } from "../components/match/modal/bust-modal";
 import { RoundResultModal } from "../components/match/modal/round-result-modal";
 import { MatchResultModal } from "../components/match/modal/match-result-modal";
+import { RuleModal } from "../components/match/modal/rule-modal";
 
 import { useBlackjack } from "../hooks/use-blackjack";
 
@@ -58,7 +59,9 @@ export const MatchPage = () => {
           roundCount={matchResultSummary.roundCount}
           isHintEnabled={isHintEnabled}
           setIsHintEnabled={setIsHintEnabled}
+          handleRule={actions.handleRule}
         />
+        <RuleModal />
         <MatchTable
           phase={phase}
           matchResultSummary={matchResultSummary}

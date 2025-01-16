@@ -5,12 +5,13 @@ import { Button } from "@/presentation/shadcnUI/components/ui/button";
 interface HelpProps {
   icon: LucideIcon;
   size: number;
+  onClick?: () => void;
 }
 
-export const HelpButton = ({ icon: Icon, size }: HelpProps) => {
+export const HelpButton = ({ icon: Icon, size, onClick }: HelpProps) => {
   return (
     <>
-      <Button size="round" className={`size-${size}`}>
+      <Button size="round" className={`size-${size}`} onClick={onClick}>
         <Icon />
       </Button>
     </>
