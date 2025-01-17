@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { MatchHeader } from "../components/match/match-header";
 import { MatchTable } from "../components/match/match-table";
 import { Shoe } from "../components/match/shoe";
-// import { OtherPlayerInfo } from "../components/match/other-player-info";
+import { OtherPlayerInfoWrapper } from "../components/match/other-player-info-wrapper";
 import { HandSignals } from "../components/match/hand-signals";
 import { PlayerInfo } from "../components/match/player-info";
 
@@ -53,7 +53,7 @@ export const MatchPage = () => {
 
   return (
     <>
-      <div className="relative min-h-screen bg-green-600 flex flex-col items-center">
+      <div className="relative min-h-screen bg-green-600 flex flex-col items-center z-0 overflow-hidden">
         <MatchHeader
           roundCount={matchResultSummary.roundCount}
           isHintEnabled={isHintEnabled}
@@ -67,8 +67,8 @@ export const MatchPage = () => {
           isHintEnabled={isHintEnabled}
         />
         <Shoe />
-        {/* TODO: otherInfoはできれば、一旦複数人ラウンドだけを */}
-        {/* <OtherPlayerInfo
+        <OtherPlayerInfoWrapper
+          phase={phase}
           players={matchResultSummary.players
             .filter((player) => player.id !== currentPlayer?.id)
             .map((player) => ({
@@ -76,8 +76,8 @@ export const MatchPage = () => {
               name: getPlayerName(player.id),
               hand: player.hand,
             }))}
-          playerTurnIndex={matchState.playerTurnIndex}
-        /> */}
+          playerTurnIndex={playerTurnIndex}
+        />
         {currentPlayer && (
           <HandSignals
             currentPlayerId={currentPlayer.id}

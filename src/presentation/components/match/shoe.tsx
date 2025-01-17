@@ -1,7 +1,8 @@
 export const Shoe = () => {
   return (
     <>
-      <div className="hidden md:block absolute top-28 right-4">
+      <div className="hidden md:block absolute top-20 right-4">
+        {/* TODO: トランプの大きさに合わせてshoeのサイズを調整する */}
         <div className="relative h-40 w-24">
           <div className="absolute inset-0 transform translate-x-0 translate-y-0">
             <img className="rounded-lg" src="/trump/back.png" alt="card-back" />
