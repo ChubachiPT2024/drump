@@ -318,9 +318,14 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
         handleError(error as Error, "hint");
       }
     };
-    if (state.matchResultSummary) {
-      handleHint(state.matchResultSummary.players[state.playerTurnIndex].id);
+
+    if (
+      !state.matchResultSummary ||
+      state.matchResultSummary.players[state.playerTurnIndex].hand.isResolved
+    ) {
+      return;
     }
+    handleHint(state.matchResultSummary.players[state.playerTurnIndex].id);
   }, [matchId, state.matchResultSummary, state.playerTurnIndex]);
 
   useEffect(() => {
