@@ -1,4 +1,5 @@
 import { CircleHelp } from "lucide-react";
+import { useRuleModal } from "../../hooks/modal/use-rule-modal";
 
 import { Logo } from "../share/logo";
 import { HelpButton } from "./help-button";
@@ -10,15 +11,15 @@ interface MatchHeaderProps {
   roundCount: number;
   isHintEnabled: boolean;
   setIsHintEnabled: (isHintEnabled: boolean) => void;
-  handleRule: () => void;
 }
 
 export const MatchHeader = ({
   roundCount,
   isHintEnabled,
   setIsHintEnabled,
-  handleRule,
 }: MatchHeaderProps) => {
+  const onOpen = useRuleModal((state) => state.onOpen);
+
   return (
     <>
       <div className="absolute top-4 left-4 text-center space-y-2">
@@ -28,7 +29,7 @@ export const MatchHeader = ({
               <div className="hidden md:block items-center bg-neutral-950/10 rounded-md">
                 <Logo size={32} />
               </div>
-              <HelpButton icon={CircleHelp} size={8} onClick={handleRule} />
+              <HelpButton icon={CircleHelp} size={8} onClick={onOpen} />
               <HintToggle
                 isHintEnabled={isHintEnabled}
                 onClick={() => setIsHintEnabled(!isHintEnabled)}

@@ -60,7 +60,6 @@ export const MatchPage = () => {
           roundCount={matchResultSummary.roundCount}
           isHintEnabled={isHintEnabled}
           setIsHintEnabled={actions.handleHintEnable}
-          handleRule={actions.handleRule}
         />
         <RuleModal />
         <MatchTable

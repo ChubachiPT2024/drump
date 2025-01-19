@@ -5,7 +5,7 @@ import { Button } from "@/presentation/shadcnUI/components/ui/button";
 interface HelpProps {
   icon: LucideIcon;
   size: number;
-  onClick?: () => void;
+  onClick: () => void;
 }
 
 export const HelpButton = ({ icon: Icon, size, onClick }: HelpProps) => {

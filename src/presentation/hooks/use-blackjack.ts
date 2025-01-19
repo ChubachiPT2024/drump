@@ -9,7 +9,6 @@ import { useStandModal } from "./modal/use-stand-modal";
 import { useBustModal } from "./modal/use-bust-modal";
 import { useRoundResultModal } from "./modal/use-round-result-modal";
 import { useMatchResultModal } from "./modal/use-match-result-modal";
-import { useRuleModal } from "./modal/use-rule-modal";
 
 import { useErrorHandling } from "./use-error-handling";
 
@@ -55,7 +54,6 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
   const { onOpen: onOpenBustModal } = useBustModal();
   const { onOpen: onOpenRoundResultModal } = useRoundResultModal();
   const { onOpen: onOpenMatchResultModal } = useMatchResultModal();
-  const { onOpen: onOpenRuleModal } = useRuleModal();
 
   const { handleError } = useErrorHandling();
 
@@ -289,10 +287,6 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
     }
   }, [matchId, handleError, onOpenRoundResultModal, onOpenMatchResultModal]);
 
-  const handleRule = useCallback(() => {
-    onOpenRuleModal();
-  }, [onOpenRuleModal]);
-
   const handleHintEnable = useCallback(async () => {
     if (state.hint) {
       dispatch({ type: "UPDATE_HINT_ENABLED", payload: true });
@@ -358,7 +352,6 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
       handleHit,
       handleStand,
       handleRoundComplete,
-      handleRule,
       handleHintEnable,
     },
   };
