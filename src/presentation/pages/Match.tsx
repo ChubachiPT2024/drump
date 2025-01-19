@@ -16,6 +16,7 @@ import { StandModal } from "../components/match/modal/stand-modal";
 import { BustModal } from "../components/match/modal/bust-modal";
 import { RoundResultModal } from "../components/match/modal/round-result-modal";
 import { MatchResultModal } from "../components/match/modal/match-result-modal";
+import { RuleModal } from "../components/match/modal/rule-modal";
 
 import { useBlackjack } from "../hooks/use-blackjack";
 
@@ -57,9 +58,10 @@ export const MatchPage = () => {
       <div className="relative min-h-screen bg-green-600 flex flex-col items-center z-0 overflow-hidden">
         <MatchHeader
           roundCount={matchResultSummary.roundCount}
-          isHintEnabled={state.isHintEnabled}
+          isHintEnabled={isHintEnabled}
           setIsHintEnabled={actions.handleHintEnable}
         />
+        <RuleModal />
         <MatchTable
           phase={phase}
           matchResultSummary={matchResultSummary}

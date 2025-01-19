@@ -138,6 +138,7 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
         );
 
         const nextPlayer = state.matchResultSummary?.players[nextPlayerIndex];
+
         if (nextPlayer?.hand?.isBlackJack) {
           onOpenBlackjackModal();
           await new Promise((resolve) =>
@@ -204,6 +205,10 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
           await new Promise((resolve) =>
             setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
           );
+          await moveToNextPlayer();
+        } else if (
+          updatedSummary.players[state.playerTurnIndex].hand?.isResolved
+        ) {
           await moveToNextPlayer();
         }
 
