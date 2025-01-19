@@ -30,6 +30,7 @@ export const MatchHeader = ({
               </div>
               <HelpButton icon={CircleHelp} size={8} onClick={handleRule} />
               <HintToggle
+                isHintEnabled={isHintEnabled}
                 onClick={() => setIsHintEnabled(!isHintEnabled)}
                 className="ml-2"
                 text="Hint"

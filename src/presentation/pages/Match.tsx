@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { MatchHeader } from "../components/match/match-header";
@@ -23,9 +22,9 @@ import { useBlackjack } from "../hooks/use-blackjack";
 
 export const MatchPage = () => {
   const { matchId } = useParams<{ matchId: string }>();
-  const [isHintEnabled, setIsHintEnabled] = useState<boolean>(false);
-
-  const { state, actions } = useBlackjack({ matchId: matchId ?? "" });
+  const { state, actions } = useBlackjack({
+    matchId: matchId ?? "",
+  });
 
   const {
     phase,
@@ -36,6 +35,8 @@ export const MatchPage = () => {
     matchResult,
     playerIdToNameMap,
     isLoading,
+    isHintEnabled,
+    hint,
   } = state;
 
   const getPlayerName = (playerId: string) => {
@@ -58,7 +59,7 @@ export const MatchPage = () => {
         <MatchHeader
           roundCount={matchResultSummary.roundCount}
           isHintEnabled={isHintEnabled}
-          setIsHintEnabled={setIsHintEnabled}
+          setIsHintEnabled={actions.handleHintEnable}
           handleRule={actions.handleRule}
         />
         <RuleModal />
@@ -68,6 +69,7 @@ export const MatchPage = () => {
           currentPlayer={currentPlayer}
           roundResult={roundResult}
           isHintEnabled={isHintEnabled}
+          hint={hint}
         />
         <Shoe />
         {/* TODO: otherInfoはできれば、一旦複数人ラウンドだけを */}

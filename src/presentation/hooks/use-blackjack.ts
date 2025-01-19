@@ -22,6 +22,7 @@ import { postStandApi } from "./api/matchStand";
 import { postRoundCompleteApi } from "./api/matchRoundComplete";
 import { getRoundResultApi } from "./api/matchRoundResult";
 import { getResultApi } from "./api/matchResult";
+import { getMatchHintApi } from "./api/matchHint";
 
 import { MatchPhase } from "../types/matchPhase";
 import { ResultSummaryPlayer } from "../types/resultSummaryPlayer";
@@ -41,6 +42,8 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
     playerTurnIndex: 0,
     playerIdToNameMap: new Map(),
     isLoading: true,
+    isHintEnabled: false,
+    hint: undefined,
   });
 
   const { onOpen: onOpenStartModal } = useRoundStartModal();
@@ -290,6 +293,12 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
     onOpenRuleModal();
   }, [onOpenRuleModal]);
 
+  const handleHintEnable = useCallback(async () => {
+    if (state.hint) {
+      dispatch({ type: "UPDATE_HINT_ENABLED", payload: true });
+    }
+  }, [matchId, state.matchResultSummary, state.playerTurnIndex]);
+
   useEffect(() => {
     const initializePlayerNames = async () => {
       try {
@@ -316,6 +325,30 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
     };
   }, [handleRoundStart]);
 
+  useEffect(() => {
+    const handleHint = async (playerId: string) => {
+      try {
+        const hint = await getMatchHintApi(matchId, playerId);
+        dispatch({ type: "UPDATE_HINT", payload: hint });
+      } catch (error) {
+        handleError(error as Error, "hint");
+      }
+    };
+
+    if (
+      !state.matchResultSummary ||
+      state.matchResultSummary.players[state.playerTurnIndex].hand.isResolved
+    ) {
+      return;
+    }
+    handleHint(state.matchResultSummary.players[state.playerTurnIndex].id);
+  }, [matchId, state.matchResultSummary, state.playerTurnIndex]);
+
+  useEffect(() => {
+    dispatch({ type: "UPDATE_HINT_ENABLED", payload: false });
+    dispatch({ type: "UPDATE_HINT", payload: undefined });
+  }, [state.playerTurnIndex]);
+
   return {
     state,
     actions: {
@@ -326,6 +359,7 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
       handleStand,
       handleRoundComplete,
       handleRule,
+      handleHintEnable,
     },
   };
 };
