@@ -4,17 +4,20 @@ import { MatchPhase } from "@/presentation/types/matchPhase";
 import { ResultSummaryPlayer } from "@/presentation/types/resultSummaryPlayer";
 
 import { ANIMATION_TIMING_SECONDS } from "@/presentation/constants/animation";
+import { MatchHint } from "@/presentation/types/matchHint";
 
 interface PlayerAreaProps {
   phase: MatchPhase;
   currentPlayer: ResultSummaryPlayer & { name: string };
   isHintEnabled: boolean;
+  hint?: MatchHint;
 }
 
 export const PlayerArea = ({
   phase,
   currentPlayer,
   isHintEnabled,
+  hint,
 }: PlayerAreaProps) => {
   const showHands =
     phase !== MatchPhase.ROUND_START && phase !== MatchPhase.BETTING;
@@ -44,8 +47,7 @@ export const PlayerArea = ({
         )}
         {isHintEnabled && (
           <div className="absolute top-full mt-2 w-max px-2 py-1.5 border-2 font-bold text-white bg-black rounded-xl">
-            {/* TODO: ヒントをバックエンドから取得して表示 */}
-            ヒント：XXX
+            hint：{hint?.basicStrategy}
           </div>
         )}
       </div>
