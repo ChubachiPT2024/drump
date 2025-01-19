@@ -116,37 +116,42 @@ export const useBlackjack = ({ matchId }: BlackjackProps) => {
     onOpenBlackjackModal,
   ]);
 
-  const moveToNextPlayer = useCallback(async () => {
-    const nextPlayerIndex = state.playerTurnIndex + 1;
-    const isLastPlayer = !!(
-      state.matchResultSummary &&
-      nextPlayerIndex >= state.matchResultSummary.players.length
-    );
-
-    dispatch({
-      type: "MOVE_TO_NEXT_PLAYER",
-      payload: { isLastPlayer },
-    });
-
-    if (isLastPlayer) {
-      await handleRoundComplete();
-    } else {
-      // TODO: handのアニメーションを追加 できたら
-
-      onOpenRotationModal();
-      await new Promise((resolve) =>
-        setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
+  const moveToNextPlayer = useCallback(
+    async (currentTurnIndex = state.playerTurnIndex) => {
+      const nextPlayerIndex = currentTurnIndex + 1;
+      const isLastPlayer = !!(
+        state.matchResultSummary &&
+        nextPlayerIndex >= state.matchResultSummary.players.length
       );
 
-      const nextPlayer = state.matchResultSummary?.players[nextPlayerIndex];
-      if (nextPlayer?.hand?.isBlackJack) {
-        onOpenBlackjackModal();
+      dispatch({
+        type: "MOVE_TO_NEXT_PLAYER",
+        payload: { isLastPlayer },
+      });
+
+      if (!isLastPlayer) {
+        // TODO: hand のアニメーションを追加できたら
+
+        onOpenRotationModal();
         await new Promise((resolve) =>
           setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
         );
+
+        const nextPlayer = state.matchResultSummary?.players[nextPlayerIndex];
+        if (nextPlayer?.hand?.isBlackJack) {
+          onOpenBlackjackModal();
+          await new Promise((resolve) =>
+            setTimeout(resolve, ANIMATION_TIMING_MILLISECONDS.MODAL_TRANSITION)
+          );
+
+          await moveToNextPlayer(nextPlayerIndex);
+        }
+      } else {
+        await handleRoundComplete();
       }
-    }
-  }, [state.playerTurnIndex, state.matchResultSummary]);
+    },
+    [state.playerTurnIndex, state.matchResultSummary]
+  );
 
   const isLastBetPlayer = (
     playerId: string,

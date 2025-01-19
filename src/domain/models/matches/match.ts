@@ -17,6 +17,7 @@ import { MatchCannotHitError } from "./matchCannotHitError";
 import { MatchId } from "./matchId";
 import { MatchNotification } from "./matchNotification";
 import { MatchPlayerNotFoundError } from "./matchPlayerNotFoundError";
+import { MatchUpCardUndefinedError } from "./matchUpCardUndefinedError";
 
 /**
  * 試合
@@ -288,9 +289,14 @@ export class Match {
    * @returns ベーシックストラテジー
    */
   public calculateBasicStrategy(playerId: PlayerId): HandSignal {
+    const upCard = this.dealer.getUpCard();
+    if (!upCard) {
+      throw new MatchUpCardUndefinedError();
+    }
+
     return BasicStrategyCalculator.calculate(
       this.getPlayer(playerId).getHand(),
-      this.dealer.getUpCard(),
+      upCard,
     );
   }
 
