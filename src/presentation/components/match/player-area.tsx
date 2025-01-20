@@ -63,6 +63,7 @@ export const PlayerArea = ({
               suit={card.suit}
               rank={card.rank}
               delaySeconds={calculatePlayerHandDelaySeconds(index)}
+              className={`absolute left-${index * 2} z-${index * 10}`}
             />
           ))}
       </div>
