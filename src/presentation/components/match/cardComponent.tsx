@@ -16,6 +16,7 @@ interface CardComponentProps {
   suit: Pick<Card, "suit">["suit"] | "reverse";
   rank: Pick<Card, "rank">["rank"] | "reverse";
   delaySeconds?: number;
+  className?: string;
 }
 
 export const CardComponent = ({
@@ -25,6 +26,7 @@ export const CardComponent = ({
   suit,
   rank,
   delaySeconds,
+  className,
 }: CardComponentProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -43,6 +45,7 @@ export const CardComponent = ({
           setIsFlipped(true);
         }
       }}
+      className={className}
     >
       <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
         <div className="h-40 w-24">
