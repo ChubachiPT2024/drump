@@ -34,7 +34,7 @@ Write-Output "VITE_API_URL=http://localhost:3000/api" | Set-Content -Path .env.l
 以下のコマンドを実行して、必要なパッケージをインストールしてください。
 
 ```
-npm install --omit=dev
+npm install
 ```
 
 ## 4. サーバの起動
