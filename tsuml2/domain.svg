@@ -1,9 +1,11 @@
-<svg version="1.1" baseProfile="full" width="4780.0" height="1907.0" viewBox="0 0 4780 1907" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">
+<svg version="1.1" baseProfile="full" width="6462.0" height="1972.0" viewBox="0 0 6462 1972" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">
 <desc >#.interface: fill=lightblue
 #.enumeration: fill=lightgreen
 #.type: fill=lightgray
 
 [Balance|+value: number|+static create(): Balance]
+[BasicStrategyCalculator|-static splitStrategies: Map&lt;number, Map&lt;Rank, HandSignal&gt;&gt;;-static hardHandStrategies: Map&lt;number, Map&lt;Rank, HandSignal&gt;&gt;;-static softHandStrategies: Map&lt;number, Map&lt;Rank, HandSignal&gt;&gt;|+static calculate(): HandSignal;-static calculateSplitStrategy(): HandSignal;-static calculateSoftHandStrategy(): HandSignal;-static calculateHardHandStrategy(): HandSignal;-static clamp(): number]
+[BasicStrategyCalculatorStrategyUndefinedError||]
 [Card|-static softPoints: { A: number; &quot;2&quot;: number; &quot;3&quot;: number; &quot;4&quot;: number; &quot;5&quot;: number; &quot;6&quot;: number; &quot;7&quot;: number; &quot;8&quot;: number; &quot;9&quot;: number; &quot;10&quot;: number; J: number; Q: number; K: number; };-static hardPoints: { A: number; &quot;2&quot;: number; &quot;3&quot;: number; &quot;4&quot;: number; &quot;5&quot;: number; &quot;6&quot;: number; &quot;7&quot;: number; &quot;8&quot;: number; &quot;9&quot;: number; &quot;10&quot;: number; J: number; Q: number; K: number; };+rank: Rank;+suit: Suit|+getSoftPoint(): number;+getHardPoint(): number;+equals(): boolean]
 [ChipAmount|+value: number|+plus(): ChipAmount;+canMinus(): boolean;+minus(): ChipAmount;+multiplyAndCeil(): ChipAmount]
 [ChipAmountNegativeError||]
@@ -16,9 +18,9 @@
 [&lt;interface&gt;DealerNotification||+notifyUpCard(): void]
 [Deck|-cards: Card\[\]|+static create(): Deck;+getCards(): Card\[\]]
 [Deck]  - 0..* [Card]
-[Hand|-cards: Card\[\];-isStand: boolean|+static create(): Hand;+add(): Hand;-calculateHardTotal(): number;+calculateTotal(): number;+count(): number;+isBlackJack(): boolean;+isBust(): boolean;+canHit(): boolean;+stand(): Hand;+isResolved(): boolean;+getCards(): Card\[\]]
+[Hand|-cards: Card\[\];-isStand: boolean|+static create(): Hand;+add(): Hand;+calculateSoftTotal(): number;+calculateHardTotal(): number;+calculateTotal(): number;+count(): number;+isBlackJack(): boolean;+isBust(): boolean;+canHit(): boolean;+canSplit(): boolean;+stand(): Hand;+isResolved(): boolean;+getCards(): Card\[\]]
 [Hand]  - 0..* [Card]
-[Match|-static NUMBER_OF_DECKS: 6;+id: MatchId;-shoe: Shoe;-dealer: Dealer;-players: Player\[\];-roundCount: RoundCount;-roundResultCalculator: RoundResultCalculator;-roundHistories: RoundHistory\[\]|+static create(): Match;+startRound(): void;+bet(): void;+dealCardToDealer(): void;+hit(): void;+stand(): void;+resolveDealersHand(): void;+completeRound(): void;+settleRound(): void;-calculateRoundResult(): RoundResult;-static calculatePayoff(): ChipAmount;+getRoundCount(): RoundCount;+getRoundHistories(): RoundHistory\[\];+isCompleted(): boolean;-getPlayer(): Player;+getPlayerIds(): PlayerId\[\];+getUserId(): UserId;+notify(): void]
+[Match|-static NUMBER_OF_DECKS: 6;+id: MatchId;-shoe: Shoe;-dealer: Dealer;-players: Player\[\];-roundCount: RoundCount;-roundResultCalculator: RoundResultCalculator;-roundHistories: RoundHistory\[\]|+static create(): Match;+startRound(): void;+bet(): void;+dealCardToDealer(): void;+hit(): void;+stand(): void;+resolveDealersHand(): void;+completeRound(): void;+settleRound(): void;-calculateRoundResult(): RoundResult;-static calculatePayoff(): ChipAmount;+getRoundCount(): RoundCount;+getRoundHistories(): RoundHistory\[\];+isCompleted(): boolean;-getPlayer(): Player;+getPlayerIds(): PlayerId\[\];+calculateBasicStrategy(): HandSignal;+getUserId(): UserId;+calculateRanking(): Map&lt;string, number&gt;;+notify(): void]
 [Match]  -  [MatchId]
 [Match]  -  [Shoe]
 [Match]  -  [Dealer]
@@ -29,9 +31,10 @@
 [MatchCannotHitError||]
 [&lt;interface&gt;MatchFactory||+create(): Match]
 [MatchId|+value: string|]
-[&lt;interface&gt;MatchNotification||+notifyId(): void;+notifyDealer(): void;+notifyPlayers(): void;+notifyRoundCount(): void]
+[&lt;interface&gt;MatchNotification||+notifyId(): void;+notifyDealer(): void;+notifyPlayers(): void;+notifyRoundCount(): void;+notifyIsCompleted(): void]
 [MatchPlayerNotFoundError||]
 [&lt;interface&gt;MatchRepository||+saveAsync(): Promise&lt;void&gt;;+findAsync(): Promise&lt;Match&gt;]
+[MatchUpCardUndefinedError||]
 [Player|+static INITIAL_CREDIT: ChipAmount;+id: PlayerId;+userId: UserId;-credit: ChipAmount;-betAmount: ChipAmount;-hand: Hand|+static create(): Player;+addCardToHand(): void;+getHand(): Hand;+getHandSignalOptions(): HandSignal\[\];+stand(): void;+getCredit(): ChipAmount;+getBetAmount(): ChipAmount;+bet(): void;+collectPayoff(): void;+collectBet(): void;+loseBet(): void;+discard(): void;+notify(): void]
 [Player]  -  [ChipAmount]
 [Player]  -  [PlayerId]
@@ -44,6 +47,7 @@
 [PlayerId|+value: string|]
 [&lt;interface&gt;PlayerNotification||+notifyId(): void;+notifyHand(): void;+notifyHandSignalOptions(): void;+notifyCredit(): void;+notifyBetAmount(): void]
 [&lt;interface&gt;PlayerRepository||+saveAsync(): Promise&lt;void&gt;;+findAsync(): Promise&lt;Player&gt;]
+[RankingCalculator||+static calculate(): Map&lt;TKey, number&gt;]
 [RoundCount|+static MAX_ROUND_COUNT: 10;+static ZERO: RoundCount;+value: number|+increment(): RoundCount]
 [RoundCount]  -  [RoundCount]
 [RoundCountExceedsMaximumError||]
@@ -67,80 +71,134 @@
 <g stroke-width="1.0" text-align="left" font="12pt Helvetica, Arial, sans-serif" font-size="12pt" font-family="Helvetica" font-weight="normal" font-style="normal">
 <g font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" stroke-width="3.0" stroke-linejoin="round" stroke-linecap="round" stroke="#33322E">
 <g stroke="transparent" fill="transparent">
-<rect x="0.0" y="0.0" height="1907.0" width="4780.0" stroke="none"></rect>
+<rect x="0.0" y="0.0" height="1972.0" width="6462.0" stroke="none"></rect>
 </g>
 <g transform="translate(8, 8)" fill="#33322E">
 <g transform="translate(20, 20)" fill="#33322E" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal">
-<path d="M492.5 825.0 L483.5 918 L483.5 1039 L483.5 1039.0 " fill="none"></path>
-<path d="M609.0 808.1 L729.75 918 L810 979.0872727272728 L810.0 979.1 " fill="none"></path>
-<text x="838.5" y="1398.0" stroke="none">0..*</text>
-<path d="M677.5 1131.0 L677.5 1232 L830.5 1405.9626334519573 L830.5 1406.0 " fill="none"></path>
-<text x="945.4" y="1244.0" stroke="none">0..*</text>
-<path d="M936.0 1212.0 L936 1232 L937.4084507042254 1252 L937.4 1252.0 " fill="none"></path>
-<path d="M1203.0 353.6 L934.25 506 L934.25 676 L934.3 676.0 " fill="none"></path>
-<path d="M1251.6 486.0 L1239.5 506 L1239.5 712 L1239.5 712 L1239.5 918 L1239.5 918 L1239.5 1002.5 L1239.5 1002.5 " fill="none"></path>
-<path d="M1203.0 300.3 L503.5 506 L503.5 599 L503.5 599.0 " fill="none"></path>
-<text x="2384.5" y="518.0" stroke="none">0..*</text>
-<path d="M1593.0 295.4 L2376.5 506 L2376.5 526 L2376.5 526.0 " fill="none"></path>
-<path d="M1537.1 486.0 L1548.5 506 L1548.5 712 L1548.5 712 L1548.5 918 L1548.5 918 L1598.7269108280254 1010.5 L1598.7 1010.5 " fill="none"></path>
-<path d="M1398.0 486.0 L1398 506 L1398 676 L1398.0 676.0 " fill="none"></path>
-<text x="1727.0" y="651.5" stroke="none">0..*</text>
-<path d="M1593.0 402.8 L1719 506 L1719 659.5 L1719.0 659.5 " fill="none"></path>
-<path d="M2213.5 886.0 L2183.5 918 L2183.5 1075 L2183.5 1075 L2183.5 1232 L2183.5 1232 L2398.803599374022 1479 L2398.8 1479.0 " fill="none"></path>
-<path d="M2539.5 795.2 L2780 918 L2780 1075 L2780 1075 L2780 1232 L2780 1232 L2825.6971830985917 1515.5 L2825.7 1515.5 " fill="none"></path>
-<path d="M2213.5 775.2 L1845 918 L1941.7229299363057 1039 L1941.7 1039.0 " fill="none"></path>
-<path d="M2468.1 898.0 L2478 918 L2478 1075 L2478 1075 L2478 1232 L2478 1232 L2465.6306729264475 1479 L2465.6 1479.0 " fill="none"></path>
-<path d="M2504.3 898.0 L2518 918 L2518 1075 L2518 1075 L2518 1232 L2518 1232 L2474.7073552425663 1479 L2474.7 1479.0 " fill="none"></path>
-<path d="M2213.5 734.2 L861.5 918 L870.9904458598726 938 L871.0 938.0 " fill="none"></path>
-<path d="M1773.3 1030.0 L1833.75 1010.5 L1848.875 1010.5 L1848.875 1010.5 L1864 1075 L1864 1075 L1848.875 1139.5 L1848.875 1139.5 L1833.75 1139.5 L1833.75 1139.5 L1773.25 1119.98875 L1773.3 1120.0 " fill="none"></path>
-<path d="M1719.0 764.5 L1719 918 L1668.7730891719746 1010.5 L1668.8 1010.5 " fill="none"></path>
-<path d="M1588.5 753.3 L1067.75 918 L1050.9665605095543 938 L1051.0 938.0 " fill="none"></path>
-<text x="2657.0" y="1014.5" stroke="none">0..*</text>
-<path d="M1849.5 740.9 L2649 918 L2649 1022.5 L2649.0 1022.5 " fill="none"></path>
-<path d="M2716.7 1127.5 L2851.5 1232 L2833.7535211267605 1515.5 L2833.8 1515.5 " fill="none"></path>
-<path d="M2649.0 1127.5 L2649 1232 L2504.433489827856 1479 L2504.4 1479.0 " fill="none"></path>
-<text x="1051.5" y="1398.0" stroke="none">0..*</text>
-<path d="M1239.5 1147.5 L1239.5 1232 L1086.5 1405.9626334519573 L1086.5 1406.0 " fill="none"></path>
-<path d="M2070.3 756.0 L1990.5 918 L1975.0859872611466 1039 L1975.1 1039.0 " fill="none"></path>
-<path d="M2133.2 756.0 L2285 918 L2285 1039 L2285.0 1039.0 " fill="none"></path>
+<path d="M1516.5 857.0 L1507.5 950 L1507.5 1087.5 L1507.5 1087.5 " fill="none"></path>
+<path d="M1633.0 839.6 L1754.75 950 L1834 1016.3443908323281 L1834.0 1016.3 " fill="none"></path>
+<text x="1864.5" y="1464.0" stroke="none">0..*</text>
+<path d="M1701.5 1179.5 L1701.5 1297 L1856.5 1471.9911660777384 L1856.5 1472.0 " fill="none"></path>
+<text x="1971.4" y="1309.0" stroke="none">0..*</text>
+<path d="M1962.0 1277.0 L1962 1297 L1963.4084507042253 1317 L1963.4 1317.0 " fill="none"></path>
+<path d="M2231.0 375.8 L1960.25 538 L1960.25 708 L1960.3 708.0 " fill="none"></path>
+<path d="M2278.9 518.0 L2267.5 538 L2267.5 744 L2267.5 744 L2267.5 950 L2267.5 950 L2267.5 1051 L2267.5 1051.0 " fill="none"></path>
+<path d="M2231.0 319.6 L1527.5 538 L1527.5 631 L1527.5 631.0 " fill="none"></path>
+<text x="3412.5" y="550.0" stroke="none">0..*</text>
+<path d="M2621.0 314.6 L3404.5 538 L3404.5 558 L3404.5 558.0 " fill="none"></path>
+<path d="M2565.7 518.0 L2576.5 538 L2576.5 744 L2576.5 744 L2576.5 950 L2576.5 950 L2630.057636887608 1059 L2630.1 1059.0 " fill="none"></path>
+<path d="M2426.0 518.0 L2426 538 L2426 708 L2426.0 708.0 " fill="none"></path>
+<text x="2755.0" y="683.5" stroke="none">0..*</text>
+<path d="M2621.0 428.5 L2747 538 L2747 691.5 L2747.0 691.5 " fill="none"></path>
+<path d="M3241.5 918.0 L3211.5 950 L3211.5 1123.5 L3211.5 1123.5 L3211.5 1297 L3211.5 1297 L3426.803599374022 1544 L3426.8 1544.0 " fill="none"></path>
+<path d="M3567.5 827.2 L3808 950 L3808 1123.5 L3808 1123.5 L3808 1297 L3808 1297 L3853.6971830985917 1580.5 L3853.7 1580.5 " fill="none"></path>
+<path d="M3241.5 807.2 L2873 950 L2972.4596541786746 1087.5 L2972.5 1087.5 " fill="none"></path>
+<path d="M3496.1 930.0 L3506 950 L3506 1123.5 L3506 1123.5 L3506 1297 L3506 1297 L3493.6306729264475 1544 L3493.6 1544.0 " fill="none"></path>
+<path d="M3532.3 930.0 L3546 950 L3546 1123.5 L3546 1123.5 L3546 1297 L3546 1297 L3502.7073552425663 1544 L3502.7 1544.0 " fill="none"></path>
+<path d="M3241.5 766.1 L1887.5 950 L1896.0878962536024 970 L1896.1 970.0 " fill="none"></path>
+<path d="M2801.3 1078.5 L2861.75 1059 L2876.875 1059 L2876.875 1059 L2892 1123.5 L2892 1123.5 L2876.875 1188 L2876.875 1188 L2861.75 1188 L2861.75 1188 L2801.25 1168.48875 L2801.3 1168.5 " fill="none"></path>
+<path d="M2747.0 796.5 L2747 950 L2693.442363112392 1059 L2693.4 1059.0 " fill="none"></path>
+<path d="M2616.5 785.2 L2094.75 950 L2079.4474063400576 970 L2079.4 970.0 " fill="none"></path>
+<text x="3685.0" y="1063.0" stroke="none">0..*</text>
+<path d="M2877.5 772.9 L3677 950 L3677 1071 L3677.0 1071.0 " fill="none"></path>
+<path d="M3738.3 1176.0 L3879.5 1297 L3861.7535211267605 1580.5 L3861.8 1580.5 " fill="none"></path>
+<path d="M3677.0 1176.0 L3677 1297 L3532.433489827856 1544 L3532.4 1544.0 " fill="none"></path>
+<text x="2077.5" y="1464.0" stroke="none">0..*</text>
+<path d="M2267.5 1196.0 L2267.5 1297 L2112.5 1471.9911660777384 L2112.5 1472.0 " fill="none"></path>
+<path d="M3098.3 788.0 L3018.5 950 L3002.649855907781 1087.5 L3002.6 1087.5 " fill="none"></path>
+<path d="M3161.2 788.0 L3313 950 L3313 1087.5 L3313.0 1087.5 " fill="none"></path>
 <g data-name="Balance">
 <g fill="#eee8d5" stroke="#33322E" data-name="Balance">
-<rect x="0.0" y="195.0" height="96.0" width="209.0" data-name="Balance"></rect>
-<path d="M0.0 227.0 L209.0 227.0" fill="none" data-name="Balance"></path>
-<path d="M0.0 259.0 L209.0 259.0" fill="none" data-name="Balance"></path>
+<rect x="0.0" y="211.0" height="96.0" width="209.0" data-name="Balance"></rect>
+<path d="M0.0 243.0 L209.0 243.0" fill="none" data-name="Balance"></path>
+<path d="M0.0 275.0 L209.0 275.0" fill="none" data-name="Balance"></path>
 </g>
-<g transform="translate(0, 195)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Balance" data-compartment="0">
+<g transform="translate(0, 211)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Balance" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Balance" data-compartment="0">
 <a id="..\src\domain\models\balances\balance.ts.Balance" xlink:href="..\src\domain\models\balances\balance.ts"><text x="96.5" y="14.1" stroke="none" text-anchor="middle" data-name="Balance" data-compartment="0">Balance</text></a>
 
 </g>
 </g>
-<g transform="translate(0, 227)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Balance" data-compartment="1">
+<g transform="translate(0, 243)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Balance" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Balance" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="Balance" data-compartment="1">+value: number</text>
 
 </g>
 </g>
-<g transform="translate(0, 259)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Balance" data-compartment="2">
+<g transform="translate(0, 275)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Balance" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Balance" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="Balance" data-compartment="2">+static create(): Balance</text>
 
 </g>
 </g>
 </g>
+<g data-name="BasicStrategyCalculator">
+<g fill="#eee8d5" stroke="#33322E" data-name="BasicStrategyCalculator">
+<rect x="249.0" y="162.0" height="194.0" width="557.0" data-name="BasicStrategyCalculator"></rect>
+<path d="M249.0 194.0 L806.0 194.0" fill="none" data-name="BasicStrategyCalculator"></path>
+<path d="M249.0 259.0 L806.0 259.0" fill="none" data-name="BasicStrategyCalculator"></path>
+</g>
+<g transform="translate(249, 162)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="BasicStrategyCalculator" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="BasicStrategyCalculator" data-compartment="0">
+<a id="..\src\domain\models\basicStrategyCalculators\basicStrategyCalculator.ts.BasicStrategyCalculator" xlink:href="..\src\domain\models\basicStrategyCalculators\basicStrategyCalculator.ts"><text x="270.5" y="14.1" stroke="none" text-anchor="middle" data-name="BasicStrategyCalculator" data-compartment="0">BasicStrategyCalculator</text></a>
+
+</g>
+</g>
+<g transform="translate(249, 194)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="BasicStrategyCalculator" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="BasicStrategyCalculator" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="BasicStrategyCalculator" data-compartment="1">-static splitStrategies: Map&lt;number, Map&lt;Rank, HandSignal&gt;&gt;</text>
+<text x="0.0" y="30.3" stroke="none" data-name="BasicStrategyCalculator" data-compartment="1">-static hardHandStrategies: Map&lt;number, Map&lt;Rank, HandSignal&gt;&gt;</text>
+<text x="0.0" y="46.5" stroke="none" data-name="BasicStrategyCalculator" data-compartment="1">-static softHandStrategies: Map&lt;number, Map&lt;Rank, HandSignal&gt;&gt;</text>
+
+</g>
+</g>
+<g transform="translate(249, 259)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="BasicStrategyCalculator" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="BasicStrategyCalculator" data-compartment="2">
+<text x="0.0" y="14.1" stroke="none" data-name="BasicStrategyCalculator" data-compartment="2">+static calculate(): HandSignal</text>
+<text x="0.0" y="30.3" stroke="none" data-name="BasicStrategyCalculator" data-compartment="2">-static calculateSplitStrategy(): HandSignal</text>
+<text x="0.0" y="46.5" stroke="none" data-name="BasicStrategyCalculator" data-compartment="2">-static calculateSoftHandStrategy(): HandSignal</text>
+<text x="0.0" y="62.7" stroke="none" data-name="BasicStrategyCalculator" data-compartment="2">-static calculateHardHandStrategy(): HandSignal</text>
+<text x="0.0" y="78.9" stroke="none" data-name="BasicStrategyCalculator" data-compartment="2">-static clamp(): number</text>
+
+</g>
+</g>
+</g>
+<g data-name="BasicStrategyCalculatorStrategyUndefinedError">
+<g fill="#eee8d5" stroke="#33322E" data-name="BasicStrategyCalculatorStrategyUndefinedError">
+<rect x="846.0" y="235.0" height="48.0" width="391.0" data-name="BasicStrategyCalculatorStrategyUndefinedError"></rect>
+<path d="M846.0 267.0 L1237.0 267.0" fill="none" data-name="BasicStrategyCalculatorStrategyUndefinedError"></path>
+<path d="M846.0 275.0 L1237.0 275.0" fill="none" data-name="BasicStrategyCalculatorStrategyUndefinedError"></path>
+</g>
+<g transform="translate(846, 235)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="BasicStrategyCalculatorStrategyUndefinedError" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="BasicStrategyCalculatorStrategyUndefinedError" data-compartment="0">
+<a id="..\src\domain\models\basicStrategyCalculators\basicStrategyCalculatorStrategyUndefinedError.ts.BasicStrategyCalculatorStrategyUndefinedError" xlink:href="..\src\domain\models\basicStrategyCalculators\basicStrategyCalculatorStrategyUndefinedError.ts"><text x="187.5" y="14.1" stroke="none" text-anchor="middle" data-name="BasicStrategyCalculatorStrategyUndefinedError" data-compartment="0">BasicStrategyCalculatorStrategyUndefinedError</text></a>
+
+</g>
+</g>
+<g transform="translate(846, 267)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="BasicStrategyCalculatorStrategyUndefinedError" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" data-name="BasicStrategyCalculatorStrategyUndefinedError" data-compartment="1">
+
+</g>
+</g>
+<g transform="translate(846, 275)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="BasicStrategyCalculatorStrategyUndefinedError" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="BasicStrategyCalculatorStrategyUndefinedError" data-compartment="2">
+
+</g>
+</g>
+</g>
 <g data-name="Card">
 <g fill="#eee8d5" stroke="#33322E" data-name="Card">
-<rect x="830.5" y="1252.0" height="599.0" width="256.0" data-name="Card"></rect>
-<path d="M830.5 1284.0 L1086.5 1284.0" fill="none" data-name="Card"></path>
-<path d="M830.5 1786.0 L1086.5 1786.0" fill="none" data-name="Card"></path>
+<rect x="1856.5" y="1317.0" height="599.0" width="256.0" data-name="Card"></rect>
+<path d="M1856.5 1349.0 L2112.5 1349.0" fill="none" data-name="Card"></path>
+<path d="M1856.5 1851.0 L2112.5 1851.0" fill="none" data-name="Card"></path>
 </g>
-<g transform="translate(830.5, 1252)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Card" data-compartment="0">
+<g transform="translate(1856.5, 1317)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Card" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Card" data-compartment="0">
 <a id="..\src\domain\models\cards\card.ts.Card" xlink:href="..\src\domain\models\cards\card.ts"><text x="120.0" y="14.1" stroke="none" text-anchor="middle" data-name="Card" data-compartment="0">Card</text></a>
 
 </g>
 </g>
-<g transform="translate(830.5, 1284)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Card" data-compartment="1">
+<g transform="translate(1856.5, 1349)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Card" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Card" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="Card" data-compartment="1">-static softPoints: { A: number</text>
 <text x="0.0" y="30.3" stroke="none" data-name="Card" data-compartment="1">&quot;2&quot;: number</text>
@@ -175,7 +233,7 @@
 
 </g>
 </g>
-<g transform="translate(830.5, 1786)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Card" data-compartment="2">
+<g transform="translate(1856.5, 1851)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Card" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Card" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="Card" data-compartment="2">+getSoftPoint(): number</text>
 <text x="0.0" y="30.3" stroke="none" data-name="Card" data-compartment="2">+getHardPoint(): number</text>
@@ -186,23 +244,23 @@
 </g>
 <g data-name="ChipAmount">
 <g fill="#eee8d5" stroke="#33322E" data-name="ChipAmount">
-<rect x="2329.5" y="1479.0" height="145.0" width="265.0" data-name="ChipAmount"></rect>
-<path d="M2329.5 1511.0 L2594.5 1511.0" fill="none" data-name="ChipAmount"></path>
-<path d="M2329.5 1543.0 L2594.5 1543.0" fill="none" data-name="ChipAmount"></path>
+<rect x="3357.5" y="1544.0" height="145.0" width="265.0" data-name="ChipAmount"></rect>
+<path d="M3357.5 1576.0 L3622.5 1576.0" fill="none" data-name="ChipAmount"></path>
+<path d="M3357.5 1608.0 L3622.5 1608.0" fill="none" data-name="ChipAmount"></path>
 </g>
-<g transform="translate(2329.5, 1479)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="ChipAmount" data-compartment="0">
+<g transform="translate(3357.5, 1544)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="ChipAmount" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="ChipAmount" data-compartment="0">
 <a id="..\src\domain\models\chipAmounts\chipAmount.ts.ChipAmount" xlink:href="..\src\domain\models\chipAmounts\chipAmount.ts"><text x="124.5" y="14.1" stroke="none" text-anchor="middle" data-name="ChipAmount" data-compartment="0">ChipAmount</text></a>
 
 </g>
 </g>
-<g transform="translate(2329.5, 1511)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ChipAmount" data-compartment="1">
+<g transform="translate(3357.5, 1576)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ChipAmount" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ChipAmount" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="ChipAmount" data-compartment="1">+value: number</text>
 
 </g>
 </g>
-<g transform="translate(2329.5, 1543)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ChipAmount" data-compartment="2">
+<g transform="translate(3357.5, 1608)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ChipAmount" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ChipAmount" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="ChipAmount" data-compartment="2">+plus(): ChipAmount</text>
 <text x="0.0" y="30.3" stroke="none" data-name="ChipAmount" data-compartment="2">+canMinus(): boolean</text>
@@ -214,22 +272,22 @@
 </g>
 <g data-name="ChipAmountNegativeError">
 <g fill="#eee8d5" stroke="#33322E" data-name="ChipAmountNegativeError">
-<rect x="249.0" y="219.0" height="48.0" width="221.0" data-name="ChipAmountNegativeError"></rect>
-<path d="M249.0 251.0 L470.0 251.0" fill="none" data-name="ChipAmountNegativeError"></path>
-<path d="M249.0 259.0 L470.0 259.0" fill="none" data-name="ChipAmountNegativeError"></path>
+<rect x="1277.0" y="235.0" height="48.0" width="221.0" data-name="ChipAmountNegativeError"></rect>
+<path d="M1277.0 267.0 L1498.0 267.0" fill="none" data-name="ChipAmountNegativeError"></path>
+<path d="M1277.0 275.0 L1498.0 275.0" fill="none" data-name="ChipAmountNegativeError"></path>
 </g>
-<g transform="translate(249, 219)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="ChipAmountNegativeError" data-compartment="0">
+<g transform="translate(1277, 235)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="ChipAmountNegativeError" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="ChipAmountNegativeError" data-compartment="0">
 <a id="..\src\domain\models\chipAmounts\chipAmountNegativeError.ts.ChipAmountNegativeError" xlink:href="..\src\domain\models\chipAmounts\chipAmountNegativeError.ts"><text x="102.5" y="14.1" stroke="none" text-anchor="middle" data-name="ChipAmountNegativeError" data-compartment="0">ChipAmountNegativeError</text></a>
 
 </g>
 </g>
-<g transform="translate(249, 251)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ChipAmountNegativeError" data-compartment="1">
+<g transform="translate(1277, 267)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ChipAmountNegativeError" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="ChipAmountNegativeError" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(249, 259)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ChipAmountNegativeError" data-compartment="2">
+<g transform="translate(1277, 275)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ChipAmountNegativeError" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="ChipAmountNegativeError" data-compartment="2">
 
 </g>
@@ -237,22 +295,22 @@
 </g>
 <g data-name="ChipAmountNonIntegerError">
 <g fill="#eee8d5" stroke="#33322E" data-name="ChipAmountNonIntegerError">
-<rect x="510.0" y="219.0" height="48.0" width="239.0" data-name="ChipAmountNonIntegerError"></rect>
-<path d="M510.0 251.0 L749.0 251.0" fill="none" data-name="ChipAmountNonIntegerError"></path>
-<path d="M510.0 259.0 L749.0 259.0" fill="none" data-name="ChipAmountNonIntegerError"></path>
+<rect x="1538.0" y="235.0" height="48.0" width="239.0" data-name="ChipAmountNonIntegerError"></rect>
+<path d="M1538.0 267.0 L1777.0 267.0" fill="none" data-name="ChipAmountNonIntegerError"></path>
+<path d="M1538.0 275.0 L1777.0 275.0" fill="none" data-name="ChipAmountNonIntegerError"></path>
 </g>
-<g transform="translate(510, 219)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="ChipAmountNonIntegerError" data-compartment="0">
+<g transform="translate(1538, 235)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="ChipAmountNonIntegerError" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="ChipAmountNonIntegerError" data-compartment="0">
 <a id="..\src\domain\models\chipAmounts\chipAmountNonIntegerError.ts.ChipAmountNonIntegerError" xlink:href="..\src\domain\models\chipAmounts\chipAmountNonIntegerError.ts"><text x="111.5" y="14.1" stroke="none" text-anchor="middle" data-name="ChipAmountNonIntegerError" data-compartment="0">ChipAmountNonIntegerError</text></a>
 
 </g>
 </g>
-<g transform="translate(510, 251)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ChipAmountNonIntegerError" data-compartment="1">
+<g transform="translate(1538, 267)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ChipAmountNonIntegerError" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="ChipAmountNonIntegerError" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(510, 259)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ChipAmountNonIntegerError" data-compartment="2">
+<g transform="translate(1538, 275)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ChipAmountNonIntegerError" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="ChipAmountNonIntegerError" data-compartment="2">
 
 </g>
@@ -260,24 +318,24 @@
 </g>
 <g data-name="Dealer">
 <g fill="#eee8d5" stroke="#33322E" data-name="Dealer">
-<rect x="398.0" y="599.0" height="226.0" width="211.0" data-name="Dealer"></rect>
-<path d="M398.0 631.0 L609.0 631.0" fill="none" data-name="Dealer"></path>
-<path d="M398.0 679.0 L609.0 679.0" fill="none" data-name="Dealer"></path>
+<rect x="1422.0" y="631.0" height="226.0" width="211.0" data-name="Dealer"></rect>
+<path d="M1422.0 663.0 L1633.0 663.0" fill="none" data-name="Dealer"></path>
+<path d="M1422.0 711.0 L1633.0 711.0" fill="none" data-name="Dealer"></path>
 </g>
-<g transform="translate(398, 599)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Dealer" data-compartment="0">
+<g transform="translate(1422, 631)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Dealer" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Dealer" data-compartment="0">
 <a id="..\src\domain\models\dealers\dealer.ts.Dealer" xlink:href="..\src\domain\models\dealers\dealer.ts"><text x="97.5" y="14.1" stroke="none" text-anchor="middle" data-name="Dealer" data-compartment="0">Dealer</text></a>
 
 </g>
 </g>
-<g transform="translate(398, 631)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Dealer" data-compartment="1">
+<g transform="translate(1422, 663)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Dealer" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Dealer" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="Dealer" data-compartment="1">+id: DealerId</text>
 <text x="0.0" y="30.3" stroke="none" data-name="Dealer" data-compartment="1">-hand: Hand</text>
 
 </g>
 </g>
-<g transform="translate(398, 679)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Dealer" data-compartment="2">
+<g transform="translate(1422, 711)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Dealer" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Dealer" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="Dealer" data-compartment="2">+static create(): Dealer</text>
 <text x="0.0" y="30.3" stroke="none" data-name="Dealer" data-compartment="2">+addCardToHand(): void</text>
@@ -293,23 +351,23 @@
 </g>
 <g data-name="DealerId">
 <g fill="#eee8d5" stroke="#33322E" data-name="DealerId">
-<rect x="422.0" y="1039.0" height="72.0" width="123.0" data-name="DealerId"></rect>
-<path d="M422.0 1071.0 L545.0 1071.0" fill="none" data-name="DealerId"></path>
-<path d="M422.0 1103.0 L545.0 1103.0" fill="none" data-name="DealerId"></path>
+<rect x="1446.0" y="1087.5" height="72.0" width="123.0" data-name="DealerId"></rect>
+<path d="M1446.0 1119.5 L1569.0 1119.5" fill="none" data-name="DealerId"></path>
+<path d="M1446.0 1151.5 L1569.0 1151.5" fill="none" data-name="DealerId"></path>
 </g>
-<g transform="translate(422, 1039)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="DealerId" data-compartment="0">
+<g transform="translate(1446, 1087.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="DealerId" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="DealerId" data-compartment="0">
 <a id="..\src\domain\models\dealers\dealerId.ts.DealerId" xlink:href="..\src\domain\models\dealers\dealerId.ts"><text x="53.5" y="14.1" stroke="none" text-anchor="middle" data-name="DealerId" data-compartment="0">DealerId</text></a>
 
 </g>
 </g>
-<g transform="translate(422, 1071)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerId" data-compartment="1">
+<g transform="translate(1446, 1119.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerId" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="DealerId" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="DealerId" data-compartment="1">+value: string</text>
 
 </g>
 </g>
-<g transform="translate(422, 1103)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerId" data-compartment="2">
+<g transform="translate(1446, 1151.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerId" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="DealerId" data-compartment="2">
 
 </g>
@@ -317,58 +375,60 @@
 </g>
 <g data-name="Hand">
 <g fill="#eee8d5" stroke="#33322E" data-name="Hand">
-<rect x="810.0" y="938.0" height="274.0" width="252.0" data-name="Hand"></rect>
-<path d="M810.0 970.0 L1062.0 970.0" fill="none" data-name="Hand"></path>
-<path d="M810.0 1018.0 L1062.0 1018.0" fill="none" data-name="Hand"></path>
+<rect x="1834.0" y="970.0" height="307.0" width="256.0" data-name="Hand"></rect>
+<path d="M1834.0 1002.0 L2090.0 1002.0" fill="none" data-name="Hand"></path>
+<path d="M1834.0 1050.0 L2090.0 1050.0" fill="none" data-name="Hand"></path>
 </g>
-<g transform="translate(810, 938)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Hand" data-compartment="0">
+<g transform="translate(1834, 970)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Hand" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Hand" data-compartment="0">
-<a id="..\src\domain\models\hands\hand.ts.Hand" xlink:href="..\src\domain\models\hands\hand.ts"><text x="118.0" y="14.1" stroke="none" text-anchor="middle" data-name="Hand" data-compartment="0">Hand</text></a>
+<a id="..\src\domain\models\hands\hand.ts.Hand" xlink:href="..\src\domain\models\hands\hand.ts"><text x="120.0" y="14.1" stroke="none" text-anchor="middle" data-name="Hand" data-compartment="0">Hand</text></a>
 
 </g>
 </g>
-<g transform="translate(810, 970)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Hand" data-compartment="1">
+<g transform="translate(1834, 1002)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Hand" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Hand" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="Hand" data-compartment="1">-cards: Card[]</text>
 <text x="0.0" y="30.3" stroke="none" data-name="Hand" data-compartment="1">-isStand: boolean</text>
 
 </g>
 </g>
-<g transform="translate(810, 1018)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Hand" data-compartment="2">
+<g transform="translate(1834, 1050)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Hand" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Hand" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="Hand" data-compartment="2">+static create(): Hand</text>
 <text x="0.0" y="30.3" stroke="none" data-name="Hand" data-compartment="2">+add(): Hand</text>
-<text x="0.0" y="46.5" stroke="none" data-name="Hand" data-compartment="2">-calculateHardTotal(): number</text>
-<text x="0.0" y="62.7" stroke="none" data-name="Hand" data-compartment="2">+calculateTotal(): number</text>
-<text x="0.0" y="78.9" stroke="none" data-name="Hand" data-compartment="2">+count(): number</text>
-<text x="0.0" y="95.1" stroke="none" data-name="Hand" data-compartment="2">+isBlackJack(): boolean</text>
-<text x="0.0" y="111.3" stroke="none" data-name="Hand" data-compartment="2">+isBust(): boolean</text>
-<text x="0.0" y="127.5" stroke="none" data-name="Hand" data-compartment="2">+canHit(): boolean</text>
-<text x="0.0" y="143.7" stroke="none" data-name="Hand" data-compartment="2">+stand(): Hand</text>
-<text x="0.0" y="159.9" stroke="none" data-name="Hand" data-compartment="2">+isResolved(): boolean</text>
-<text x="0.0" y="176.1" stroke="none" data-name="Hand" data-compartment="2">+getCards(): Card[]</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Hand" data-compartment="2">+calculateSoftTotal(): number</text>
+<text x="0.0" y="62.7" stroke="none" data-name="Hand" data-compartment="2">+calculateHardTotal(): number</text>
+<text x="0.0" y="78.9" stroke="none" data-name="Hand" data-compartment="2">+calculateTotal(): number</text>
+<text x="0.0" y="95.1" stroke="none" data-name="Hand" data-compartment="2">+count(): number</text>
+<text x="0.0" y="111.3" stroke="none" data-name="Hand" data-compartment="2">+isBlackJack(): boolean</text>
+<text x="0.0" y="127.5" stroke="none" data-name="Hand" data-compartment="2">+isBust(): boolean</text>
+<text x="0.0" y="143.7" stroke="none" data-name="Hand" data-compartment="2">+canHit(): boolean</text>
+<text x="0.0" y="159.9" stroke="none" data-name="Hand" data-compartment="2">+canSplit(): boolean</text>
+<text x="0.0" y="176.1" stroke="none" data-name="Hand" data-compartment="2">+stand(): Hand</text>
+<text x="0.0" y="192.3" stroke="none" data-name="Hand" data-compartment="2">+isResolved(): boolean</text>
+<text x="0.0" y="208.5" stroke="none" data-name="Hand" data-compartment="2">+getCards(): Card[]</text>
 
 </g>
 </g>
 </g>
 <g data-name="DealerFactory">
 <g fill="lightblue" stroke="#33322E" data-name="DealerFactory">
-<rect x="789.0" y="207.0" height="72.0" width="150.0" data-name="DealerFactory"></rect>
-<path d="M789.0 239.0 L939.0 239.0" fill="none" data-name="DealerFactory"></path>
-<path d="M789.0 247.0 L939.0 247.0" fill="none" data-name="DealerFactory"></path>
+<rect x="1817.0" y="223.0" height="72.0" width="150.0" data-name="DealerFactory"></rect>
+<path d="M1817.0 255.0 L1967.0 255.0" fill="none" data-name="DealerFactory"></path>
+<path d="M1817.0 263.0 L1967.0 263.0" fill="none" data-name="DealerFactory"></path>
 </g>
-<g transform="translate(789, 207)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerFactory" data-compartment="0">
+<g transform="translate(1817, 223)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerFactory" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="DealerFactory" data-compartment="0">
 <a id="..\src\domain\models\dealers\dealerFactory.ts.DealerFactory" xlink:href="..\src\domain\models\dealers\dealerFactory.ts"><text x="67.0" y="14.1" stroke="none" text-anchor="middle" data-name="DealerFactory" data-compartment="0">DealerFactory</text></a>
 
 </g>
 </g>
-<g transform="translate(789, 239)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerFactory" data-compartment="1">
+<g transform="translate(1817, 255)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerFactory" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="DealerFactory" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(789, 247)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerFactory" data-compartment="2">
+<g transform="translate(1817, 263)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerFactory" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="DealerFactory" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="DealerFactory" data-compartment="2">+create(): Dealer</text>
 
@@ -377,22 +437,22 @@
 </g>
 <g data-name="DealerNotification">
 <g fill="lightblue" stroke="#33322E" data-name="DealerNotification">
-<rect x="979.0" y="207.0" height="72.0" width="184.0" data-name="DealerNotification"></rect>
-<path d="M979.0 239.0 L1163.0 239.0" fill="none" data-name="DealerNotification"></path>
-<path d="M979.0 247.0 L1163.0 247.0" fill="none" data-name="DealerNotification"></path>
+<rect x="2007.0" y="223.0" height="72.0" width="184.0" data-name="DealerNotification"></rect>
+<path d="M2007.0 255.0 L2191.0 255.0" fill="none" data-name="DealerNotification"></path>
+<path d="M2007.0 263.0 L2191.0 263.0" fill="none" data-name="DealerNotification"></path>
 </g>
-<g transform="translate(979, 207)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerNotification" data-compartment="0">
+<g transform="translate(2007, 223)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerNotification" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="DealerNotification" data-compartment="0">
 <a id="..\src\domain\models\dealers\dealerNotification.ts.DealerNotification" xlink:href="..\src\domain\models\dealers\dealerNotification.ts"><text x="84.0" y="14.1" stroke="none" text-anchor="middle" data-name="DealerNotification" data-compartment="0">DealerNotification</text></a>
 
 </g>
 </g>
-<g transform="translate(979, 239)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerNotification" data-compartment="1">
+<g transform="translate(2007, 255)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerNotification" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="DealerNotification" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(979, 247)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerNotification" data-compartment="2">
+<g transform="translate(2007, 263)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DealerNotification" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="DealerNotification" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="DealerNotification" data-compartment="2">+notifyUpCard(): void</text>
 
@@ -401,23 +461,23 @@
 </g>
 <g data-name="Deck">
 <g fill="#eee8d5" stroke="#33322E" data-name="Deck">
-<rect x="585.0" y="1019.0" height="112.0" width="185.0" data-name="Deck"></rect>
-<path d="M585.0 1051.0 L770.0 1051.0" fill="none" data-name="Deck"></path>
-<path d="M585.0 1083.0 L770.0 1083.0" fill="none" data-name="Deck"></path>
+<rect x="1609.0" y="1067.5" height="112.0" width="185.0" data-name="Deck"></rect>
+<path d="M1609.0 1099.5 L1794.0 1099.5" fill="none" data-name="Deck"></path>
+<path d="M1609.0 1131.5 L1794.0 1131.5" fill="none" data-name="Deck"></path>
 </g>
-<g transform="translate(585, 1019)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Deck" data-compartment="0">
+<g transform="translate(1609, 1067.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Deck" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Deck" data-compartment="0">
 <a id="..\src\domain\models\decks\deck.ts.Deck" xlink:href="..\src\domain\models\decks\deck.ts"><text x="84.5" y="14.1" stroke="none" text-anchor="middle" data-name="Deck" data-compartment="0">Deck</text></a>
 
 </g>
 </g>
-<g transform="translate(585, 1051)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Deck" data-compartment="1">
+<g transform="translate(1609, 1099.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Deck" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Deck" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="Deck" data-compartment="1">-cards: Card[]</text>
 
 </g>
 </g>
-<g transform="translate(585, 1083)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Deck" data-compartment="2">
+<g transform="translate(1609, 1131.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Deck" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Deck" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="Deck" data-compartment="2">+static create(): Deck</text>
 <text x="0.0" y="30.3" stroke="none" data-name="Deck" data-compartment="2">+getCards(): Card[]</text>
@@ -427,17 +487,17 @@
 </g>
 <g data-name="Match">
 <g fill="#eee8d5" stroke="#33322E" data-name="Match">
-<rect x="1203.0" y="0.0" height="486.0" width="390.0" data-name="Match"></rect>
-<path d="M1203.0 32.0 L1593.0 32.0" fill="none" data-name="Match"></path>
-<path d="M1203.0 178.0 L1593.0 178.0" fill="none" data-name="Match"></path>
+<rect x="2231.0" y="0.0" height="518.0" width="390.0" data-name="Match"></rect>
+<path d="M2231.0 32.0 L2621.0 32.0" fill="none" data-name="Match"></path>
+<path d="M2231.0 178.0 L2621.0 178.0" fill="none" data-name="Match"></path>
 </g>
-<g transform="translate(1203, 0)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Match" data-compartment="0">
+<g transform="translate(2231, 0)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Match" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Match" data-compartment="0">
 <a id="..\src\domain\models\matches\match.ts.Match" xlink:href="..\src\domain\models\matches\match.ts"><text x="187.0" y="14.1" stroke="none" text-anchor="middle" data-name="Match" data-compartment="0">Match</text></a>
 
 </g>
 </g>
-<g transform="translate(1203, 32)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Match" data-compartment="1">
+<g transform="translate(2231, 32)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Match" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Match" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="Match" data-compartment="1">-static NUMBER_OF_DECKS: 6</text>
 <text x="0.0" y="30.3" stroke="none" data-name="Match" data-compartment="1">+id: MatchId</text>
@@ -450,7 +510,7 @@
 
 </g>
 </g>
-<g transform="translate(1203, 178)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Match" data-compartment="2">
+<g transform="translate(2231, 178)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Match" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Match" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="Match" data-compartment="2">+static create(): Match</text>
 <text x="0.0" y="30.3" stroke="none" data-name="Match" data-compartment="2">+startRound(): void</text>
@@ -468,31 +528,33 @@
 <text x="0.0" y="224.7" stroke="none" data-name="Match" data-compartment="2">+isCompleted(): boolean</text>
 <text x="0.0" y="240.9" stroke="none" data-name="Match" data-compartment="2">-getPlayer(): Player</text>
 <text x="0.0" y="257.1" stroke="none" data-name="Match" data-compartment="2">+getPlayerIds(): PlayerId[]</text>
-<text x="0.0" y="273.3" stroke="none" data-name="Match" data-compartment="2">+getUserId(): UserId</text>
-<text x="0.0" y="289.5" stroke="none" data-name="Match" data-compartment="2">+notify(): void</text>
+<text x="0.0" y="273.3" stroke="none" data-name="Match" data-compartment="2">+calculateBasicStrategy(): HandSignal</text>
+<text x="0.0" y="289.5" stroke="none" data-name="Match" data-compartment="2">+getUserId(): UserId</text>
+<text x="0.0" y="305.7" stroke="none" data-name="Match" data-compartment="2">+calculateRanking(): Map&lt;string, number&gt;</text>
+<text x="0.0" y="321.9" stroke="none" data-name="Match" data-compartment="2">+notify(): void</text>
 
 </g>
 </g>
 </g>
 <g data-name="MatchId">
 <g fill="#eee8d5" stroke="#33322E" data-name="MatchId">
-<rect x="872.8" y="676.0" height="72.0" width="123.0" data-name="MatchId"></rect>
-<path d="M872.8 708.0 L995.8 708.0" fill="none" data-name="MatchId"></path>
-<path d="M872.8 740.0 L995.8 740.0" fill="none" data-name="MatchId"></path>
+<rect x="1898.8" y="708.0" height="72.0" width="123.0" data-name="MatchId"></rect>
+<path d="M1898.8 740.0 L2021.8 740.0" fill="none" data-name="MatchId"></path>
+<path d="M1898.8 772.0 L2021.8 772.0" fill="none" data-name="MatchId"></path>
 </g>
-<g transform="translate(872.75, 676)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="MatchId" data-compartment="0">
+<g transform="translate(1898.75, 708)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="MatchId" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="MatchId" data-compartment="0">
 <a id="..\src\domain\models\matches\matchId.ts.MatchId" xlink:href="..\src\domain\models\matches\matchId.ts"><text x="53.5" y="14.1" stroke="none" text-anchor="middle" data-name="MatchId" data-compartment="0">MatchId</text></a>
 
 </g>
 </g>
-<g transform="translate(872.75, 708)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchId" data-compartment="1">
+<g transform="translate(1898.75, 740)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchId" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="MatchId" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="MatchId" data-compartment="1">+value: string</text>
 
 </g>
 </g>
-<g transform="translate(872.75, 740)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchId" data-compartment="2">
+<g transform="translate(1898.75, 772)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchId" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="MatchId" data-compartment="2">
 
 </g>
@@ -500,23 +562,23 @@
 </g>
 <g data-name="Shoe">
 <g fill="#eee8d5" stroke="#33322E" data-name="Shoe">
-<rect x="1102.0" y="1002.5" height="145.0" width="275.0" data-name="Shoe"></rect>
-<path d="M1102.0 1034.5 L1377.0 1034.5" fill="none" data-name="Shoe"></path>
-<path d="M1102.0 1066.5 L1377.0 1066.5" fill="none" data-name="Shoe"></path>
+<rect x="2130.0" y="1051.0" height="145.0" width="275.0" data-name="Shoe"></rect>
+<path d="M2130.0 1083.0 L2405.0 1083.0" fill="none" data-name="Shoe"></path>
+<path d="M2130.0 1115.0 L2405.0 1115.0" fill="none" data-name="Shoe"></path>
 </g>
-<g transform="translate(1102, 1002.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Shoe" data-compartment="0">
+<g transform="translate(2130, 1051)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Shoe" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Shoe" data-compartment="0">
 <a id="..\src\domain\models\shoes\shoe.ts.Shoe" xlink:href="..\src\domain\models\shoes\shoe.ts"><text x="129.5" y="14.1" stroke="none" text-anchor="middle" data-name="Shoe" data-compartment="0">Shoe</text></a>
 
 </g>
 </g>
-<g transform="translate(1102, 1034.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Shoe" data-compartment="1">
+<g transform="translate(2130, 1083)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Shoe" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Shoe" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="Shoe" data-compartment="1">-cards: Card[]</text>
 
 </g>
 </g>
-<g transform="translate(1102, 1066.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Shoe" data-compartment="2">
+<g transform="translate(2130, 1115)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Shoe" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Shoe" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="Shoe" data-compartment="2">+static createFromDecks(): Shoe</text>
 <text x="0.0" y="30.3" stroke="none" data-name="Shoe" data-compartment="2">+suffle(): Shoe</text>
@@ -528,17 +590,17 @@
 </g>
 <g data-name="Player">
 <g fill="#eee8d5" stroke="#33322E" data-name="Player">
-<rect x="2213.5" y="526.0" height="372.0" width="326.0" data-name="Player"></rect>
-<path d="M2213.5 558.0 L2539.5 558.0" fill="none" data-name="Player"></path>
-<path d="M2213.5 671.0 L2539.5 671.0" fill="none" data-name="Player"></path>
+<rect x="3241.5" y="558.0" height="372.0" width="326.0" data-name="Player"></rect>
+<path d="M3241.5 590.0 L3567.5 590.0" fill="none" data-name="Player"></path>
+<path d="M3241.5 703.0 L3567.5 703.0" fill="none" data-name="Player"></path>
 </g>
-<g transform="translate(2213.5, 526)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Player" data-compartment="0">
+<g transform="translate(3241.5, 558)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Player" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Player" data-compartment="0">
 <a id="..\src\domain\models\players\player.ts.Player" xlink:href="..\src\domain\models\players\player.ts"><text x="155.0" y="14.1" stroke="none" text-anchor="middle" data-name="Player" data-compartment="0">Player</text></a>
 
 </g>
 </g>
-<g transform="translate(2213.5, 558)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Player" data-compartment="1">
+<g transform="translate(3241.5, 590)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Player" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Player" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="Player" data-compartment="1">+static INITIAL_CREDIT: ChipAmount</text>
 <text x="0.0" y="30.3" stroke="none" data-name="Player" data-compartment="1">+id: PlayerId</text>
@@ -549,7 +611,7 @@
 
 </g>
 </g>
-<g transform="translate(2213.5, 671)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Player" data-compartment="2">
+<g transform="translate(3241.5, 703)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Player" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Player" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="Player" data-compartment="2">+static create(): Player</text>
 <text x="0.0" y="30.3" stroke="none" data-name="Player" data-compartment="2">+addCardToHand(): void</text>
@@ -570,17 +632,17 @@
 </g>
 <g data-name="RoundCount">
 <g fill="#eee8d5" stroke="#33322E" data-name="RoundCount">
-<rect x="1494.3" y="1010.5" height="129.0" width="279.0" data-name="RoundCount"></rect>
-<path d="M1494.3 1042.5 L1773.3 1042.5" fill="none" data-name="RoundCount"></path>
-<path d="M1494.3 1107.5 L1773.3 1107.5" fill="none" data-name="RoundCount"></path>
+<rect x="2522.3" y="1059.0" height="129.0" width="279.0" data-name="RoundCount"></rect>
+<path d="M2522.3 1091.0 L2801.3 1091.0" fill="none" data-name="RoundCount"></path>
+<path d="M2522.3 1156.0 L2801.3 1156.0" fill="none" data-name="RoundCount"></path>
 </g>
-<g transform="translate(1494.25, 1010.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RoundCount" data-compartment="0">
+<g transform="translate(2522.25, 1059)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RoundCount" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="RoundCount" data-compartment="0">
 <a id="..\src\domain\models\roundCounts\roundCount.ts.RoundCount" xlink:href="..\src\domain\models\roundCounts\roundCount.ts"><text x="131.5" y="14.1" stroke="none" text-anchor="middle" data-name="RoundCount" data-compartment="0">RoundCount</text></a>
 
 </g>
 </g>
-<g transform="translate(1494.25, 1042.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundCount" data-compartment="1">
+<g transform="translate(2522.25, 1091)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundCount" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="RoundCount" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="RoundCount" data-compartment="1">+static MAX_ROUND_COUNT: 10</text>
 <text x="0.0" y="30.3" stroke="none" data-name="RoundCount" data-compartment="1">+static ZERO: RoundCount</text>
@@ -588,7 +650,7 @@
 
 </g>
 </g>
-<g transform="translate(1494.25, 1107.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundCount" data-compartment="2">
+<g transform="translate(2522.25, 1156)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundCount" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="RoundCount" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="RoundCount" data-compartment="2">+increment(): RoundCount</text>
 
@@ -597,22 +659,22 @@
 </g>
 <g data-name="RoundResultCalculator">
 <g fill="#eee8d5" stroke="#33322E" data-name="RoundResultCalculator">
-<rect x="1287.5" y="676.0" height="72.0" width="221.0" data-name="RoundResultCalculator"></rect>
-<path d="M1287.5 708.0 L1508.5 708.0" fill="none" data-name="RoundResultCalculator"></path>
-<path d="M1287.5 716.0 L1508.5 716.0" fill="none" data-name="RoundResultCalculator"></path>
+<rect x="2315.5" y="708.0" height="72.0" width="221.0" data-name="RoundResultCalculator"></rect>
+<path d="M2315.5 740.0 L2536.5 740.0" fill="none" data-name="RoundResultCalculator"></path>
+<path d="M2315.5 748.0 L2536.5 748.0" fill="none" data-name="RoundResultCalculator"></path>
 </g>
-<g transform="translate(1287.5, 676)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RoundResultCalculator" data-compartment="0">
+<g transform="translate(2315.5, 708)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RoundResultCalculator" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="RoundResultCalculator" data-compartment="0">
 <a id="..\src\domain\models\roundResultCalculators\roundResultCalculator.ts.RoundResultCalculator" xlink:href="..\src\domain\models\roundResultCalculators\roundResultCalculator.ts"><text x="102.5" y="14.1" stroke="none" text-anchor="middle" data-name="RoundResultCalculator" data-compartment="0">RoundResultCalculator</text></a>
 
 </g>
 </g>
-<g transform="translate(1287.5, 708)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundResultCalculator" data-compartment="1">
+<g transform="translate(2315.5, 740)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundResultCalculator" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="RoundResultCalculator" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(1287.5, 716)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundResultCalculator" data-compartment="2">
+<g transform="translate(2315.5, 748)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundResultCalculator" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="RoundResultCalculator" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="RoundResultCalculator" data-compartment="2">+calculate(): RoundResult</text>
 
@@ -621,17 +683,17 @@
 </g>
 <g data-name="RoundHistory">
 <g fill="#eee8d5" stroke="#33322E" data-name="RoundHistory">
-<rect x="1588.5" y="659.5" height="105.0" width="261.0" data-name="RoundHistory"></rect>
-<path d="M1588.5 691.5 L1849.5 691.5" fill="none" data-name="RoundHistory"></path>
-<path d="M1588.5 756.5 L1849.5 756.5" fill="none" data-name="RoundHistory"></path>
+<rect x="2616.5" y="691.5" height="105.0" width="261.0" data-name="RoundHistory"></rect>
+<path d="M2616.5 723.5 L2877.5 723.5" fill="none" data-name="RoundHistory"></path>
+<path d="M2616.5 788.5 L2877.5 788.5" fill="none" data-name="RoundHistory"></path>
 </g>
-<g transform="translate(1588.5, 659.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RoundHistory" data-compartment="0">
+<g transform="translate(2616.5, 691.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RoundHistory" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="RoundHistory" data-compartment="0">
 <a id="..\src\domain\models\roundHistories\roundHistory.ts.RoundHistory" xlink:href="..\src\domain\models\roundHistories\roundHistory.ts"><text x="122.5" y="14.1" stroke="none" text-anchor="middle" data-name="RoundHistory" data-compartment="0">RoundHistory</text></a>
 
 </g>
 </g>
-<g transform="translate(1588.5, 691.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundHistory" data-compartment="1">
+<g transform="translate(2616.5, 723.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundHistory" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="RoundHistory" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="RoundHistory" data-compartment="1">+roundCount: RoundCount</text>
 <text x="0.0" y="30.3" stroke="none" data-name="RoundHistory" data-compartment="1">+dealersHand: Hand</text>
@@ -639,7 +701,7 @@
 
 </g>
 </g>
-<g transform="translate(1588.5, 756.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundHistory" data-compartment="2">
+<g transform="translate(2616.5, 788.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundHistory" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="RoundHistory" data-compartment="2">
 
 </g>
@@ -647,22 +709,22 @@
 </g>
 <g data-name="MatchCannotHitError">
 <g fill="#eee8d5" stroke="#33322E" data-name="MatchCannotHitError">
-<rect x="1633.0" y="219.0" height="48.0" width="181.0" data-name="MatchCannotHitError"></rect>
-<path d="M1633.0 251.0 L1814.0 251.0" fill="none" data-name="MatchCannotHitError"></path>
-<path d="M1633.0 259.0 L1814.0 259.0" fill="none" data-name="MatchCannotHitError"></path>
+<rect x="2661.0" y="235.0" height="48.0" width="181.0" data-name="MatchCannotHitError"></rect>
+<path d="M2661.0 267.0 L2842.0 267.0" fill="none" data-name="MatchCannotHitError"></path>
+<path d="M2661.0 275.0 L2842.0 275.0" fill="none" data-name="MatchCannotHitError"></path>
 </g>
-<g transform="translate(1633, 219)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="MatchCannotHitError" data-compartment="0">
+<g transform="translate(2661, 235)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="MatchCannotHitError" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="MatchCannotHitError" data-compartment="0">
 <a id="..\src\domain\models\matches\matchCannotHitError.ts.MatchCannotHitError" xlink:href="..\src\domain\models\matches\matchCannotHitError.ts"><text x="82.5" y="14.1" stroke="none" text-anchor="middle" data-name="MatchCannotHitError" data-compartment="0">MatchCannotHitError</text></a>
 
 </g>
 </g>
-<g transform="translate(1633, 251)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchCannotHitError" data-compartment="1">
+<g transform="translate(2661, 267)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchCannotHitError" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="MatchCannotHitError" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(1633, 259)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchCannotHitError" data-compartment="2">
+<g transform="translate(2661, 275)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchCannotHitError" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="MatchCannotHitError" data-compartment="2">
 
 </g>
@@ -670,22 +732,22 @@
 </g>
 <g data-name="MatchFactory">
 <g fill="lightblue" stroke="#33322E" data-name="MatchFactory">
-<rect x="1854.0" y="207.0" height="72.0" width="146.0" data-name="MatchFactory"></rect>
-<path d="M1854.0 239.0 L2000.0 239.0" fill="none" data-name="MatchFactory"></path>
-<path d="M1854.0 247.0 L2000.0 247.0" fill="none" data-name="MatchFactory"></path>
+<rect x="2882.0" y="223.0" height="72.0" width="146.0" data-name="MatchFactory"></rect>
+<path d="M2882.0 255.0 L3028.0 255.0" fill="none" data-name="MatchFactory"></path>
+<path d="M2882.0 263.0 L3028.0 263.0" fill="none" data-name="MatchFactory"></path>
 </g>
-<g transform="translate(1854, 207)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchFactory" data-compartment="0">
+<g transform="translate(2882, 223)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchFactory" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="MatchFactory" data-compartment="0">
 <a id="..\src\domain\models\matches\matchFactory.ts.MatchFactory" xlink:href="..\src\domain\models\matches\matchFactory.ts"><text x="65.0" y="14.1" stroke="none" text-anchor="middle" data-name="MatchFactory" data-compartment="0">MatchFactory</text></a>
 
 </g>
 </g>
-<g transform="translate(1854, 239)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchFactory" data-compartment="1">
+<g transform="translate(2882, 255)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchFactory" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="MatchFactory" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(1854, 247)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchFactory" data-compartment="2">
+<g transform="translate(2882, 263)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchFactory" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="MatchFactory" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="MatchFactory" data-compartment="2">+create(): Match</text>
 
@@ -694,49 +756,50 @@
 </g>
 <g data-name="MatchNotification">
 <g fill="lightblue" stroke="#33322E" data-name="MatchNotification">
-<rect x="2040.0" y="182.5" height="121.0" width="223.0" data-name="MatchNotification"></rect>
-<path d="M2040.0 214.5 L2263.0 214.5" fill="none" data-name="MatchNotification"></path>
-<path d="M2040.0 222.5 L2263.0 222.5" fill="none" data-name="MatchNotification"></path>
+<rect x="3068.0" y="190.5" height="137.0" width="223.0" data-name="MatchNotification"></rect>
+<path d="M3068.0 222.5 L3291.0 222.5" fill="none" data-name="MatchNotification"></path>
+<path d="M3068.0 230.5 L3291.0 230.5" fill="none" data-name="MatchNotification"></path>
 </g>
-<g transform="translate(2040, 182.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchNotification" data-compartment="0">
+<g transform="translate(3068, 190.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchNotification" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="MatchNotification" data-compartment="0">
 <a id="..\src\domain\models\matches\matchNotification.ts.MatchNotification" xlink:href="..\src\domain\models\matches\matchNotification.ts"><text x="103.5" y="14.1" stroke="none" text-anchor="middle" data-name="MatchNotification" data-compartment="0">MatchNotification</text></a>
 
 </g>
 </g>
-<g transform="translate(2040, 214.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchNotification" data-compartment="1">
+<g transform="translate(3068, 222.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchNotification" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="MatchNotification" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(2040, 222.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchNotification" data-compartment="2">
+<g transform="translate(3068, 230.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchNotification" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="MatchNotification" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="MatchNotification" data-compartment="2">+notifyId(): void</text>
 <text x="0.0" y="30.3" stroke="none" data-name="MatchNotification" data-compartment="2">+notifyDealer(): void</text>
 <text x="0.0" y="46.5" stroke="none" data-name="MatchNotification" data-compartment="2">+notifyPlayers(): void</text>
 <text x="0.0" y="62.7" stroke="none" data-name="MatchNotification" data-compartment="2">+notifyRoundCount(): void</text>
+<text x="0.0" y="78.9" stroke="none" data-name="MatchNotification" data-compartment="2">+notifyIsCompleted(): void</text>
 
 </g>
 </g>
 </g>
 <g data-name="MatchPlayerNotFoundError">
 <g fill="#eee8d5" stroke="#33322E" data-name="MatchPlayerNotFoundError">
-<rect x="2303.0" y="219.0" height="48.0" width="230.0" data-name="MatchPlayerNotFoundError"></rect>
-<path d="M2303.0 251.0 L2533.0 251.0" fill="none" data-name="MatchPlayerNotFoundError"></path>
-<path d="M2303.0 259.0 L2533.0 259.0" fill="none" data-name="MatchPlayerNotFoundError"></path>
+<rect x="3331.0" y="235.0" height="48.0" width="230.0" data-name="MatchPlayerNotFoundError"></rect>
+<path d="M3331.0 267.0 L3561.0 267.0" fill="none" data-name="MatchPlayerNotFoundError"></path>
+<path d="M3331.0 275.0 L3561.0 275.0" fill="none" data-name="MatchPlayerNotFoundError"></path>
 </g>
-<g transform="translate(2303, 219)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="MatchPlayerNotFoundError" data-compartment="0">
+<g transform="translate(3331, 235)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="MatchPlayerNotFoundError" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="MatchPlayerNotFoundError" data-compartment="0">
 <a id="..\src\domain\models\matches\matchPlayerNotFoundError.ts.MatchPlayerNotFoundError" xlink:href="..\src\domain\models\matches\matchPlayerNotFoundError.ts"><text x="107.0" y="14.1" stroke="none" text-anchor="middle" data-name="MatchPlayerNotFoundError" data-compartment="0">MatchPlayerNotFoundError</text></a>
 
 </g>
 </g>
-<g transform="translate(2303, 251)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchPlayerNotFoundError" data-compartment="1">
+<g transform="translate(3331, 267)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchPlayerNotFoundError" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="MatchPlayerNotFoundError" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(2303, 259)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchPlayerNotFoundError" data-compartment="2">
+<g transform="translate(3331, 275)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchPlayerNotFoundError" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="MatchPlayerNotFoundError" data-compartment="2">
 
 </g>
@@ -744,22 +807,22 @@
 </g>
 <g data-name="MatchRepository">
 <g fill="lightblue" stroke="#33322E" data-name="MatchRepository">
-<rect x="2573.0" y="199.0" height="88.0" width="257.0" data-name="MatchRepository"></rect>
-<path d="M2573.0 231.0 L2830.0 231.0" fill="none" data-name="MatchRepository"></path>
-<path d="M2573.0 239.0 L2830.0 239.0" fill="none" data-name="MatchRepository"></path>
+<rect x="3601.0" y="215.0" height="88.0" width="257.0" data-name="MatchRepository"></rect>
+<path d="M3601.0 247.0 L3858.0 247.0" fill="none" data-name="MatchRepository"></path>
+<path d="M3601.0 255.0 L3858.0 255.0" fill="none" data-name="MatchRepository"></path>
 </g>
-<g transform="translate(2573, 199)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchRepository" data-compartment="0">
+<g transform="translate(3601, 215)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchRepository" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="MatchRepository" data-compartment="0">
 <a id="..\src\domain\models\matches\matchRepository.ts.MatchRepository" xlink:href="..\src\domain\models\matches\matchRepository.ts"><text x="120.5" y="14.1" stroke="none" text-anchor="middle" data-name="MatchRepository" data-compartment="0">MatchRepository</text></a>
 
 </g>
 </g>
-<g transform="translate(2573, 231)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchRepository" data-compartment="1">
+<g transform="translate(3601, 247)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchRepository" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="MatchRepository" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(2573, 239)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchRepository" data-compartment="2">
+<g transform="translate(3601, 255)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchRepository" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="MatchRepository" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="MatchRepository" data-compartment="2">+saveAsync(): Promise&lt;void&gt;</text>
 <text x="0.0" y="30.3" stroke="none" data-name="MatchRepository" data-compartment="2">+findAsync(): Promise&lt;Match&gt;</text>
@@ -767,25 +830,48 @@
 </g>
 </g>
 </g>
+<g data-name="MatchUpCardUndefinedError">
+<g fill="#eee8d5" stroke="#33322E" data-name="MatchUpCardUndefinedError">
+<rect x="3898.0" y="235.0" height="48.0" width="244.0" data-name="MatchUpCardUndefinedError"></rect>
+<path d="M3898.0 267.0 L4142.0 267.0" fill="none" data-name="MatchUpCardUndefinedError"></path>
+<path d="M3898.0 275.0 L4142.0 275.0" fill="none" data-name="MatchUpCardUndefinedError"></path>
+</g>
+<g transform="translate(3898, 235)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="MatchUpCardUndefinedError" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="MatchUpCardUndefinedError" data-compartment="0">
+<a id="..\src\domain\models\matches\matchUpCardUndefinedError.ts.MatchUpCardUndefinedError" xlink:href="..\src\domain\models\matches\matchUpCardUndefinedError.ts"><text x="114.0" y="14.1" stroke="none" text-anchor="middle" data-name="MatchUpCardUndefinedError" data-compartment="0">MatchUpCardUndefinedError</text></a>
+
+</g>
+</g>
+<g transform="translate(3898, 267)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchUpCardUndefinedError" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" data-name="MatchUpCardUndefinedError" data-compartment="1">
+
+</g>
+</g>
+<g transform="translate(3898, 275)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MatchUpCardUndefinedError" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="MatchUpCardUndefinedError" data-compartment="2">
+
+</g>
+</g>
+</g>
 <g data-name="PlayerId">
 <g fill="#eee8d5" stroke="#33322E" data-name="PlayerId">
-<rect x="2770.0" y="1515.5" height="72.0" width="123.0" data-name="PlayerId"></rect>
-<path d="M2770.0 1547.5 L2893.0 1547.5" fill="none" data-name="PlayerId"></path>
-<path d="M2770.0 1579.5 L2893.0 1579.5" fill="none" data-name="PlayerId"></path>
+<rect x="3798.0" y="1580.5" height="72.0" width="123.0" data-name="PlayerId"></rect>
+<path d="M3798.0 1612.5 L3921.0 1612.5" fill="none" data-name="PlayerId"></path>
+<path d="M3798.0 1644.5 L3921.0 1644.5" fill="none" data-name="PlayerId"></path>
 </g>
-<g transform="translate(2770, 1515.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="PlayerId" data-compartment="0">
+<g transform="translate(3798, 1580.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="PlayerId" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="PlayerId" data-compartment="0">
 <a id="..\src\domain\models\players\playerId.ts.PlayerId" xlink:href="..\src\domain\models\players\playerId.ts"><text x="53.5" y="14.1" stroke="none" text-anchor="middle" data-name="PlayerId" data-compartment="0">PlayerId</text></a>
 
 </g>
 </g>
-<g transform="translate(2770, 1547.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerId" data-compartment="1">
+<g transform="translate(3798, 1612.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerId" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="PlayerId" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="PlayerId" data-compartment="1">+value: string</text>
 
 </g>
 </g>
-<g transform="translate(2770, 1579.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerId" data-compartment="2">
+<g transform="translate(3798, 1644.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerId" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="PlayerId" data-compartment="2">
 
 </g>
@@ -793,23 +879,23 @@
 </g>
 <g data-name="UserId">
 <g fill="#eee8d5" stroke="#33322E" data-name="UserId">
-<rect x="1909.0" y="1039.0" height="72.0" width="123.0" data-name="UserId"></rect>
-<path d="M1909.0 1071.0 L2032.0 1071.0" fill="none" data-name="UserId"></path>
-<path d="M1909.0 1103.0 L2032.0 1103.0" fill="none" data-name="UserId"></path>
+<rect x="2937.0" y="1087.5" height="72.0" width="123.0" data-name="UserId"></rect>
+<path d="M2937.0 1119.5 L3060.0 1119.5" fill="none" data-name="UserId"></path>
+<path d="M2937.0 1151.5 L3060.0 1151.5" fill="none" data-name="UserId"></path>
 </g>
-<g transform="translate(1909, 1039)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="UserId" data-compartment="0">
+<g transform="translate(2937, 1087.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="UserId" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="UserId" data-compartment="0">
 <a id="..\src\domain\models\users\userId.ts.UserId" xlink:href="..\src\domain\models\users\userId.ts"><text x="53.5" y="14.1" stroke="none" text-anchor="middle" data-name="UserId" data-compartment="0">UserId</text></a>
 
 </g>
 </g>
-<g transform="translate(1909, 1071)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserId" data-compartment="1">
+<g transform="translate(2937, 1119.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserId" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="UserId" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="UserId" data-compartment="1">+value: string</text>
 
 </g>
 </g>
-<g transform="translate(1909, 1103)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserId" data-compartment="2">
+<g transform="translate(2937, 1151.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserId" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="UserId" data-compartment="2">
 
 </g>
@@ -817,22 +903,22 @@
 </g>
 <g data-name="PlayerCreditShortageError">
 <g fill="#eee8d5" stroke="#33322E" data-name="PlayerCreditShortageError">
-<rect x="2870.0" y="219.0" height="48.0" width="224.0" data-name="PlayerCreditShortageError"></rect>
-<path d="M2870.0 251.0 L3094.0 251.0" fill="none" data-name="PlayerCreditShortageError"></path>
-<path d="M2870.0 259.0 L3094.0 259.0" fill="none" data-name="PlayerCreditShortageError"></path>
+<rect x="4182.0" y="235.0" height="48.0" width="224.0" data-name="PlayerCreditShortageError"></rect>
+<path d="M4182.0 267.0 L4406.0 267.0" fill="none" data-name="PlayerCreditShortageError"></path>
+<path d="M4182.0 275.0 L4406.0 275.0" fill="none" data-name="PlayerCreditShortageError"></path>
 </g>
-<g transform="translate(2870, 219)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="PlayerCreditShortageError" data-compartment="0">
+<g transform="translate(4182, 235)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="PlayerCreditShortageError" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="PlayerCreditShortageError" data-compartment="0">
 <a id="..\src\domain\models\players\playerCreditShortageError.ts.PlayerCreditShortageError" xlink:href="..\src\domain\models\players\playerCreditShortageError.ts"><text x="104.0" y="14.1" stroke="none" text-anchor="middle" data-name="PlayerCreditShortageError" data-compartment="0">PlayerCreditShortageError</text></a>
 
 </g>
 </g>
-<g transform="translate(2870, 251)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerCreditShortageError" data-compartment="1">
+<g transform="translate(4182, 267)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerCreditShortageError" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="PlayerCreditShortageError" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(2870, 259)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerCreditShortageError" data-compartment="2">
+<g transform="translate(4182, 275)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerCreditShortageError" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="PlayerCreditShortageError" data-compartment="2">
 
 </g>
@@ -840,22 +926,22 @@
 </g>
 <g data-name="PlayerFactory">
 <g fill="lightblue" stroke="#33322E" data-name="PlayerFactory">
-<rect x="3134.0" y="207.0" height="72.0" width="148.0" data-name="PlayerFactory"></rect>
-<path d="M3134.0 239.0 L3282.0 239.0" fill="none" data-name="PlayerFactory"></path>
-<path d="M3134.0 247.0 L3282.0 247.0" fill="none" data-name="PlayerFactory"></path>
+<rect x="4446.0" y="223.0" height="72.0" width="148.0" data-name="PlayerFactory"></rect>
+<path d="M4446.0 255.0 L4594.0 255.0" fill="none" data-name="PlayerFactory"></path>
+<path d="M4446.0 263.0 L4594.0 263.0" fill="none" data-name="PlayerFactory"></path>
 </g>
-<g transform="translate(3134, 207)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerFactory" data-compartment="0">
+<g transform="translate(4446, 223)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerFactory" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="PlayerFactory" data-compartment="0">
 <a id="..\src\domain\models\players\playerFactory.ts.PlayerFactory" xlink:href="..\src\domain\models\players\playerFactory.ts"><text x="66.0" y="14.1" stroke="none" text-anchor="middle" data-name="PlayerFactory" data-compartment="0">PlayerFactory</text></a>
 
 </g>
 </g>
-<g transform="translate(3134, 239)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerFactory" data-compartment="1">
+<g transform="translate(4446, 255)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerFactory" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="PlayerFactory" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(3134, 247)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerFactory" data-compartment="2">
+<g transform="translate(4446, 263)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerFactory" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="PlayerFactory" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="PlayerFactory" data-compartment="2">+create(): Player</text>
 
@@ -864,22 +950,22 @@
 </g>
 <g data-name="PlayerNotification">
 <g fill="lightblue" stroke="#33322E" data-name="PlayerNotification">
-<rect x="3322.0" y="174.5" height="137.0" width="276.0" data-name="PlayerNotification"></rect>
-<path d="M3322.0 206.5 L3598.0 206.5" fill="none" data-name="PlayerNotification"></path>
-<path d="M3322.0 214.5 L3598.0 214.5" fill="none" data-name="PlayerNotification"></path>
+<rect x="4634.0" y="190.5" height="137.0" width="276.0" data-name="PlayerNotification"></rect>
+<path d="M4634.0 222.5 L4910.0 222.5" fill="none" data-name="PlayerNotification"></path>
+<path d="M4634.0 230.5 L4910.0 230.5" fill="none" data-name="PlayerNotification"></path>
 </g>
-<g transform="translate(3322, 174.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerNotification" data-compartment="0">
+<g transform="translate(4634, 190.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerNotification" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="PlayerNotification" data-compartment="0">
 <a id="..\src\domain\models\players\playerNotification.ts.PlayerNotification" xlink:href="..\src\domain\models\players\playerNotification.ts"><text x="130.0" y="14.1" stroke="none" text-anchor="middle" data-name="PlayerNotification" data-compartment="0">PlayerNotification</text></a>
 
 </g>
 </g>
-<g transform="translate(3322, 206.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerNotification" data-compartment="1">
+<g transform="translate(4634, 222.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerNotification" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="PlayerNotification" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(3322, 214.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerNotification" data-compartment="2">
+<g transform="translate(4634, 230.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerNotification" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="PlayerNotification" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="PlayerNotification" data-compartment="2">+notifyId(): void</text>
 <text x="0.0" y="30.3" stroke="none" data-name="PlayerNotification" data-compartment="2">+notifyHand(): void</text>
@@ -892,22 +978,22 @@
 </g>
 <g data-name="PlayerRepository">
 <g fill="lightblue" stroke="#33322E" data-name="PlayerRepository">
-<rect x="3638.0" y="199.0" height="88.0" width="259.0" data-name="PlayerRepository"></rect>
-<path d="M3638.0 231.0 L3897.0 231.0" fill="none" data-name="PlayerRepository"></path>
-<path d="M3638.0 239.0 L3897.0 239.0" fill="none" data-name="PlayerRepository"></path>
+<rect x="4950.0" y="215.0" height="88.0" width="259.0" data-name="PlayerRepository"></rect>
+<path d="M4950.0 247.0 L5209.0 247.0" fill="none" data-name="PlayerRepository"></path>
+<path d="M4950.0 255.0 L5209.0 255.0" fill="none" data-name="PlayerRepository"></path>
 </g>
-<g transform="translate(3638, 199)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerRepository" data-compartment="0">
+<g transform="translate(4950, 215)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerRepository" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="PlayerRepository" data-compartment="0">
 <a id="..\src\domain\models\players\playerRepository.ts.PlayerRepository" xlink:href="..\src\domain\models\players\playerRepository.ts"><text x="121.5" y="14.1" stroke="none" text-anchor="middle" data-name="PlayerRepository" data-compartment="0">PlayerRepository</text></a>
 
 </g>
 </g>
-<g transform="translate(3638, 231)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerRepository" data-compartment="1">
+<g transform="translate(4950, 247)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerRepository" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="PlayerRepository" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(3638, 239)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerRepository" data-compartment="2">
+<g transform="translate(4950, 255)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerRepository" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="PlayerRepository" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="PlayerRepository" data-compartment="2">+saveAsync(): Promise&lt;void&gt;</text>
 <text x="0.0" y="30.3" stroke="none" data-name="PlayerRepository" data-compartment="2">+findAsync(): Promise&lt;Player&gt;</text>
@@ -915,24 +1001,48 @@
 </g>
 </g>
 </g>
+<g data-name="RankingCalculator">
+<g fill="#eee8d5" stroke="#33322E" data-name="RankingCalculator">
+<rect x="5249.0" y="223.0" height="72.0" width="330.0" data-name="RankingCalculator"></rect>
+<path d="M5249.0 255.0 L5579.0 255.0" fill="none" data-name="RankingCalculator"></path>
+<path d="M5249.0 263.0 L5579.0 263.0" fill="none" data-name="RankingCalculator"></path>
+</g>
+<g transform="translate(5249, 223)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RankingCalculator" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="RankingCalculator" data-compartment="0">
+<a id="..\src\domain\models\rankingCalculators\rankingCalculator.ts.RankingCalculator" xlink:href="..\src\domain\models\rankingCalculators\rankingCalculator.ts"><text x="157.0" y="14.1" stroke="none" text-anchor="middle" data-name="RankingCalculator" data-compartment="0">RankingCalculator</text></a>
+
+</g>
+</g>
+<g transform="translate(5249, 255)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RankingCalculator" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" data-name="RankingCalculator" data-compartment="1">
+
+</g>
+</g>
+<g transform="translate(5249, 263)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RankingCalculator" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="RankingCalculator" data-compartment="2">
+<text x="0.0" y="14.1" stroke="none" data-name="RankingCalculator" data-compartment="2">+static calculate(): Map&lt;TKey, number&gt;</text>
+
+</g>
+</g>
+</g>
 <g data-name="RoundCountExceedsMaximumError">
 <g fill="#eee8d5" stroke="#33322E" data-name="RoundCountExceedsMaximumError">
-<rect x="3937.0" y="219.0" height="48.0" width="297.0" data-name="RoundCountExceedsMaximumError"></rect>
-<path d="M3937.0 251.0 L4234.0 251.0" fill="none" data-name="RoundCountExceedsMaximumError"></path>
-<path d="M3937.0 259.0 L4234.0 259.0" fill="none" data-name="RoundCountExceedsMaximumError"></path>
+<rect x="5619.0" y="235.0" height="48.0" width="297.0" data-name="RoundCountExceedsMaximumError"></rect>
+<path d="M5619.0 267.0 L5916.0 267.0" fill="none" data-name="RoundCountExceedsMaximumError"></path>
+<path d="M5619.0 275.0 L5916.0 275.0" fill="none" data-name="RoundCountExceedsMaximumError"></path>
 </g>
-<g transform="translate(3937, 219)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RoundCountExceedsMaximumError" data-compartment="0">
+<g transform="translate(5619, 235)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RoundCountExceedsMaximumError" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="RoundCountExceedsMaximumError" data-compartment="0">
 <a id="..\src\domain\models\roundCounts\roundCountExceedsMaximumError.ts.RoundCountExceedsMaximumError" xlink:href="..\src\domain\models\roundCounts\roundCountExceedsMaximumError.ts"><text x="140.5" y="14.1" stroke="none" text-anchor="middle" data-name="RoundCountExceedsMaximumError" data-compartment="0">RoundCountExceedsMaximumError</text></a>
 
 </g>
 </g>
-<g transform="translate(3937, 251)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundCountExceedsMaximumError" data-compartment="1">
+<g transform="translate(5619, 267)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundCountExceedsMaximumError" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="RoundCountExceedsMaximumError" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(3937, 259)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundCountExceedsMaximumError" data-compartment="2">
+<g transform="translate(5619, 275)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundCountExceedsMaximumError" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="RoundCountExceedsMaximumError" data-compartment="2">
 
 </g>
@@ -940,17 +1050,17 @@
 </g>
 <g data-name="RoundPlayerHistory">
 <g fill="#eee8d5" stroke="#33322E" data-name="RoundPlayerHistory">
-<rect x="2558.0" y="1022.5" height="105.0" width="182.0" data-name="RoundPlayerHistory"></rect>
-<path d="M2558.0 1054.5 L2740.0 1054.5" fill="none" data-name="RoundPlayerHistory"></path>
-<path d="M2558.0 1119.5 L2740.0 1119.5" fill="none" data-name="RoundPlayerHistory"></path>
+<rect x="3586.0" y="1071.0" height="105.0" width="182.0" data-name="RoundPlayerHistory"></rect>
+<path d="M3586.0 1103.0 L3768.0 1103.0" fill="none" data-name="RoundPlayerHistory"></path>
+<path d="M3586.0 1168.0 L3768.0 1168.0" fill="none" data-name="RoundPlayerHistory"></path>
 </g>
-<g transform="translate(2558, 1022.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RoundPlayerHistory" data-compartment="0">
+<g transform="translate(3586, 1071)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RoundPlayerHistory" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="RoundPlayerHistory" data-compartment="0">
 <a id="..\src\domain\models\roundHistories\roundPlayerHistory.ts.RoundPlayerHistory" xlink:href="..\src\domain\models\roundHistories\roundPlayerHistory.ts"><text x="83.0" y="14.1" stroke="none" text-anchor="middle" data-name="RoundPlayerHistory" data-compartment="0">RoundPlayerHistory</text></a>
 
 </g>
 </g>
-<g transform="translate(2558, 1054.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundPlayerHistory" data-compartment="1">
+<g transform="translate(3586, 1103)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundPlayerHistory" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="RoundPlayerHistory" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="RoundPlayerHistory" data-compartment="1">+id: PlayerId</text>
 <text x="0.0" y="30.3" stroke="none" data-name="RoundPlayerHistory" data-compartment="1">+result: RoundResult</text>
@@ -958,7 +1068,7 @@
 
 </g>
 </g>
-<g transform="translate(2558, 1119.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundPlayerHistory" data-compartment="2">
+<g transform="translate(3586, 1168)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RoundPlayerHistory" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="RoundPlayerHistory" data-compartment="2">
 
 </g>
@@ -966,24 +1076,24 @@
 </g>
 <g data-name="User">
 <g fill="#eee8d5" stroke="#33322E" data-name="User">
-<rect x="2010.5" y="668.0" height="88.0" width="163.0" data-name="User"></rect>
-<path d="M2010.5 700.0 L2173.5 700.0" fill="none" data-name="User"></path>
-<path d="M2010.5 748.0 L2173.5 748.0" fill="none" data-name="User"></path>
+<rect x="3038.5" y="700.0" height="88.0" width="163.0" data-name="User"></rect>
+<path d="M3038.5 732.0 L3201.5 732.0" fill="none" data-name="User"></path>
+<path d="M3038.5 780.0 L3201.5 780.0" fill="none" data-name="User"></path>
 </g>
-<g transform="translate(2010.5, 668)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="User" data-compartment="0">
+<g transform="translate(3038.5, 700)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="User" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="User" data-compartment="0">
 <a id="..\src\domain\models\users\user.ts.User" xlink:href="..\src\domain\models\users\user.ts"><text x="73.5" y="14.1" stroke="none" text-anchor="middle" data-name="User" data-compartment="0">User</text></a>
 
 </g>
 </g>
-<g transform="translate(2010.5, 700)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="User" data-compartment="1">
+<g transform="translate(3038.5, 732)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="User" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="User" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="User" data-compartment="1">+id: UserId</text>
 <text x="0.0" y="30.3" stroke="none" data-name="User" data-compartment="1">+name: UserName</text>
 
 </g>
 </g>
-<g transform="translate(2010.5, 748)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="User" data-compartment="2">
+<g transform="translate(3038.5, 780)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="User" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="User" data-compartment="2">
 
 </g>
@@ -991,23 +1101,23 @@
 </g>
 <g data-name="UserName">
 <g fill="#eee8d5" stroke="#33322E" data-name="UserName">
-<rect x="2223.5" y="1039.0" height="72.0" width="123.0" data-name="UserName"></rect>
-<path d="M2223.5 1071.0 L2346.5 1071.0" fill="none" data-name="UserName"></path>
-<path d="M2223.5 1103.0 L2346.5 1103.0" fill="none" data-name="UserName"></path>
+<rect x="3251.5" y="1087.5" height="72.0" width="123.0" data-name="UserName"></rect>
+<path d="M3251.5 1119.5 L3374.5 1119.5" fill="none" data-name="UserName"></path>
+<path d="M3251.5 1151.5 L3374.5 1151.5" fill="none" data-name="UserName"></path>
 </g>
-<g transform="translate(2223.5, 1039)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="UserName" data-compartment="0">
+<g transform="translate(3251.5, 1087.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="UserName" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="UserName" data-compartment="0">
 <a id="..\src\domain\models\users\userName.ts.UserName" xlink:href="..\src\domain\models\users\userName.ts"><text x="53.5" y="14.1" stroke="none" text-anchor="middle" data-name="UserName" data-compartment="0">UserName</text></a>
 
 </g>
 </g>
-<g transform="translate(2223.5, 1071)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserName" data-compartment="1">
+<g transform="translate(3251.5, 1119.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserName" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="UserName" data-compartment="1">
 <text x="0.0" y="14.1" stroke="none" data-name="UserName" data-compartment="1">+value: string</text>
 
 </g>
 </g>
-<g transform="translate(2223.5, 1103)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserName" data-compartment="2">
+<g transform="translate(3251.5, 1151.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserName" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" data-name="UserName" data-compartment="2">
 
 </g>
@@ -1015,22 +1125,22 @@
 </g>
 <g data-name="UserFactory">
 <g fill="lightblue" stroke="#33322E" data-name="UserFactory">
-<rect x="4274.0" y="207.0" height="72.0" width="135.0" data-name="UserFactory"></rect>
-<path d="M4274.0 239.0 L4409.0 239.0" fill="none" data-name="UserFactory"></path>
-<path d="M4274.0 247.0 L4409.0 247.0" fill="none" data-name="UserFactory"></path>
+<rect x="5956.0" y="223.0" height="72.0" width="135.0" data-name="UserFactory"></rect>
+<path d="M5956.0 255.0 L6091.0 255.0" fill="none" data-name="UserFactory"></path>
+<path d="M5956.0 263.0 L6091.0 263.0" fill="none" data-name="UserFactory"></path>
 </g>
-<g transform="translate(4274, 207)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserFactory" data-compartment="0">
+<g transform="translate(5956, 223)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserFactory" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="UserFactory" data-compartment="0">
 <a id="..\src\domain\models\users\userFactory.ts.UserFactory" xlink:href="..\src\domain\models\users\userFactory.ts"><text x="59.5" y="14.1" stroke="none" text-anchor="middle" data-name="UserFactory" data-compartment="0">UserFactory</text></a>
 
 </g>
 </g>
-<g transform="translate(4274, 239)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserFactory" data-compartment="1">
+<g transform="translate(5956, 255)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserFactory" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="UserFactory" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(4274, 247)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserFactory" data-compartment="2">
+<g transform="translate(5956, 263)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserFactory" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="UserFactory" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="UserFactory" data-compartment="2">+create(): User</text>
 
@@ -1039,22 +1149,22 @@
 </g>
 <g data-name="UserRepository">
 <g fill="lightblue" stroke="#33322E" data-name="UserRepository">
-<rect x="4449.0" y="190.5" height="105.0" width="275.0" data-name="UserRepository"></rect>
-<path d="M4449.0 222.5 L4724.0 222.5" fill="none" data-name="UserRepository"></path>
-<path d="M4449.0 230.5 L4724.0 230.5" fill="none" data-name="UserRepository"></path>
+<rect x="6131.0" y="206.5" height="105.0" width="275.0" data-name="UserRepository"></rect>
+<path d="M6131.0 238.5 L6406.0 238.5" fill="none" data-name="UserRepository"></path>
+<path d="M6131.0 246.5 L6406.0 246.5" fill="none" data-name="UserRepository"></path>
 </g>
-<g transform="translate(4449, 190.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserRepository" data-compartment="0">
+<g transform="translate(6131, 206.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserRepository" data-compartment="0">
 <g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="UserRepository" data-compartment="0">
 <a id="..\src\domain\models\users\userRepository.ts.UserRepository" xlink:href="..\src\domain\models\users\userRepository.ts"><text x="129.5" y="14.1" stroke="none" text-anchor="middle" data-name="UserRepository" data-compartment="0">UserRepository</text></a>
 
 </g>
 </g>
-<g transform="translate(4449, 222.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserRepository" data-compartment="1">
+<g transform="translate(6131, 238.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserRepository" data-compartment="1">
 <g transform="translate(8, 8)" fill="#33322E" data-name="UserRepository" data-compartment="1">
 
 </g>
 </g>
-<g transform="translate(4449, 230.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserRepository" data-compartment="2">
+<g transform="translate(6131, 246.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserRepository" data-compartment="2">
 <g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="UserRepository" data-compartment="2">
 <text x="0.0" y="14.1" stroke="none" data-name="UserRepository" data-compartment="2">+saveAsync(): Promise&lt;void&gt;</text>
 <text x="0.0" y="30.3" stroke="none" data-name="UserRepository" data-compartment="2">+findAsync(): Promise&lt;User&gt;</text>
