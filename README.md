@@ -1,50 +1,52 @@
-# React + TypeScript + Vite
+# drump
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+drump（ドランプ）は、インストール不要で気軽に遊べるパーティーゲームをコンセプトとした、ブラックジャックで遊べるアプリケーションです。
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# 実行手順
 
-## Expanding the ESLint configuration
+このアプリケーションの実行手順は以下の通りです。
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 1. Node.js v20.x のインストール
 
-- Configure the top-level `parserOptions` property like this:
+公式サイトから、Node.js v20.x をインストールしてください。
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- [Node.js — Download Node.js®](https://nodejs.org/en/download/)
+
+## 2. 環境設定ファイルの作成と配置
+
+環境設定ファイル `.env.local` を作成して、リポジトリのルート直下に配置してください。
+
+**Mac**
+
+```bash
+echo "VITE_API_URL=http://localhost:3000/api" > .env.local
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+**Windows**
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```PowerShell
+Write-Output "VITE_API_URL=http://localhost:3000/api" | Set-Content -Path .env.local -Encoding utf8
 ```
+
+## 3. パッケージのインストール
+
+以下のコマンドを実行して、必要なパッケージをインストールしてください。
+
+```
+npm install
+```
+
+## 4. サーバの起動
+
+以下のコマンドを実行して、サーバを起動してください。
+
+```
+npm run start
+```
+
+## 5. アプリケーションの実行
+
+ブラウザから、以下の URL にアクセスしてください。
+
+- http://localhost:3000

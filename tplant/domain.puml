@@ -25,22 +25,35 @@ class Hand {
     -cards: Card[]
     -isStand: boolean
     +add(card: Card): Hand
-    -calculateHardTotal(): number
+    +calculateSoftTotal(): number
+    +calculateHardTotal(): number
     +calculateTotal(): number
     +count(): number
     +isBlackJack(): boolean
     +isBust(): boolean
     +canHit(): boolean
+    +canSplit(): boolean
     +stand(): Hand
     +isResolved(): boolean
     +getCards(): Card[]
     +{static} create(): Hand
 }
+class BasicStrategyCalculatorStrategyUndefinedError extends Error
+class BasicStrategyCalculator {
+    -{static} splitStrategies: Map<number, Map<Rank, HandSignal>>
+    -{static} hardHandStrategies: Map<number, Map<Rank, HandSignal>>
+    -{static} softHandStrategies: Map<number, Map<Rank, HandSignal>>
+    +{static} calculate(hand: Hand, upCard: Card): HandSignal
+    -{static} calculateSplitStrategy(hand: Hand, upCard: Card): HandSignal
+    -{static} calculateSoftHandStrategy(softTotal: number, upCard: Card): HandSignal
+    -{static} calculateHardHandStrategy(hardTotal: number, upCard: Card): HandSignal
+    -{static} clamp(value: number, min: number, max: number): number
+}
 class DealerId {
     +value: string
 }
 interface DealerNotification {
-    +notifyUpCard(upCard: Card): void
+    +notifyUpCard(upCard?: Card): void
 }
 class Dealer {
     +id: DealerId
@@ -97,6 +110,9 @@ class Player {
     +{static} INITIAL_CREDIT: ChipAmount
     +{static} create(id: PlayerId, userId: UserId): Player
 }
+class RankingCalculator {
+    +{static} calculate(scoreMap: Map<TKey, number>): Map<TKey, number>
+}
 class RoundCountExceedsMaximumError extends Error
 class RoundCount {
     +value: number
@@ -133,8 +149,10 @@ interface MatchNotification {
     +notifyDealer(dealer: Dealer): void
     +notifyPlayers(players: Player[]): void
     +notifyRoundCount(roundCount: RoundCount): void
+    +notifyIsCompleted(isCompleted: boolean): void
 }
 class MatchPlayerNotFoundError extends Error
+class MatchUpCardUndefinedError extends Error
 class Match {
     +id: MatchId
     -shoe: Shoe
@@ -157,7 +175,9 @@ class Match {
     +isCompleted(): boolean
     -getPlayer(playerId: PlayerId): Player
     +getPlayerIds(): PlayerId[]
+    +calculateBasicStrategy(playerId: PlayerId): HandSignal
     +getUserId(playerId: PlayerId): UserId
+    +calculateRanking(): Map<string, number>
     +notify(notification: MatchNotification): void
     -{static} NUMBER_OF_DECKS: 6
     +{static} create(id: MatchId, dealer: Dealer, players: Player[]): Match
@@ -195,6 +215,8 @@ interface UserRepository {
 Balance --> "1" ChipAmount
 Hand --> "*" Card
 Hand --> "1" Card
+BasicStrategyCalculator --> "1" Hand
+BasicStrategyCalculator --> "1" Card
 DealerNotification --> "1" Card
 Dealer --> "1" DealerId
 Dealer --> "1" Hand
