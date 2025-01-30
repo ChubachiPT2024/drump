@@ -17,7 +17,7 @@ drump（ドランプ）は、インストール不要で気軽に遊べるパー
 
 環境設定ファイル `.env.local` を作成して、リポジトリのルート直下に配置してください。
 
-**Mac**
+**Mac/Linux**
 
 ```bash
 echo "VITE_API_URL=http://localhost:3000/api" > .env.local
